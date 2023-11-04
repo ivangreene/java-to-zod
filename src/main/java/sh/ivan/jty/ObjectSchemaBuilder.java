@@ -30,7 +30,7 @@ public class ObjectSchemaBuilder {
                 .filter(propertyDescriptor -> !"class".equals(propertyDescriptor.getName()))
                 .forEach(propertyDescriptor ->
                         fields.put(getFieldName(propertyDescriptor),
-                                CONVERTER.buildSchema(propertyDescriptor.getPropertyType())));
+                                CONVERTER.getPropertySchema(propertyDescriptor.getPropertyType())));
         return fields;
     }
 

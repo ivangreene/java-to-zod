@@ -10,12 +10,13 @@ import java.beans.PropertyDescriptor;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class ObjectSchemaBuilder {
     private static final Jsr380ToYupConverter CONVERTER = new Jsr380ToYupConverter();
 
     public ObjectSchema build(Class<?> clazz) {
-        return new ObjectSchema(getFields(clazz));
+        return new ObjectSchema(getFields(clazz), Set.of());
     }
 
     private Map<String, Schema> getFields(Class<?> clazz) {
@@ -30,7 +31,7 @@ public class ObjectSchemaBuilder {
                 .filter(propertyDescriptor -> !"class".equals(propertyDescriptor.getName()))
                 .forEach(propertyDescriptor ->
                         fields.put(getFieldName(propertyDescriptor),
-                                CONVERTER.getPropertySchema(propertyDescriptor.getPropertyType())));
+                                CONVERTER.getPropertySchema(propertyDescriptor.getPropertyType(), Set.of())));
         return fields;
     }
 

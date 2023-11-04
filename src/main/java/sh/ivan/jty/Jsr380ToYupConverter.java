@@ -5,6 +5,7 @@ import sh.ivan.jty.schema.ObjectSchema;
 import sh.ivan.jty.schema.ReferenceSchema;
 import sh.ivan.jty.schema.Schema;
 import sh.ivan.jty.schema.StringSchema;
+import sh.ivan.jty.schema.attribute.Attribute;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
@@ -22,7 +23,7 @@ public class Jsr380ToYupConverter {
         Class<? extends Schema> schemaClass = getSchemaClass(clazz);
         if (PRIMITIVE_SCHEMA_TYPES.contains(schemaClass)) {
             try {
-                return schemaClass.getConstructor().newInstance();
+                return schemaClass.getConstructor(Set.class).newInstance(Set.of());
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
                      NoSuchMethodException e) {
                 throw new RuntimeException(e);
@@ -41,10 +42,10 @@ public class Jsr380ToYupConverter {
         return ObjectSchema.class;
     }
 
-    Schema getPropertySchema(Class<?> clazz) {
+    Schema getPropertySchema(Class<?> clazz, Set<Attribute> attributes) {
         Class<? extends Schema> schemaClass = getSchemaClass(clazz);
         if (ObjectSchema.class == schemaClass) {
-            return new ReferenceSchema(getTypeName(clazz));
+            return new ReferenceSchema(getTypeName(clazz), attributes);
         }
         return buildSchema(clazz);
     }

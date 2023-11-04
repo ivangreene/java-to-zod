@@ -13,6 +13,7 @@ import sh.ivan.jty.schema.StringSchema;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Set;
 
 class Jsr380ToYupConverterTest {
     Jsr380ToYupConverter converter = new Jsr380ToYupConverter();
@@ -24,7 +25,7 @@ class Jsr380ToYupConverterTest {
         objectSchemaAssert.extracting(ObjectSchema::getFields)
                 .asInstanceOf(InstanceOfAssertFactories.map(String.class, Schema.class))
                 .isEmpty();
-        objectSchemaAssert.extracting(ObjectSchema::asYupSchema)
+        objectSchemaAssert.extracting(ObjectSchema::yupType)
                 .isEqualTo("object({ })");
     }
 
@@ -40,7 +41,7 @@ class Jsr380ToYupConverterTest {
 
     void assertIsNumber(Schema schema) {
         assertThat(schema).isInstanceOf(NumberSchema.class)
-                .extracting(Schema::asYupSchema)
+                .extracting(Schema::yupType)
                 .isEqualTo("number()");
     }
 
@@ -51,10 +52,10 @@ class Jsr380ToYupConverterTest {
         objectSchemaAssert.extracting(ObjectSchema::getFields)
                 .asInstanceOf(InstanceOfAssertFactories.map(String.class, Schema.class))
                 .hasSize(3)
-                .containsEntry("street", new StringSchema())
-                .containsEntry("city", new StringSchema())
-                .containsEntry("country", new StringSchema());
-        objectSchemaAssert.extracting(ObjectSchema::asYupSchema)
+                .containsEntry("street", new StringSchema(Set.of()))
+                .containsEntry("city", new StringSchema(Set.of()))
+                .containsEntry("country", new StringSchema(Set.of()));
+        objectSchemaAssert.extracting(ObjectSchema::yupType)
                 .isEqualTo("object({ city: string(), country: string(), street: string(), })");
     }
 
@@ -65,11 +66,11 @@ class Jsr380ToYupConverterTest {
         objectSchemaAssert.extracting(ObjectSchema::getFields)
                 .asInstanceOf(InstanceOfAssertFactories.map(String.class, Schema.class))
                 .hasSize(3)
-                .containsEntry("name", new StringSchema())
-                .containsEntry("age", new NumberSchema())
-                .containsEntry("address", new ReferenceSchema("Address"));
-        objectSchemaAssert.extracting(ObjectSchema::asYupSchema)
-                .isEqualTo("object({ age: number(), name: string(), address: Address, })");
+                .containsEntry("name", new StringSchema(Set.of()))
+                .containsEntry("age", new NumberSchema(Set.of()))
+                .containsEntry("address", new ReferenceSchema("Address", Set.of()));
+        objectSchemaAssert.extracting(ObjectSchema::yupType)
+                .isEqualTo("object({ address: Address, age: number(), name: string(), })");
     }
 
     @Data

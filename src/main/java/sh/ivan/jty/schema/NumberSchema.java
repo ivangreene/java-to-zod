@@ -1,11 +1,20 @@
 package sh.ivan.jty.schema;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import sh.ivan.jty.schema.attribute.Attribute;
 
-@Data
-public class NumberSchema implements Schema {
+import java.util.Set;
+
+@Getter
+@EqualsAndHashCode(callSuper = true)
+public class NumberSchema extends Schema {
+    public NumberSchema(Set<Attribute> attributes) {
+        super(attributes);
+    }
+
     @Override
-    public String asYupSchema() {
+    public String yupType() {
         return "number()";
     }
 }

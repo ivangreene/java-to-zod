@@ -28,7 +28,7 @@ import sh.ivan.jty.schema.attribute.NullableAttribute;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
+import java.lang.reflect.Member;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -65,7 +65,7 @@ public class AttributeProcessor {
             NotNull.class
     );
 
-    public Set<Attribute> getAttributes(Class<?> container, Method method, String propertyName) {
+    public Set<Attribute> getAttributes(Class<?> container, Member member, String propertyName) {
         var attributes = new HashSet<Attribute>();
         Field field;
         try {
@@ -73,15 +73,18 @@ public class AttributeProcessor {
         } catch (NoSuchFieldException e) {
             throw new RuntimeException("Could not find field for property " + propertyName, e);
         }
-        if (isNullable(field) && isNullable(method)) {
+        if (isNullable(field) && isNullable(member)) {
             attributes.add(new NullableAttribute());
         }
         return Set.copyOf(attributes);
     }
 
-    private boolean isNullable(AnnotatedElement annotatedElement) {
-        return Stream.of(annotatedElement.getAnnotations())
-                .map(Annotation::annotationType)
-                .noneMatch(NOT_NULL_ANNOTATIONS::contains);
+    private boolean isNullable(Member member) {
+        if (member instanceof AnnotatedElement annotatedElement) {
+            return Stream.of(annotatedElement.getAnnotations())
+                    .map(Annotation::annotationType)
+                    .noneMatch(NOT_NULL_ANNOTATIONS::contains);
+        }
+        return true;
     }
 }

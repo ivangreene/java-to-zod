@@ -32,6 +32,11 @@
       <version>4.4</version>
     </dependency>
     <dependency>
+      <groupId>cz.habarta.typescript-generator</groupId>
+      <artifactId>typescript-generator-core</artifactId>
+      <version>3.2.1263</version>
+    </dependency>
+    <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
       <version>1.18.30</version>

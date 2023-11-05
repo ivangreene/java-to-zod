@@ -59,7 +59,7 @@ class Jsr380ToYupConverterTest {
                 .containsEntry("city", new StringSchema(Set.of()))
                 .containsEntry("country", new StringSchema(Set.of()));
         objectSchemaAssert.extracting(ObjectSchema::asYupSchema)
-                .isEqualTo("object({ city: string(), country: string(), street: string(), streetTwo: string().nullable(), })");
+                .isEqualTo("object({ street: string(), streetTwo: string().nullable(), city: string(), country: string(), })");
     }
 
     @Test
@@ -73,15 +73,18 @@ class Jsr380ToYupConverterTest {
                 .containsEntry("age", new NumberSchema(Set.of(new NullableAttribute())))
                 .containsEntry("address", new ReferenceSchema("Address", Set.of(new NullableAttribute())));
         objectSchemaAssert.extracting(ObjectSchema::asYupSchema)
-                .isEqualTo("object({ address: Address.nullable(), age: number().nullable(), name: string(), })");
+                .isEqualTo("object({ name: string(), age: number().nullable(), address: Address.nullable(), })");
     }
 
-    @Data
     static class Person {
         @NotNull
-        private String name;
-        private Integer age;
-        private Address address;
+        public String name;
+        public Integer age;
+        public Address address;
+
+        public void setAge(@NotNull Integer age) {
+            this.age = age;
+        }
     }
 
     @Data

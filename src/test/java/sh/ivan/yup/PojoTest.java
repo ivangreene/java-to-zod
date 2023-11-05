@@ -2,7 +2,9 @@ package sh.ivan.yup;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import java.util.Set;
 import lombok.Data;
 import org.assertj.core.api.InstanceOfAssertFactories;
@@ -14,6 +16,8 @@ import sh.ivan.yup.schema.Schema;
 import sh.ivan.yup.schema.StringSchema;
 import sh.ivan.yup.schema.attribute.IntegerAttribute;
 import sh.ivan.yup.schema.attribute.NullableAttribute;
+import sh.ivan.yup.schema.attribute.RequiredAttribute;
+import sh.ivan.yup.schema.attribute.SizeAttribute;
 
 class PojoTest {
     Jsr380ToYupConverter converter = new Jsr380ToYupConverter();
@@ -34,6 +38,20 @@ class PojoTest {
                 .extracting(ObjectSchema::asYupSchema)
                 .isEqualTo(
                         "object({ street: string(), streetTwo: string().nullable(), city: string(), country: string(), })");
+    }
+
+    @Data
+    static class Address {
+        @NotNull
+        private String street;
+
+        private String streetTwo;
+
+        @NotNull
+        private String city;
+
+        @NotNull
+        private String country;
     }
 
     @Test
@@ -59,23 +77,29 @@ class PojoTest {
 
         public Integer age;
         public Address address;
-
-        public void setAge(@NotNull Integer age) {
-            this.age = age;
-        }
     }
 
-    @Data
-    static class Address {
-        @NotNull
-        private String street;
+    @Test
+    void shouldCombineAnnotationsFromFieldAndGetter() {
+        var schema = converter.buildSchema(Book.class);
+        var objectSchemaAssert = assertThat(schema).asInstanceOf(InstanceOfAssertFactories.type(ObjectSchema.class));
+        objectSchemaAssert
+                .extracting(ObjectSchema::getFields)
+                .asInstanceOf(InstanceOfAssertFactories.map(String.class, Schema.class))
+                .hasSize(1)
+                .containsEntry("name", new StringSchema(Set.of(new SizeAttribute(1, 50), new RequiredAttribute())));
+        objectSchemaAssert
+                .extracting(ObjectSchema::asYupSchema)
+                .isEqualTo("object({ name: string().required().min(1).max(50), })");
+    }
 
-        private String streetTwo;
+    static class Book {
+        @NotEmpty
+        private String name;
 
-        @NotNull
-        private String city;
-
-        @NotNull
-        private String country;
+        @Size(min = 1, max = 50)
+        public String getName() {
+            return name;
+        }
     }
 }

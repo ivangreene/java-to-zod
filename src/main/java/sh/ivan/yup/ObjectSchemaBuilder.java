@@ -33,7 +33,10 @@ public class ObjectSchemaBuilder {
                         converter.getPropertySchema(
                                 (Class<?>) propertyModel.getType(),
                                 attributeProcessor.getAttributes(
-                                        clazz, propertyModel.getOriginalMember(), propertyModel.getName()))));
+                                        clazz,
+                                        propertyModel.getType(),
+                                        propertyModel.getOriginalMember(),
+                                        propertyModel.getName()))));
         return fields;
     }
 }

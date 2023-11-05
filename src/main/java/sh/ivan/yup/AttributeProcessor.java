@@ -26,11 +26,16 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
+import java.lang.reflect.Type;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import sh.ivan.yup.schema.attribute.Attribute;
 import sh.ivan.yup.schema.attribute.NullableAttribute;
+import sh.ivan.yup.schema.attribute.RequiredAttribute;
+import sh.ivan.yup.schema.attribute.SizeAttribute;
 
 public class AttributeProcessor {
     private static final Set<Class<? extends Annotation>> JSR_380_ANNOTATIONS = Set.of(
@@ -60,17 +65,24 @@ public class AttributeProcessor {
     private static final Set<Class<? extends Annotation>> NOT_NULL_ANNOTATIONS =
             Set.of(NotBlank.class, NotEmpty.class, NotNull.class);
 
-    public Set<Attribute> getAttributes(Class<?> container, Member member, String propertyName) {
+    public Set<Attribute> getAttributes(Class<?> container, Type type, Member member, String propertyName) {
         var attributes = new HashSet<Attribute>();
-        Field field;
+        Field field = null;
         try {
             field = container.getDeclaredField(propertyName);
-        } catch (NoSuchFieldException e) {
-            throw new RuntimeException("Could not find field for property " + propertyName, e);
+        } catch (NoSuchFieldException ignored) {
         }
         if (isNullable(field) && isNullable(member)) {
             attributes.add(new NullableAttribute());
         }
+        var annotations = new HashSet<Annotation>();
+        if (field != null) {
+            annotations.addAll(Set.of(field.getAnnotations()));
+        }
+        if (member instanceof AnnotatedElement) {
+            annotations.addAll(Set.of(((AnnotatedElement) member).getAnnotations()));
+        }
+        attributes.addAll(processAnnotations(type, annotations));
         return Set.copyOf(attributes);
     }
 
@@ -81,5 +93,25 @@ public class AttributeProcessor {
                     .noneMatch(NOT_NULL_ANNOTATIONS::contains);
         }
         return true;
+    }
+
+    private Set<Attribute> processAnnotations(Type type, Set<Annotation> annotations) {
+        return annotations.stream()
+                .filter(annotation -> JSR_380_ANNOTATIONS.contains(annotation.annotationType()))
+                .map(annotation -> processAnnotation(type, annotation))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+    }
+
+    private Attribute processAnnotation(Type type, Annotation annotation) {
+        if (annotation.annotationType() == Size.class) {
+            return new SizeAttribute(((Size) annotation).min(), ((Size) annotation).max());
+        }
+        if (annotation.annotationType() == NotEmpty.class) {
+            if (type == String.class) {
+                return new RequiredAttribute();
+            }
+        }
+        return null;
     }
 }

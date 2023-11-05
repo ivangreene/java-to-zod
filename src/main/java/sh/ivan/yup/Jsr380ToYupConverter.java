@@ -1,5 +1,8 @@
 package sh.ivan.yup;
 
+import cz.habarta.typescript.generator.DefaultTypeProcessor;
+import cz.habarta.typescript.generator.Settings;
+import cz.habarta.typescript.generator.parser.Jackson2Parser;
 import sh.ivan.yup.schema.NumberSchema;
 import sh.ivan.yup.schema.ObjectSchema;
 import sh.ivan.yup.schema.ReferenceSchema;
@@ -17,7 +20,12 @@ public class Jsr380ToYupConverter {
             NumberSchema.class
     );
 
-    private static final ObjectSchemaBuilder OBJECT_SCHEMA_BUILDER = new ObjectSchemaBuilder();
+    private final ObjectSchemaBuilder objectSchemaBuilder;
+
+    public Jsr380ToYupConverter() {
+        objectSchemaBuilder = new ObjectSchemaBuilder(this,
+                new AttributeProcessor(), new Jackson2Parser(new Settings(), new DefaultTypeProcessor()));
+    }
 
     public Schema buildSchema(Class<?> clazz) {
         return buildSchema(clazz, Set.of());
@@ -33,7 +41,7 @@ public class Jsr380ToYupConverter {
                 throw new RuntimeException(e);
             }
         }
-        return OBJECT_SCHEMA_BUILDER.build(clazz);
+        return objectSchemaBuilder.build(clazz);
     }
 
     private Class<? extends Schema> getSchemaClass(Class<?> clazz) {

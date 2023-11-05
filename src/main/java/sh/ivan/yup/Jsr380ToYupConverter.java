@@ -4,6 +4,7 @@ import com.google.common.collect.Sets;
 import cz.habarta.typescript.generator.DefaultTypeProcessor;
 import cz.habarta.typescript.generator.Settings;
 import cz.habarta.typescript.generator.parser.Jackson2Parser;
+import cz.habarta.typescript.generator.type.JGenericArrayType;
 import cz.habarta.typescript.generator.type.JParameterizedType;
 import java.lang.reflect.Type;
 import java.math.BigInteger;
@@ -39,9 +40,10 @@ public class Jsr380ToYupConverter {
     private final ArraySchemaBuilder arraySchemaBuilder;
 
     public Jsr380ToYupConverter() {
+        var attributeProcessor = new AttributeProcessor(this);
         objectSchemaBuilder = new ObjectSchemaBuilder(
-                this, new AttributeProcessor(), new Jackson2Parser(new Settings(), new DefaultTypeProcessor()));
-        arraySchemaBuilder = new ArraySchemaBuilder();
+                this, attributeProcessor, new Jackson2Parser(new Settings(), new DefaultTypeProcessor()));
+        arraySchemaBuilder = new ArraySchemaBuilder(this, attributeProcessor);
     }
 
     public Schema buildSchema(Class<?> clazz) {
@@ -92,17 +94,23 @@ public class Jsr380ToYupConverter {
         return ObjectSchema.class;
     }
 
-    private boolean isArray(Type type) {
+    public boolean isArray(Type type) {
         return type instanceof Class<?> && ((Class<?>) type).isArray()
-                || type instanceof JParameterizedType && ((JParameterizedType) type).getRawType() == List.class;
+                || type instanceof JParameterizedType && ((JParameterizedType) type).getRawType() == List.class
+                || type instanceof JGenericArrayType;
     }
 
-    Schema getPropertySchema(Type type, Set<Attribute> attributes) {
-        Class<? extends Schema> schemaClass = getSchemaClass(type);
+    Schema getPropertySchema(PropertyDescriptor propertyDescriptor, Set<Attribute> attributes) {
+        Class<? extends Schema> schemaClass =
+                getSchemaClass(propertyDescriptor.getPropertyModel().getType());
         if (ObjectSchema.class == schemaClass) {
-            return new ReferenceSchema(getTypeName(type), attributes);
+            return new ReferenceSchema(
+                    getTypeName(propertyDescriptor.getPropertyModel().getType()), attributes);
         }
-        return buildSchema(type, attributes);
+        if (ArraySchema.class == schemaClass) {
+            return arraySchemaBuilder.build(propertyDescriptor, attributes);
+        }
+        return buildSchema(propertyDescriptor.getPropertyModel().getType(), attributes);
     }
 
     private String getTypeName(Type type) {

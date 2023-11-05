@@ -19,6 +19,6 @@ public class ArraySchema extends Schema {
 
     @Override
     public String yupType() {
-        return "array().of(" + componentType.yupType() + ")";
+        return "array().of(" + componentType.asYupSchema() + ")";
     }
 }

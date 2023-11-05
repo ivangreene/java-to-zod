@@ -64,6 +64,12 @@ public class AttributeProcessor {
     private static final Set<Class<? extends Annotation>> NOT_NULL_ANNOTATIONS =
             Set.of(NotBlank.class, NotEmpty.class, NotNull.class);
 
+    private final Jsr380ToYupConverter converter;
+
+    public AttributeProcessor(Jsr380ToYupConverter converter) {
+        this.converter = converter;
+    }
+
     public Set<Attribute> getAttributes(Type type, Set<AnnotatedElement> annotatedElements) {
         var annotations = new HashSet<Annotation>();
         annotatedElements.forEach(annotatedElement -> annotations.addAll(Set.of(annotatedElement.getAnnotations())));
@@ -97,6 +103,9 @@ public class AttributeProcessor {
         if (annotation.annotationType() == NotEmpty.class) {
             if (type == String.class) {
                 return new RequiredAttribute();
+            }
+            if (converter.isArray(type)) {
+                return new SizeAttribute(1, Integer.MAX_VALUE);
             }
         }
         if (annotation.annotationType() == AssertFalse.class) {

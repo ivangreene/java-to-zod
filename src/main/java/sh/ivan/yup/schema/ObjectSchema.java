@@ -1,13 +1,12 @@
 package sh.ivan.yup.schema;
 
+import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import sh.ivan.yup.schema.attribute.Attribute;
-
-import java.util.Collections;
-import java.util.Map;
-import java.util.Set;
 
 @Getter
 @ToString(callSuper = true)
@@ -23,8 +22,11 @@ public class ObjectSchema extends Schema {
     @Override
     public String yupType() {
         var stringBuilder = new StringBuilder("object({ ");
-        fields.forEach((name, schema) ->
-                stringBuilder.append(name).append(": ").append(schema.asYupSchema()).append(", "));
+        fields.forEach((name, schema) -> stringBuilder
+                .append(name)
+                .append(": ")
+                .append(schema.asYupSchema())
+                .append(", "));
         return stringBuilder.append("})").toString();
     }
 }

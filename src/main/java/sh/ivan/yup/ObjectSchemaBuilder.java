@@ -1,21 +1,19 @@
 package sh.ivan.yup;
 
 import cz.habarta.typescript.generator.parser.ModelParser;
-import sh.ivan.yup.schema.ObjectSchema;
-import sh.ivan.yup.schema.Schema;
-
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
+import sh.ivan.yup.schema.ObjectSchema;
+import sh.ivan.yup.schema.Schema;
 
 public class ObjectSchemaBuilder {
     private final Jsr380ToYupConverter converter;
     private final AttributeProcessor attributeProcessor;
     private final ModelParser modelParser;
 
-    public ObjectSchemaBuilder(Jsr380ToYupConverter converter,
-                               AttributeProcessor attributeProcessor,
-                               ModelParser modelParser) {
+    public ObjectSchemaBuilder(
+            Jsr380ToYupConverter converter, AttributeProcessor attributeProcessor, ModelParser modelParser) {
         this.converter = converter;
         this.attributeProcessor = attributeProcessor;
         this.modelParser = modelParser;
@@ -33,10 +31,12 @@ public class ObjectSchemaBuilder {
         var bean = model.getBean(clazz);
         var fields = new LinkedHashMap<String, Schema>();
         bean.getProperties()
-                .forEach(propertyModel ->
-                        fields.put(propertyModel.getName(), converter.getPropertySchema((Class<?>) propertyModel.getType(),
-                                attributeProcessor.getAttributes(clazz, propertyModel.getOriginalMember(),
-                                        propertyModel.getName()))));
+                .forEach(propertyModel -> fields.put(
+                        propertyModel.getName(),
+                        converter.getPropertySchema(
+                                (Class<?>) propertyModel.getType(),
+                                attributeProcessor.getAttributes(
+                                        clazz, propertyModel.getOriginalMember(), propertyModel.getName()))));
         return fields;
     }
 }

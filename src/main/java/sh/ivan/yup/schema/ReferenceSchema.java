@@ -1,11 +1,10 @@
 package sh.ivan.yup.schema;
 
+import java.util.Set;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import sh.ivan.yup.schema.attribute.Attribute;
-
-import java.util.Set;
 
 @Getter
 @ToString(callSuper = true)

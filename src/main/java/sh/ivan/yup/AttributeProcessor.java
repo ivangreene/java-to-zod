@@ -22,9 +22,6 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
-import sh.ivan.yup.schema.attribute.Attribute;
-import sh.ivan.yup.schema.attribute.NullableAttribute;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
@@ -32,6 +29,8 @@ import java.lang.reflect.Member;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Stream;
+import sh.ivan.yup.schema.attribute.Attribute;
+import sh.ivan.yup.schema.attribute.NullableAttribute;
 
 public class AttributeProcessor {
     private static final Set<Class<? extends Annotation>> JSR_380_ANNOTATIONS = Set.of(
@@ -56,14 +55,10 @@ public class AttributeProcessor {
             Pattern.class,
             Positive.class,
             PositiveOrZero.class,
-            Size.class
-    );
+            Size.class);
 
-    private static final Set<Class<? extends Annotation>> NOT_NULL_ANNOTATIONS = Set.of(
-            NotBlank.class,
-            NotEmpty.class,
-            NotNull.class
-    );
+    private static final Set<Class<? extends Annotation>> NOT_NULL_ANNOTATIONS =
+            Set.of(NotBlank.class, NotEmpty.class, NotNull.class);
 
     public Set<Attribute> getAttributes(Class<?> container, Member member, String propertyName) {
         var attributes = new HashSet<Attribute>();

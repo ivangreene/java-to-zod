@@ -20,10 +20,14 @@ public class Jsr380ToYupConverter {
     private static final ObjectSchemaBuilder OBJECT_SCHEMA_BUILDER = new ObjectSchemaBuilder();
 
     public Schema buildSchema(Class<?> clazz) {
+        return buildSchema(clazz, Set.of());
+    }
+
+    public Schema buildSchema(Class<?> clazz, Set<Attribute> attributes) {
         Class<? extends Schema> schemaClass = getSchemaClass(clazz);
         if (PRIMITIVE_SCHEMA_TYPES.contains(schemaClass)) {
             try {
-                return schemaClass.getConstructor(Set.class).newInstance(Set.of());
+                return schemaClass.getConstructor(Set.class).newInstance(attributes);
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
                      NoSuchMethodException e) {
                 throw new RuntimeException(e);
@@ -47,7 +51,7 @@ public class Jsr380ToYupConverter {
         if (ObjectSchema.class == schemaClass) {
             return new ReferenceSchema(getTypeName(clazz), attributes);
         }
-        return buildSchema(clazz);
+        return buildSchema(clazz, attributes);
     }
 
     private String getTypeName(Class<?> clazz) {

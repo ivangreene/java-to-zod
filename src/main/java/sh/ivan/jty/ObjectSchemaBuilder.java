@@ -14,6 +14,7 @@ import java.util.Set;
 
 public class ObjectSchemaBuilder {
     private static final Jsr380ToYupConverter CONVERTER = new Jsr380ToYupConverter();
+    private static final AttributeProcessor ATTRIBUTE_PROCESSOR = new AttributeProcessor();
 
     public ObjectSchema build(Class<?> clazz) {
         return new ObjectSchema(getFields(clazz), Set.of());
@@ -31,7 +32,9 @@ public class ObjectSchemaBuilder {
                 .filter(propertyDescriptor -> !"class".equals(propertyDescriptor.getName()))
                 .forEach(propertyDescriptor ->
                         fields.put(getFieldName(propertyDescriptor),
-                                CONVERTER.getPropertySchema(propertyDescriptor.getPropertyType(), Set.of())));
+                                CONVERTER.getPropertySchema(propertyDescriptor.getPropertyType(),
+                                        ATTRIBUTE_PROCESSOR.getAttributes(clazz, propertyDescriptor.getReadMethod(),
+                                                getFieldName(propertyDescriptor)))));
         return fields;
     }
 

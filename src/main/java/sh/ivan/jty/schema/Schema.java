@@ -2,11 +2,14 @@ package sh.ivan.jty.schema;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 import sh.ivan.jty.schema.attribute.Attribute;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Getter
+@ToString
 @EqualsAndHashCode
 public abstract class Schema {
 
@@ -19,6 +22,9 @@ public abstract class Schema {
     public abstract String yupType();
 
     public String asYupSchema() {
-        return yupType();
+        return yupType() + attributes.stream()
+                .map(Attribute::yupMethod)
+                .map(method -> "." + method)
+                .collect(Collectors.joining());
     }
 }

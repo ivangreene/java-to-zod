@@ -2,11 +2,13 @@ package sh.ivan.jty.schema;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 import sh.ivan.jty.schema.attribute.Attribute;
 
 import java.util.Set;
 
 @Getter
+@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public class ReferenceSchema extends Schema {
     private final String reference;

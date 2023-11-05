@@ -6,6 +6,7 @@ import cz.habarta.typescript.generator.Settings;
 import cz.habarta.typescript.generator.parser.Jackson2Parser;
 import java.math.BigInteger;
 import java.util.Set;
+import sh.ivan.yup.schema.BooleanSchema;
 import sh.ivan.yup.schema.NumberSchema;
 import sh.ivan.yup.schema.ObjectSchema;
 import sh.ivan.yup.schema.ReferenceSchema;
@@ -48,6 +49,9 @@ public class Jsr380ToYupConverter {
         if (isNumber(clazz)) {
             return buildNumberSchema(clazz, attributes);
         }
+        if (clazz == Boolean.class || clazz == boolean.class) {
+            return new BooleanSchema(attributes);
+        }
         return objectSchemaBuilder.build(clazz);
     }
 
@@ -68,6 +72,9 @@ public class Jsr380ToYupConverter {
         }
         if (isNumber(clazz)) {
             return NumberSchema.class;
+        }
+        if (clazz == Boolean.class || clazz == boolean.class) {
+            return BooleanSchema.class;
         }
         return ObjectSchema.class;
     }

@@ -33,6 +33,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import sh.ivan.yup.schema.attribute.Attribute;
+import sh.ivan.yup.schema.attribute.EqualsBooleanAttribute;
 import sh.ivan.yup.schema.attribute.NullableAttribute;
 import sh.ivan.yup.schema.attribute.RequiredAttribute;
 import sh.ivan.yup.schema.attribute.SizeAttribute;
@@ -72,7 +73,7 @@ public class AttributeProcessor {
             field = container.getDeclaredField(propertyName);
         } catch (NoSuchFieldException ignored) {
         }
-        if (isNullable(field) && isNullable(member)) {
+        if (!(type instanceof Class<?> && ((Class<?>) type).isPrimitive()) && isNullable(field) && isNullable(member)) {
             attributes.add(new NullableAttribute());
         }
         var annotations = new HashSet<Annotation>();
@@ -111,6 +112,12 @@ public class AttributeProcessor {
             if (type == String.class) {
                 return new RequiredAttribute();
             }
+        }
+        if (annotation.annotationType() == AssertFalse.class) {
+            return new EqualsBooleanAttribute(false);
+        }
+        if (annotation.annotationType() == AssertTrue.class) {
+            return new EqualsBooleanAttribute(true);
         }
         return null;
     }

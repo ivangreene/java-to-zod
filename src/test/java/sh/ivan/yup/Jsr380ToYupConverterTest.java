@@ -1,4 +1,4 @@
-package sh.ivan.jty;
+package sh.ivan.yup;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -6,12 +6,12 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.jupiter.api.Test;
-import sh.ivan.jty.schema.NumberSchema;
-import sh.ivan.jty.schema.ObjectSchema;
-import sh.ivan.jty.schema.ReferenceSchema;
-import sh.ivan.jty.schema.Schema;
-import sh.ivan.jty.schema.StringSchema;
-import sh.ivan.jty.schema.attribute.NullableAttribute;
+import sh.ivan.yup.schema.NumberSchema;
+import sh.ivan.yup.schema.ObjectSchema;
+import sh.ivan.yup.schema.ReferenceSchema;
+import sh.ivan.yup.schema.Schema;
+import sh.ivan.yup.schema.StringSchema;
+import sh.ivan.yup.schema.attribute.NullableAttribute;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;

@@ -1,11 +1,11 @@
-package sh.ivan.jty;
+package sh.ivan.yup;
 
-import sh.ivan.jty.schema.NumberSchema;
-import sh.ivan.jty.schema.ObjectSchema;
-import sh.ivan.jty.schema.ReferenceSchema;
-import sh.ivan.jty.schema.Schema;
-import sh.ivan.jty.schema.StringSchema;
-import sh.ivan.jty.schema.attribute.Attribute;
+import sh.ivan.yup.schema.NumberSchema;
+import sh.ivan.yup.schema.ObjectSchema;
+import sh.ivan.yup.schema.ReferenceSchema;
+import sh.ivan.yup.schema.Schema;
+import sh.ivan.yup.schema.StringSchema;
+import sh.ivan.yup.schema.attribute.Attribute;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Set;

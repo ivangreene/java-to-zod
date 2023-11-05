@@ -1,4 +1,4 @@
-package sh.ivan.jty.schema.attribute;
+package sh.ivan.yup.schema.attribute;
 
 import lombok.EqualsAndHashCode;
 import lombok.ToString;

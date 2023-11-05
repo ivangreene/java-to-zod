@@ -1,11 +1,11 @@
-package sh.ivan.jty;
+package sh.ivan.yup;
 
 import cz.habarta.typescript.generator.DefaultTypeProcessor;
 import cz.habarta.typescript.generator.Settings;
 import cz.habarta.typescript.generator.parser.Jackson2Parser;
 import cz.habarta.typescript.generator.parser.ModelParser;
-import sh.ivan.jty.schema.ObjectSchema;
-import sh.ivan.jty.schema.Schema;
+import sh.ivan.yup.schema.ObjectSchema;
+import sh.ivan.yup.schema.Schema;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

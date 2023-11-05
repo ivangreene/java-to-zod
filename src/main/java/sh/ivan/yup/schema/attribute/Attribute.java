@@ -1,4 +1,4 @@
-package sh.ivan.jty.schema.attribute;
+package sh.ivan.yup.schema.attribute;
 
 public interface Attribute {
     String yupMethod();

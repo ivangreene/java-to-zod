@@ -1,9 +1,9 @@
-package sh.ivan.jty.schema;
+package sh.ivan.yup.schema;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
-import sh.ivan.jty.schema.attribute.Attribute;
+import sh.ivan.yup.schema.attribute.Attribute;
 
 import java.util.Collections;
 import java.util.Map;

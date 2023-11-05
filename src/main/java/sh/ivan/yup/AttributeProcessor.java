@@ -1,4 +1,4 @@
-package sh.ivan.jty;
+package sh.ivan.yup;
 
 import jakarta.validation.constraints.AssertFalse;
 import jakarta.validation.constraints.AssertTrue;
@@ -22,8 +22,8 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
-import sh.ivan.jty.schema.attribute.Attribute;
-import sh.ivan.jty.schema.attribute.NullableAttribute;
+import sh.ivan.yup.schema.attribute.Attribute;
+import sh.ivan.yup.schema.attribute.NullableAttribute;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;

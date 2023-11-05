@@ -1,11 +1,16 @@
 package sh.ivan.yup;
 
 import cz.habarta.typescript.generator.parser.ModelParser;
+import cz.habarta.typescript.generator.parser.PropertyModel;
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Field;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 import sh.ivan.yup.schema.ObjectSchema;
 import sh.ivan.yup.schema.Schema;
+import sh.ivan.yup.schema.attribute.Attribute;
 
 public class ObjectSchemaBuilder {
     private final Jsr380ToYupConverter converter;
@@ -19,8 +24,8 @@ public class ObjectSchemaBuilder {
         this.modelParser = modelParser;
     }
 
-    public ObjectSchema build(Class<?> clazz) {
-        return new ObjectSchema(getFields(clazz), Set.of());
+    public ObjectSchema build(Class<?> clazz, Set<Attribute> attributes) {
+        return new ObjectSchema(getFields(clazz), attributes);
     }
 
     private Map<String, Schema> getFields(Class<?> clazz) {
@@ -30,13 +35,23 @@ public class ObjectSchemaBuilder {
         bean.getProperties()
                 .forEach(propertyModel -> fields.put(
                         propertyModel.getName(),
-                        converter.getPropertySchema(
-                                (Class<?>) propertyModel.getType(),
-                                attributeProcessor.getAttributes(
-                                        clazz,
-                                        propertyModel.getType(),
-                                        propertyModel.getOriginalMember(),
-                                        propertyModel.getName()))));
+                        converter.getPropertySchema(propertyModel.getType(), getAttributes(clazz, propertyModel))));
         return fields;
+    }
+
+    private Set<Attribute> getAttributes(Class<?> container, PropertyModel propertyModel) {
+        Field field = null;
+        try {
+            field = container.getDeclaredField(propertyModel.getName());
+        } catch (NoSuchFieldException ignored) {
+        }
+        var annotatedElements = new HashSet<AnnotatedElement>();
+        if (field != null) {
+            annotatedElements.add(field);
+        }
+        if (propertyModel.getOriginalMember() instanceof AnnotatedElement) {
+            annotatedElements.add((AnnotatedElement) propertyModel.getOriginalMember());
+        }
+        return attributeProcessor.getAttributes(propertyModel.getType(), annotatedElements);
     }
 }

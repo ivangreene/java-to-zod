@@ -24,8 +24,6 @@ import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Field;
-import java.lang.reflect.Member;
 import java.lang.reflect.Type;
 import java.util.HashSet;
 import java.util.Objects;
@@ -66,34 +64,22 @@ public class AttributeProcessor {
     private static final Set<Class<? extends Annotation>> NOT_NULL_ANNOTATIONS =
             Set.of(NotBlank.class, NotEmpty.class, NotNull.class);
 
-    public Set<Attribute> getAttributes(Class<?> container, Type type, Member member, String propertyName) {
-        var attributes = new HashSet<Attribute>();
-        Field field = null;
-        try {
-            field = container.getDeclaredField(propertyName);
-        } catch (NoSuchFieldException ignored) {
-        }
-        if (!(type instanceof Class<?> && ((Class<?>) type).isPrimitive()) && isNullable(field) && isNullable(member)) {
-            attributes.add(new NullableAttribute());
-        }
+    public Set<Attribute> getAttributes(Type type, Set<AnnotatedElement> annotatedElements) {
         var annotations = new HashSet<Annotation>();
-        if (field != null) {
-            annotations.addAll(Set.of(field.getAnnotations()));
-        }
-        if (member instanceof AnnotatedElement) {
-            annotations.addAll(Set.of(((AnnotatedElement) member).getAnnotations()));
+        annotatedElements.forEach(annotatedElement -> annotations.addAll(Set.of(annotatedElement.getAnnotations())));
+        var attributes = new HashSet<Attribute>();
+        if (!(type instanceof Class<?> && ((Class<?>) type).isPrimitive())
+                && annotatedElements.stream().allMatch(this::isNullable)) {
+            attributes.add(new NullableAttribute());
         }
         attributes.addAll(processAnnotations(type, annotations));
         return Set.copyOf(attributes);
     }
 
-    private boolean isNullable(Member member) {
-        if (member instanceof AnnotatedElement) {
-            return Stream.of(((AnnotatedElement) member).getAnnotations())
-                    .map(Annotation::annotationType)
-                    .noneMatch(NOT_NULL_ANNOTATIONS::contains);
-        }
-        return true;
+    private boolean isNullable(AnnotatedElement annotatedElement) {
+        return Stream.of(annotatedElement.getAnnotations())
+                .map(Annotation::annotationType)
+                .noneMatch(NOT_NULL_ANNOTATIONS::contains);
     }
 
     private Set<Attribute> processAnnotations(Type type, Set<Annotation> annotations) {

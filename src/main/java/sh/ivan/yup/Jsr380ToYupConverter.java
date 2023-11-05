@@ -4,8 +4,12 @@ import com.google.common.collect.Sets;
 import cz.habarta.typescript.generator.DefaultTypeProcessor;
 import cz.habarta.typescript.generator.Settings;
 import cz.habarta.typescript.generator.parser.Jackson2Parser;
+import cz.habarta.typescript.generator.type.JParameterizedType;
+import java.lang.reflect.Type;
 import java.math.BigInteger;
+import java.util.List;
 import java.util.Set;
+import sh.ivan.yup.schema.ArraySchema;
 import sh.ivan.yup.schema.BooleanSchema;
 import sh.ivan.yup.schema.NumberSchema;
 import sh.ivan.yup.schema.ObjectSchema;
@@ -32,31 +36,37 @@ public class Jsr380ToYupConverter {
             BigInteger.class);
 
     private final ObjectSchemaBuilder objectSchemaBuilder;
+    private final ArraySchemaBuilder arraySchemaBuilder;
 
     public Jsr380ToYupConverter() {
         objectSchemaBuilder = new ObjectSchemaBuilder(
                 this, new AttributeProcessor(), new Jackson2Parser(new Settings(), new DefaultTypeProcessor()));
+        arraySchemaBuilder = new ArraySchemaBuilder();
     }
 
     public Schema buildSchema(Class<?> clazz) {
         return buildSchema(clazz, Set.of());
     }
 
-    public Schema buildSchema(Class<?> clazz, Set<Attribute> attributes) {
-        if (clazz == String.class) {
+    public Schema buildSchema(Type type, Set<Attribute> attributes) {
+        if (type == String.class) {
             return new StringSchema(attributes);
         }
-        if (isNumber(clazz)) {
-            return buildNumberSchema(clazz, attributes);
+        if (isNumber(type)) {
+            return buildNumberSchema((Class<?>) type, attributes);
         }
-        if (clazz == Boolean.class || clazz == boolean.class) {
+        if (type == Boolean.class || type == boolean.class) {
             return new BooleanSchema(attributes);
         }
-        return objectSchemaBuilder.build(clazz);
+        if (isArray(type)) {
+            return arraySchemaBuilder.build(type, attributes);
+        }
+        return objectSchemaBuilder.build((Class<?>) type, attributes);
     }
 
-    private boolean isNumber(Class<?> clazz) {
-        return Number.class.isAssignableFrom(clazz) || PRIMITIVE_NUMBER_TYPES.contains(clazz);
+    private boolean isNumber(Type type) {
+        return type instanceof Class<?>
+                && (Number.class.isAssignableFrom((Class<?>) type) || PRIMITIVE_NUMBER_TYPES.contains(type));
     }
 
     private NumberSchema buildNumberSchema(Class<?> clazz, Set<Attribute> attributes) {
@@ -66,28 +76,39 @@ public class Jsr380ToYupConverter {
         return new NumberSchema(attributes);
     }
 
-    private Class<? extends Schema> getSchemaClass(Class<?> clazz) {
-        if (clazz == String.class) {
+    private Class<? extends Schema> getSchemaClass(Type type) {
+        if (type == String.class) {
             return StringSchema.class;
         }
-        if (isNumber(clazz)) {
+        if (isNumber(type)) {
             return NumberSchema.class;
         }
-        if (clazz == Boolean.class || clazz == boolean.class) {
+        if (type == Boolean.class || type == boolean.class) {
             return BooleanSchema.class;
+        }
+        if (isArray(type)) {
+            return ArraySchema.class;
         }
         return ObjectSchema.class;
     }
 
-    Schema getPropertySchema(Class<?> clazz, Set<Attribute> attributes) {
-        Class<? extends Schema> schemaClass = getSchemaClass(clazz);
-        if (ObjectSchema.class == schemaClass) {
-            return new ReferenceSchema(getTypeName(clazz), attributes);
-        }
-        return buildSchema(clazz, attributes);
+    private boolean isArray(Type type) {
+        return type instanceof Class<?> && ((Class<?>) type).isArray()
+                || type instanceof JParameterizedType && ((JParameterizedType) type).getRawType() == List.class;
     }
 
-    private String getTypeName(Class<?> clazz) {
-        return clazz.getSimpleName();
+    Schema getPropertySchema(Type type, Set<Attribute> attributes) {
+        Class<? extends Schema> schemaClass = getSchemaClass(type);
+        if (ObjectSchema.class == schemaClass) {
+            return new ReferenceSchema(getTypeName(type), attributes);
+        }
+        return buildSchema(type, attributes);
+    }
+
+    private String getTypeName(Type type) {
+        if (type instanceof Class<?>) {
+            return ((Class<?>) type).getSimpleName();
+        }
+        throw new IllegalArgumentException("No name for type");
     }
 }

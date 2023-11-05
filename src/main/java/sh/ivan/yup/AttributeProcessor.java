@@ -80,8 +80,8 @@ public class AttributeProcessor {
     }
 
     private boolean isNullable(Member member) {
-        if (member instanceof AnnotatedElement annotatedElement) {
-            return Stream.of(annotatedElement.getAnnotations())
+        if (member instanceof AnnotatedElement) {
+            return Stream.of(((AnnotatedElement) member).getAnnotations())
                     .map(Annotation::annotationType)
                     .noneMatch(NOT_NULL_ANNOTATIONS::contains);
         }

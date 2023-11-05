@@ -24,9 +24,6 @@ public class ObjectSchemaBuilder {
     }
 
     private Map<String, Schema> getFields(Class<?> clazz) {
-        if (clazz == Object.class) {
-            return Map.of();
-        }
         var model = modelParser.parseModel(clazz);
         var bean = model.getBean(clazz);
         var fields = new LinkedHashMap<String, Schema>();

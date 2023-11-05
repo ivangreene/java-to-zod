@@ -3,8 +3,6 @@ package sh.ivan.yup;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import jakarta.validation.constraints.NotNull;
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.Set;
 import lombok.Data;
 import org.assertj.core.api.InstanceOfAssertFactories;
@@ -14,38 +12,11 @@ import sh.ivan.yup.schema.ObjectSchema;
 import sh.ivan.yup.schema.ReferenceSchema;
 import sh.ivan.yup.schema.Schema;
 import sh.ivan.yup.schema.StringSchema;
+import sh.ivan.yup.schema.attribute.IntegerAttribute;
 import sh.ivan.yup.schema.attribute.NullableAttribute;
 
-class Jsr380ToYupConverterTest {
+class PojoTest {
     Jsr380ToYupConverter converter = new Jsr380ToYupConverter();
-
-    @Test
-    void objectShouldHaveNoFields() {
-        var schema = converter.buildSchema(Object.class);
-        var objectSchemaAssert = assertThat(schema).asInstanceOf(InstanceOfAssertFactories.type(ObjectSchema.class));
-        objectSchemaAssert
-                .extracting(ObjectSchema::getFields)
-                .asInstanceOf(InstanceOfAssertFactories.map(String.class, Schema.class))
-                .isEmpty();
-        objectSchemaAssert.extracting(ObjectSchema::yupType).isEqualTo("object({ })");
-    }
-
-    @Test
-    void numbersShouldBeNumbers() {
-        assertIsNumber(converter.buildSchema(Float.class));
-        assertIsNumber(converter.buildSchema(Double.class));
-        assertIsNumber(converter.buildSchema(Long.class));
-        assertIsNumber(converter.buildSchema(Integer.class));
-        assertIsNumber(converter.buildSchema(BigInteger.class));
-        assertIsNumber(converter.buildSchema(BigDecimal.class));
-    }
-
-    void assertIsNumber(Schema schema) {
-        assertThat(schema)
-                .isInstanceOf(NumberSchema.class)
-                .extracting(Schema::yupType)
-                .isEqualTo("number()");
-    }
 
     @Test
     void shouldConvertBasicPojo() {
@@ -74,11 +45,12 @@ class Jsr380ToYupConverterTest {
                 .asInstanceOf(InstanceOfAssertFactories.map(String.class, Schema.class))
                 .hasSize(3)
                 .containsEntry("name", new StringSchema(Set.of()))
-                .containsEntry("age", new NumberSchema(Set.of(new NullableAttribute())))
+                .containsEntry("age", new NumberSchema(Set.of(new NullableAttribute(), new IntegerAttribute())))
                 .containsEntry("address", new ReferenceSchema("Address", Set.of(new NullableAttribute())));
         objectSchemaAssert
                 .extracting(ObjectSchema::asYupSchema)
-                .isEqualTo("object({ name: string(), age: number().nullable(), address: Address.nullable(), })");
+                .isEqualTo(
+                        "object({ name: string(), age: number().nullable().integer(), address: Address.nullable(), })");
     }
 
     static class Person {

@@ -5,14 +5,14 @@ import lombok.ToString;
 
 @ToString
 @EqualsAndHashCode
-public class NullableAttribute implements Attribute {
+public class IntegerAttribute implements Attribute {
     @Override
     public int priority() {
-        return 0;
+        return 100;
     }
 
     @Override
     public String yupMethod() {
-        return "nullable()";
+        return "integer()";
     }
 }

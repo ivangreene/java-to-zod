@@ -20,7 +20,7 @@ import sh.ivan.yup.schema.StringSchema;
 import sh.ivan.yup.schema.attribute.Attribute;
 import sh.ivan.yup.schema.attribute.IntegerAttribute;
 
-public class Jsr380ToYupConverter {
+public class JavaToYupConverter {
 
     private static final Set<Class<?>> PRIMITIVE_NUMBER_TYPES =
             Set.of(int.class, long.class, float.class, double.class, byte.class, short.class);
@@ -39,7 +39,7 @@ public class Jsr380ToYupConverter {
     private final ObjectSchemaBuilder objectSchemaBuilder;
     private final ArraySchemaBuilder arraySchemaBuilder;
 
-    public Jsr380ToYupConverter() {
+    public JavaToYupConverter() {
         var attributeProcessor = new AttributeProcessor(this);
         objectSchemaBuilder = new ObjectSchemaBuilder(
                 this, attributeProcessor, new Jackson2Parser(new Settings(), new DefaultTypeProcessor()));

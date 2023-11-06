@@ -20,7 +20,7 @@ import sh.ivan.yup.schema.attribute.RequiredAttribute;
 import sh.ivan.yup.schema.attribute.SizeAttribute;
 
 class PojoTest {
-    Jsr380ToYupConverter converter = new Jsr380ToYupConverter();
+    JavaToYupConverter converter = new JavaToYupConverter();
 
     @Test
     void shouldConvertBasicPojo() {

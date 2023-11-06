@@ -9,12 +9,12 @@ import sh.ivan.yup.schema.Schema;
 import sh.ivan.yup.schema.attribute.Attribute;
 
 public class ObjectSchemaBuilder {
-    private final Jsr380ToYupConverter converter;
+    private final JavaToYupConverter converter;
     private final AttributeProcessor attributeProcessor;
     private final ModelParser modelParser;
 
     public ObjectSchemaBuilder(
-            Jsr380ToYupConverter converter, AttributeProcessor attributeProcessor, ModelParser modelParser) {
+            JavaToYupConverter converter, AttributeProcessor attributeProcessor, ModelParser modelParser) {
         this.converter = converter;
         this.attributeProcessor = attributeProcessor;
         this.modelParser = modelParser;

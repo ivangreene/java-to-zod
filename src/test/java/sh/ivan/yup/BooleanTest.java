@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import sh.ivan.yup.schema.ObjectSchema;
 
 class BooleanTest {
-    Jsr380ToYupConverter converter = new Jsr380ToYupConverter();
+    JavaToYupConverter converter = new JavaToYupConverter();
 
     @Test
     void booleanShouldBeBoolean() {

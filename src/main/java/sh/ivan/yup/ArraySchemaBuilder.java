@@ -15,10 +15,10 @@ import sh.ivan.yup.schema.attribute.Attribute;
 
 public class ArraySchemaBuilder {
 
-    private final Jsr380ToYupConverter converter;
+    private final JavaToYupConverter converter;
     private final AttributeProcessor attributeProcessor;
 
-    public ArraySchemaBuilder(Jsr380ToYupConverter converter, AttributeProcessor attributeProcessor) {
+    public ArraySchemaBuilder(JavaToYupConverter converter, AttributeProcessor attributeProcessor) {
         this.converter = converter;
         this.attributeProcessor = attributeProcessor;
     }

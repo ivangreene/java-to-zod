@@ -7,7 +7,7 @@ import java.math.BigInteger;
 import org.junit.jupiter.api.Test;
 
 class NumberTest {
-    Jsr380ToYupConverter converter = new Jsr380ToYupConverter();
+    JavaToYupConverter converter = new JavaToYupConverter();
 
     @Test
     void testFloat() {

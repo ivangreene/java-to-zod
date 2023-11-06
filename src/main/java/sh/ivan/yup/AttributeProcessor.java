@@ -64,9 +64,9 @@ public class AttributeProcessor {
     private static final Set<Class<? extends Annotation>> NOT_NULL_ANNOTATIONS =
             Set.of(NotBlank.class, NotEmpty.class, NotNull.class);
 
-    private final Jsr380ToYupConverter converter;
+    private final JavaToYupConverter converter;
 
-    public AttributeProcessor(Jsr380ToYupConverter converter) {
+    public AttributeProcessor(JavaToYupConverter converter) {
         this.converter = converter;
     }
 

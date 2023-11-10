@@ -1,6 +1,7 @@
 package sh.ivan.yup;
 
 import cz.habarta.typescript.generator.parser.PropertyModel;
+import java.beans.Introspector;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.util.HashSet;
@@ -17,7 +18,8 @@ public class PropertyDescriptor {
         this.propertyModel = propertyModel;
         Field field = null;
         try {
-            field = container.getDeclaredField(propertyModel.getName());
+            field = container.getDeclaredField(
+                    getFieldNameFromGetter(propertyModel.getOriginalMember().getName()));
         } catch (NoSuchFieldException ignored) {
         }
         this.field = field;
@@ -29,5 +31,9 @@ public class PropertyDescriptor {
             annotatedElements.add((AnnotatedElement) propertyModel.getOriginalMember());
         }
         this.annotatedElements = Set.copyOf(annotatedElements);
+    }
+
+    private String getFieldNameFromGetter(String getterName) {
+        return Introspector.decapitalize(getterName.replaceFirst("^get", ""));
     }
 }

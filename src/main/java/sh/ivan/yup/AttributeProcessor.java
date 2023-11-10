@@ -32,7 +32,11 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import sh.ivan.yup.schema.attribute.Attribute;
 import sh.ivan.yup.schema.attribute.EqualsBooleanAttribute;
+import sh.ivan.yup.schema.attribute.MaxAttribute;
+import sh.ivan.yup.schema.attribute.MinAttribute;
+import sh.ivan.yup.schema.attribute.NegativeAttribute;
 import sh.ivan.yup.schema.attribute.NullableAttribute;
+import sh.ivan.yup.schema.attribute.PositiveAttribute;
 import sh.ivan.yup.schema.attribute.RequiredAttribute;
 import sh.ivan.yup.schema.attribute.SizeAttribute;
 
@@ -40,23 +44,23 @@ public class AttributeProcessor {
     private static final Set<Class<? extends Annotation>> JSR_380_ANNOTATIONS = Set.of(
             AssertFalse.class,
             AssertTrue.class,
-            DecimalMax.class,
-            DecimalMin.class,
-            Digits.class,
-            Email.class,
-            Future.class,
-            FutureOrPresent.class,
+            DecimalMax.class, // Not yet implemented
+            DecimalMin.class, // Not yet implemented
+            Digits.class, // Not yet implemented
+            Email.class, // Not yet implemented
+            Future.class, // Not yet implemented
+            FutureOrPresent.class, // Not yet implemented
             Max.class,
             Min.class,
             Negative.class,
             NegativeOrZero.class,
-            NotBlank.class,
+            NotBlank.class, // Not yet implemented
             NotEmpty.class,
             NotNull.class,
-            Null.class,
-            Past.class,
-            PastOrPresent.class,
-            Pattern.class,
+            Null.class, // Not yet implemented
+            Past.class, // Not yet implemented
+            PastOrPresent.class, // Not yet implemented
+            Pattern.class, // Not yet implemented
             Positive.class,
             PositiveOrZero.class,
             Size.class);
@@ -71,21 +75,21 @@ public class AttributeProcessor {
     }
 
     public Set<Attribute> getAttributes(Type type, Set<AnnotatedElement> annotatedElements) {
-        var annotations = new HashSet<Annotation>();
-        annotatedElements.forEach(annotatedElement -> annotations.addAll(Set.of(annotatedElement.getAnnotations())));
+        return getAttributesForAnnotations(
+                type,
+                annotatedElements.stream()
+                        .flatMap(annotatedElement -> Stream.of(annotatedElement.getAnnotations()))
+                        .collect(Collectors.toSet()));
+    }
+
+    public Set<Attribute> getAttributesForAnnotations(Type type, Set<Annotation> annotations) {
         var attributes = new HashSet<Attribute>();
         if (!(type instanceof Class<?> && ((Class<?>) type).isPrimitive())
-                && annotatedElements.stream().allMatch(this::isNullable)) {
+                && annotations.stream().map(Annotation::annotationType).noneMatch(NOT_NULL_ANNOTATIONS::contains)) {
             attributes.add(new NullableAttribute());
         }
         attributes.addAll(processAnnotations(type, annotations));
         return Set.copyOf(attributes);
-    }
-
-    private boolean isNullable(AnnotatedElement annotatedElement) {
-        return Stream.of(annotatedElement.getAnnotations())
-                .map(Annotation::annotationType)
-                .noneMatch(NOT_NULL_ANNOTATIONS::contains);
     }
 
     private Set<Attribute> processAnnotations(Type type, Set<Annotation> annotations) {
@@ -113,6 +117,24 @@ public class AttributeProcessor {
         }
         if (annotation.annotationType() == AssertTrue.class) {
             return new EqualsBooleanAttribute(true);
+        }
+        if (annotation.annotationType() == Max.class) {
+            return new MaxAttribute(((Max) annotation).value());
+        }
+        if (annotation.annotationType() == Min.class) {
+            return new MinAttribute(((Min) annotation).value());
+        }
+        if (annotation.annotationType() == Negative.class) {
+            return new NegativeAttribute();
+        }
+        if (annotation.annotationType() == Positive.class) {
+            return new PositiveAttribute();
+        }
+        if (annotation.annotationType() == NegativeOrZero.class) {
+            return new NegativeAttribute(true);
+        }
+        if (annotation.annotationType() == PositiveOrZero.class) {
+            return new PositiveAttribute(true);
         }
         return null;
     }

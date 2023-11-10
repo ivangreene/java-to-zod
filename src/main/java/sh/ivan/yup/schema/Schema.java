@@ -1,8 +1,6 @@
 package sh.ivan.yup.schema;
 
-import java.util.Comparator;
 import java.util.Set;
-import java.util.stream.Collectors;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
@@ -22,11 +20,6 @@ public abstract class Schema {
     public abstract String yupType();
 
     public String asYupSchema() {
-        return yupType()
-                + attributes.stream()
-                        .sorted(Comparator.comparingInt(Attribute::priority))
-                        .map(Attribute::yupMethod)
-                        .map(method -> "." + method)
-                        .collect(Collectors.joining());
+        return yupType() + Attribute.writeAttributes(attributes);
     }
 }

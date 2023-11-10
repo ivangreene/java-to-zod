@@ -3,16 +3,16 @@ package sh.ivan.yup.schema.attribute;
 import lombok.Data;
 
 @Data
-public class EqualsBooleanAttribute implements Attribute {
-    private final boolean value;
+public class MaxAttribute implements Attribute {
+    private final long max;
 
     @Override
     public int priority() {
-        return 20;
+        return 45;
     }
 
     @Override
     public String yupMethod() {
-        return "equals([" + value + "])";
+        return "max(" + max + ")";
     }
 }

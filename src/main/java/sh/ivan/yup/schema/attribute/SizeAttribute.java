@@ -9,7 +9,7 @@ public class SizeAttribute implements Attribute {
 
     @Override
     public int priority() {
-        return 50;
+        return min > 0 ? 50 : 51;
     }
 
     @Override

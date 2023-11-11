@@ -41,16 +41,17 @@ public class ArraySchemaBuilder {
                 annotatedElements.add(componentAnnotatedElement);
             }
         }
-        if (propertyDescriptor.getPropertyModel().getOriginalMember() instanceof Method) {
-            if (((Method) propertyDescriptor.getPropertyModel().getOriginalMember()).getParameterCount() == 0) {
-                var annotatedType =
-                        ((Method) propertyDescriptor.getPropertyModel().getOriginalMember()).getAnnotatedReturnType();
-                var componentAnnotatedElement = getComponentAnnotatedElement(annotatedType);
-                if (componentAnnotatedElement != null) {
-                    annotatedElements.add(componentAnnotatedElement);
+        propertyDescriptor.getAnnotatedElements().forEach(annotatedElement -> {
+            if (annotatedElement instanceof Method) {
+                if (((Method) annotatedElement).getParameterCount() == 0) {
+                    var annotatedType = ((Method) annotatedElement).getAnnotatedReturnType();
+                    var componentAnnotatedElement = getComponentAnnotatedElement(annotatedType);
+                    if (componentAnnotatedElement != null) {
+                        annotatedElements.add(componentAnnotatedElement);
+                    }
                 }
             }
-        }
+        });
         return annotatedElements;
     }
 

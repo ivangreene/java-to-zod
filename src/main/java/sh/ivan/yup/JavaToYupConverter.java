@@ -10,6 +10,7 @@ import java.lang.reflect.Type;
 import java.math.BigInteger;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import sh.ivan.yup.schema.ArraySchema;
 import sh.ivan.yup.schema.BooleanSchema;
 import sh.ivan.yup.schema.NumberSchema;
@@ -19,6 +20,7 @@ import sh.ivan.yup.schema.Schema;
 import sh.ivan.yup.schema.StringSchema;
 import sh.ivan.yup.schema.attribute.Attribute;
 import sh.ivan.yup.schema.attribute.IntegerAttribute;
+import sh.ivan.yup.schema.attribute.UuidAttribute;
 
 public class JavaToYupConverter {
 
@@ -54,6 +56,9 @@ public class JavaToYupConverter {
         if (type == String.class) {
             return new StringSchema(attributes);
         }
+        if (type == UUID.class) {
+            return new StringSchema(Sets.union(attributes, Set.of(new UuidAttribute())));
+        }
         if (isNumber(type)) {
             return buildNumberSchema((Class<?>) type, attributes);
         }
@@ -79,7 +84,7 @@ public class JavaToYupConverter {
     }
 
     private Class<? extends Schema> getSchemaClass(Type type) {
-        if (type == String.class) {
+        if (type == String.class || type == UUID.class) {
             return StringSchema.class;
         }
         if (isNumber(type)) {

@@ -5,14 +5,14 @@ import lombok.ToString;
 
 @ToString
 @EqualsAndHashCode
-public class NotBlankAttribute implements Attribute {
+public class UuidAttribute implements Attribute {
     @Override
     public int priority() {
-        return 3;
+        return 10;
     }
 
     @Override
     public String yupMethod() {
-        return "matches(/[^\\s]/)";
+        return "uuid()";
     }
 }

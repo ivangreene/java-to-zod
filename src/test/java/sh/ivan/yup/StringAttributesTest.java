@@ -6,16 +6,18 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import java.util.Set;
+import java.util.UUID;
 import org.assertj.core.api.ObjectAssert;
 import org.junit.jupiter.api.Test;
 import sh.ivan.yup.schema.ObjectSchema;
 import sh.ivan.yup.schema.Schema;
 import sh.ivan.yup.schema.StringSchema;
 import sh.ivan.yup.schema.attribute.NotBlankAttribute;
+import sh.ivan.yup.schema.attribute.NullableAttribute;
 import sh.ivan.yup.schema.attribute.RequiredAttribute;
 import sh.ivan.yup.schema.attribute.SizeAttribute;
-
-import java.util.Set;
+import sh.ivan.yup.schema.attribute.UuidAttribute;
 
 class StringAttributesTest {
     JavaToYupConverter converter = new JavaToYupConverter();
@@ -60,6 +62,14 @@ class StringAttributesTest {
                 .isEqualTo("string().min(5).max(10)");
     }
 
+    @Test
+    void shouldSupportUUID() {
+        assertThatField("id")
+                .isEqualTo(new StringSchema(Set.of(new NullableAttribute(), new UuidAttribute())))
+                .extracting(Schema::asYupSchema)
+                .isEqualTo("string().nullable().uuid()");
+    }
+
     static class StringHolder {
         @NotBlank
         public String notBlank;
@@ -78,6 +88,8 @@ class StringAttributesTest {
         @NotNull
         @Size(min = 5, max = 10)
         public String min5Max10;
+
+        public UUID id;
     }
 
     private ObjectAssert<Schema> assertThatField(String fieldName) {

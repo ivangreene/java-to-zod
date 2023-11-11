@@ -35,6 +35,7 @@ import sh.ivan.yup.schema.attribute.EqualsBooleanAttribute;
 import sh.ivan.yup.schema.attribute.MaxAttribute;
 import sh.ivan.yup.schema.attribute.MinAttribute;
 import sh.ivan.yup.schema.attribute.NegativeAttribute;
+import sh.ivan.yup.schema.attribute.NotBlankAttribute;
 import sh.ivan.yup.schema.attribute.NullableAttribute;
 import sh.ivan.yup.schema.attribute.PositiveAttribute;
 import sh.ivan.yup.schema.attribute.RequiredAttribute;
@@ -54,7 +55,7 @@ public class AttributeProcessor {
             Min.class,
             Negative.class,
             NegativeOrZero.class,
-            NotBlank.class, // Not yet implemented
+            NotBlank.class,
             NotEmpty.class,
             NotNull.class,
             Null.class, // Not yet implemented
@@ -111,6 +112,9 @@ public class AttributeProcessor {
             if (converter.isArray(type)) {
                 return new SizeAttribute(1, Integer.MAX_VALUE);
             }
+        }
+        if (annotation.annotationType() == NotBlank.class) {
+            return new NotBlankAttribute();
         }
         if (annotation.annotationType() == AssertFalse.class) {
             return new EqualsBooleanAttribute(false);

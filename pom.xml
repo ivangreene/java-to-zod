@@ -9,6 +9,7 @@
   <url>https://github.com/ivangreene/java-to-yup</url>
   <modules>
     <module>java-to-yup-core</module>
+    <module>java-to-yup-maven-plugin</module>
   </modules>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

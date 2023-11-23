@@ -125,6 +125,6 @@ public class JavaToYupConverter {
         if (type instanceof Class<?>) {
             return ((Class<?>) type).getSimpleName();
         }
-        throw new IllegalArgumentException("No name for type");
+        throw new IllegalArgumentException("No name for type " + type);
     }
 }

@@ -17,9 +17,17 @@ public abstract class Schema {
         this.attributes = attributes;
     }
 
-    public abstract String yupType();
+    protected abstract String yupType();
 
-    public String asYupSchema() {
-        return yupType() + Attribute.writeAttributes(attributes);
+    protected String yupType(String prefix) {
+        return prefix + yupType();
+    }
+
+    public final String asYupSchema() {
+        return asYupSchema("");
+    }
+
+    public final String asYupSchema(String prefix) {
+        return yupType(prefix) + Attribute.writeAttributes(attributes);
     }
 }

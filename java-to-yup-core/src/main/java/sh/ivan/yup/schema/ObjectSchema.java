@@ -20,13 +20,18 @@ public class ObjectSchema extends Schema {
     }
 
     @Override
-    public String yupType() {
-        var stringBuilder = new StringBuilder("object({ ");
+    protected String yupType(String prefix) {
+        var stringBuilder = new StringBuilder(prefix).append("object({ ");
         fields.forEach((name, schema) -> stringBuilder
                 .append(name)
                 .append(": ")
-                .append(schema.asYupSchema())
+                .append(schema.asYupSchema(prefix))
                 .append(", "));
         return stringBuilder.append("})").toString();
+    }
+
+    @Override
+    protected String yupType() {
+        throw new UnsupportedOperationException("Implements yupType(String prefix) directly");
     }
 }

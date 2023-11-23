@@ -15,7 +15,7 @@ public class BooleanSchema extends Schema {
     }
 
     @Override
-    public String yupType() {
+    protected String yupType() {
         return "boolean()";
     }
 }

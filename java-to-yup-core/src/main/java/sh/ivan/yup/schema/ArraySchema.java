@@ -18,7 +18,12 @@ public class ArraySchema extends Schema {
     }
 
     @Override
-    public String yupType() {
-        return "array().of(" + componentType.asYupSchema() + ")";
+    protected String yupType(String prefix) {
+        return prefix + "array().of(" + componentType.asYupSchema(prefix) + ")";
+    }
+
+    @Override
+    protected String yupType() {
+        throw new UnsupportedOperationException("Implements yupType(String prefix) directly");
     }
 }

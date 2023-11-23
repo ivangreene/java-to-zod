@@ -264,14 +264,15 @@ public class GenerateYupSchemasMojo extends AbstractMojo {
                     : new File(
                             new File(projectBuildDirectory, "java-to-yup"),
                             project.getArtifactId() + settings.getExtension());
-            settings.validateFileName(output);
+            //            settings.validateFileName(output);
 
             var input = Input.from(parameters);
             var typeScriptGenerator = new TypeScriptGenerator(settings);
             var model = typeScriptGenerator.getModelParser().parseModel(input.getSourceTypes());
             var javaToYupConverter = new JavaToYupConverter(typeScriptGenerator.getModelParser());
             var beanSchemas = javaToYupConverter.getBeanSchemas(model);
-            System.out.println(beanSchemas);
+            var schemaFileWriter = new SchemaFileWriter(beanSchemas, output);
+            schemaFileWriter.write();
 
         } catch (IOException e) {
             throw new RuntimeException(e);

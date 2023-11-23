@@ -24,7 +24,12 @@ public class ObjectSchemaBuilder {
 
     public Map<String, ObjectSchema> buildBeanSchemas(Model model) {
         var schemas = new LinkedHashMap<String, ObjectSchema>();
-        model.getBeans().forEach(beanModel -> schemas.put(beanModel.getOrigin().getName(), build(beanModel, Set.of())));
+        model.getBeans().forEach(beanModel -> {
+            if (schemas.containsKey(beanModel.getOrigin().getSimpleName())) {
+                throw new IllegalStateException("Encountered duplicate schema name");
+            }
+            schemas.put(beanModel.getOrigin().getSimpleName(), build(beanModel, Set.of()));
+        });
         return schemas;
     }
 

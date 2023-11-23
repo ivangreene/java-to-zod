@@ -15,7 +15,7 @@ public class StringSchema extends Schema {
     }
 
     @Override
-    public String yupType() {
+    protected String yupType() {
         return "string()";
     }
 }

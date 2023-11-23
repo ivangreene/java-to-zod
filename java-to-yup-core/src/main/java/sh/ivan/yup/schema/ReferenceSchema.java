@@ -18,7 +18,7 @@ public class ReferenceSchema extends Schema {
     }
 
     @Override
-    public String yupType() {
+    protected String yupType() {
         return reference;
     }
 }

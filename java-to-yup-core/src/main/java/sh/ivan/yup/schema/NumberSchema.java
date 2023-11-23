@@ -15,7 +15,7 @@ public class NumberSchema extends Schema {
     }
 
     @Override
-    public String yupType() {
+    protected String yupType() {
         return "number()";
     }
 }

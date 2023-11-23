@@ -9,6 +9,9 @@
   <artifactId>java-to-yup-maven-plugin-test</artifactId>
   <packaging>jar</packaging>
   <name>java-to-yup-maven-plugin-test</name>
+  <properties>
+    <generated-schema-file>${project.basedir}/js/schemas.js</generated-schema-file>
+  </properties>
   <dependencies>
     <dependency>
       <groupId>jakarta.validation</groupId>
@@ -23,6 +26,7 @@
         <artifactId>java-to-yup-maven-plugin</artifactId>
         <version>${project.version}</version>
         <configuration>
+          <outputFile>${generated-schema-file}</outputFile>
           <jsonLibrary>jackson2</jsonLibrary>
           <classPatterns>
             <classPattern>sh.ivan.pojo.*</classPattern>
@@ -35,6 +39,41 @@
               <goal>generate</goal>
             </goals>
             <phase>process-classes</phase>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>3.1.0</version>
+        <executions>
+          <execution>
+            <id>clean-generated-schema-file</id>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <phase>clean</phase>
+            <configuration>
+              <executable>bash</executable>
+              <arguments>
+                <argument>-c</argument>
+                <argument>rm ${generated-schema-file} || true</argument>
+              </arguments>
+            </configuration>
+          </execution>
+          <execution>
+            <id>run-js-tests</id>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <phase>test</phase>
+            <configuration>
+              <executable>yarn</executable>
+              <workingDirectory>js</workingDirectory>
+              <arguments>
+                <argument>test</argument>
+              </arguments>
+            </configuration>
           </execution>
         </executions>
       </plugin>

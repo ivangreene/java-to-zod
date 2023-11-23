@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -38,13 +39,13 @@ public class GenerateYupSchemasMojo extends AbstractMojo {
      * Path and name of generated file.
      */
     @Parameter
-    private File outputFile;
+    public File outputFile;
 
     /**
      * Classes to process.
      */
     @Parameter
-    private List<String> classes;
+    public List<String> classes;
 
     /**
      * Classes to process specified using glob patterns
@@ -57,25 +58,25 @@ public class GenerateYupSchemasMojo extends AbstractMojo {
      * For more information and examples see <a href="https://github.com/vojtechhabarta/typescript-generator/wiki/Class-Names-Glob-Patterns">Class Names Glob Patterns</a> Wiki page.
      */
     @Parameter
-    private List<String> classPatterns;
+    public List<String> classPatterns;
 
     /**
      * Classes to process specified by annotations.
      */
     @Parameter
-    private List<String> classesWithAnnotations;
+    public List<String> classesWithAnnotations;
 
     /**
      * Classes to process specified by implemented interface.
      */
     @Parameter
-    private List<String> classesImplementingInterfaces;
+    public List<String> classesImplementingInterfaces;
 
     /**
      * Classes to process specified by extended superclasses.
      */
     @Parameter
-    private List<String> classesExtendingClasses;
+    public List<String> classesExtendingClasses;
 
     /**
      * Scans specified JAX-RS {@link javax.ws.rs.core.Application} for classes to process.
@@ -83,14 +84,14 @@ public class GenerateYupSchemasMojo extends AbstractMojo {
      * It is possible to exclude particular REST resource classes using {@link #excludeClasses} parameter.
      */
     @Parameter
-    private String classesFromJaxrsApplication;
+    public String classesFromJaxrsApplication;
 
     /**
      * Scans JAX-RS resources for JSON classes to process.
      * It is possible to exclude particular REST resource classes using {@link #excludeClasses} parameter.
      */
     @Parameter
-    private boolean classesFromAutomaticJaxrsApplication;
+    public boolean classesFromAutomaticJaxrsApplication;
 
     /**
      * Allows to speed up classpath scanning by limiting scanning to specified packages.
@@ -105,32 +106,32 @@ public class GenerateYupSchemasMojo extends AbstractMojo {
      * This parameter is passed directly to underlying classpath scanning library (ClassGraph) without any validation or interpretation.
      */
     @Parameter
-    private List<String> scanningAcceptedPackages;
+    public List<String> scanningAcceptedPackages;
 
     /**
      * List of classes excluded from processing.
      */
     @Parameter
-    private List<String> excludeClasses;
+    public List<String> excludeClasses;
 
     /**
      * Excluded classes specified using glob patterns.
      * For more information and examples see <a href="https://github.com/vojtechhabarta/typescript-generator/wiki/Class-Names-Glob-Patterns">Class Names Glob Patterns</a> Wiki page.
      */
     @Parameter
-    private List<String> excludeClassPatterns;
+    public List<String> excludeClassPatterns;
 
     /**
      * If this list is not empty then only properties with any of these annotations will be included.
      */
     @Parameter
-    private List<String> includePropertyAnnotations;
+    public List<String> includePropertyAnnotations;
 
     /**
      * Properties with any of these annotations will be excluded.
      */
     @Parameter
-    private List<String> excludePropertyAnnotations;
+    public List<String> excludePropertyAnnotations;
 
     /**
      * Library used in JSON classes.
@@ -144,7 +145,7 @@ public class GenerateYupSchemasMojo extends AbstractMojo {
      * Required parameter, recommended value is <code>jackson2</code>.
      */
     @Parameter(required = true)
-    private JsonLibrary jsonLibrary;
+    public JsonLibrary jsonLibrary;
 
     /**
      * Specifies Jackson 2 global configuration.
@@ -153,7 +154,7 @@ public class GenerateYupSchemasMojo extends AbstractMojo {
      * class on GitHub (latest version).
      */
     @Parameter
-    private Jackson2Configuration jackson2Configuration;
+    public Jackson2Configuration jackson2Configuration;
 
     /**
      * Specifies Gson global configuration.
@@ -162,7 +163,7 @@ public class GenerateYupSchemasMojo extends AbstractMojo {
      * class on GitHub (latest version).
      */
     @Parameter
-    private GsonConfiguration gsonConfiguration;
+    public GsonConfiguration gsonConfiguration;
 
     /**
      * Specifies JSON-B global configuration.
@@ -171,14 +172,14 @@ public class GenerateYupSchemasMojo extends AbstractMojo {
      * class on GitHub (latest version).
      */
     @Parameter
-    private JsonbConfiguration jsonbConfiguration;
+    public JsonbConfiguration jsonbConfiguration;
 
     /**
      * If <code>true</code> Spring REST application will be loaded and scanned for classes to process.
      * It is needed to specify application class using another parameter (for example {@link #classes}).
      */
     @Parameter
-    private boolean scanSpringApplication;
+    public boolean scanSpringApplication;
 
     /**
      * Specifies level of logging output.
@@ -193,19 +194,19 @@ public class GenerateYupSchemasMojo extends AbstractMojo {
      * Default value is <code>Verbose</code>.
      */
     @Parameter
-    private Logger.Level loggingLevel;
+    public Logger.Level loggingLevel;
 
     @Parameter(property = "java.to.yup.skip")
-    private boolean skip;
+    public boolean skip;
 
     @Parameter(defaultValue = "${project}", readonly = true, required = true)
-    private MavenProject project;
+    public MavenProject project;
 
     @Parameter(defaultValue = "${project.build.directory}", readonly = true, required = true)
-    private String projectBuildDirectory;
+    public String projectBuildDirectory;
 
     private Settings createSettings(URLClassLoader classLoader) {
-        final Settings settings = new Settings();
+        Settings settings = new Settings();
         settings.setExcludeFilter(excludeClasses, excludeClassPatterns);
         settings.jsonLibrary = jsonLibrary;
         settings.setJackson2Configuration(classLoader, jackson2Configuration);
@@ -221,7 +222,7 @@ public class GenerateYupSchemasMojo extends AbstractMojo {
     }
 
     @Override
-    public void execute() {
+    public void execute() throws MojoExecutionException {
         TypeScriptGenerator.setLogger(new Logger(loggingLevel));
         TypeScriptGenerator.printVersion();
         if (skip) {
@@ -230,13 +231,13 @@ public class GenerateYupSchemasMojo extends AbstractMojo {
         }
 
         // class loader
-        final List<URL> urls = new ArrayList<>();
+        List<URL> urls = new ArrayList<>();
         try {
             for (String element : project.getCompileClasspathElements()) {
                 urls.add(new File(element).toURI().toURL());
             }
         } catch (DependencyResolutionRequiredException | IOException e) {
-            throw new RuntimeException(e);
+            throw new MojoExecutionException(e);
         }
 
         try (URLClassLoader classLoader = Settings.createClassLoader(
@@ -244,9 +245,9 @@ public class GenerateYupSchemasMojo extends AbstractMojo {
                 urls.toArray(new URL[0]),
                 Thread.currentThread().getContextClassLoader())) {
 
-            final Settings settings = createSettings(classLoader);
+            Settings settings = createSettings(classLoader);
 
-            final Input.Parameters parameters = new Input.Parameters();
+            Input.Parameters parameters = new Input.Parameters();
             parameters.classNames = classes;
             parameters.classNamePatterns = classPatterns;
             parameters.classesWithAnnotations = classesWithAnnotations;
@@ -259,12 +260,9 @@ public class GenerateYupSchemasMojo extends AbstractMojo {
             parameters.scanningAcceptedPackages = scanningAcceptedPackages;
             parameters.debug = loggingLevel == Logger.Level.Debug;
 
-            final File output = outputFile != null
+            File output = outputFile != null
                     ? outputFile
-                    : new File(
-                            new File(projectBuildDirectory, "java-to-yup"),
-                            project.getArtifactId() + settings.getExtension());
-            //            settings.validateFileName(output);
+                    : new File(new File(projectBuildDirectory, "java-to-yup"), project.getArtifactId() + ".js");
 
             var input = Input.from(parameters);
             var typeScriptGenerator = new TypeScriptGenerator(settings);
@@ -275,7 +273,7 @@ public class GenerateYupSchemasMojo extends AbstractMojo {
             schemaFileWriter.write();
 
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new MojoExecutionException(e);
         }
     }
 }

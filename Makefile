@@ -9,3 +9,7 @@ format:
 .PHONY: test
 test:
 	mvn clean test
+
+.PHONY: clean
+clean:
+	mvn clean

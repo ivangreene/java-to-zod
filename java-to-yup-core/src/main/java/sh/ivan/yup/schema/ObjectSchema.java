@@ -21,13 +21,16 @@ public class ObjectSchema extends Schema {
 
     @Override
     protected String yupType(String prefix) {
-        var stringBuilder = new StringBuilder(prefix).append("object({ ");
+        // TODO: Actually implement formatting
+        var stringBuilder = new StringBuilder(prefix).append("object({").append(prefix.isEmpty() ? " " : "");
         fields.forEach((name, schema) -> stringBuilder
+                .append(prefix.isEmpty() ? "" : "\n  ")
                 .append(name)
                 .append(": ")
                 .append(schema.asYupSchema(prefix))
-                .append(", "));
-        return stringBuilder.append("})").toString();
+                .append(",")
+                .append(prefix.isEmpty() ? " " : ""));
+        return stringBuilder.append(prefix.isEmpty() ? "" : "\n").append("})").toString();
     }
 
     @Override

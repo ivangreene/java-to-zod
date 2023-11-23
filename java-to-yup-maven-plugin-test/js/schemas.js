@@ -11,6 +11,6 @@ exports.NumberHolderSchema = yup.object({
 
 exports.PersonSchema = yup.object({
   id: yup.string().nullable().uuid(),
-  firstName: yup.string().matches(/[^\s]/),
-  lastName: yup.string().matches(/[^\s]/),
+  firstName: yup.string().matches(/\S/),
+  lastName: yup.string().matches(/\S/),
 });

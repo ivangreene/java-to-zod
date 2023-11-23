@@ -26,7 +26,7 @@ class StringAttributesTest extends JavaToYupConverterTest {
         assertThatField("notBlank")
                 .isEqualTo(new StringSchema(Set.of(new NotBlankAttribute())))
                 .extracting(Schema::asYupSchema)
-                .isEqualTo("string().matches(/[^\\s]/)");
+                .isEqualTo("string().matches(/\\S/)");
     }
 
     @Test

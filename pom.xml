@@ -10,6 +10,7 @@
   <modules>
     <module>java-to-yup-core</module>
     <module>java-to-yup-maven-plugin</module>
+    <module>java-to-yup-maven-plugin-test</module>
   </modules>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

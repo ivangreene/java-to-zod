@@ -6,9 +6,10 @@ import cz.habarta.typescript.generator.Jackson2Configuration;
 import cz.habarta.typescript.generator.JsonLibrary;
 import cz.habarta.typescript.generator.JsonbConfiguration;
 import cz.habarta.typescript.generator.Logger;
-import cz.habarta.typescript.generator.Output;
 import cz.habarta.typescript.generator.Settings;
+import cz.habarta.typescript.generator.TypeScriptFileType;
 import cz.habarta.typescript.generator.TypeScriptGenerator;
+import cz.habarta.typescript.generator.TypeScriptOutputKind;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -24,8 +25,7 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 
 /**
- * Generates TypeScript declaration file from specified java classes.
- * For more information see README and Wiki on GitHub.
+ * Generates Yup schemas from specified java classes.
  */
 @Mojo(
         name = "generate",
@@ -35,7 +35,7 @@ import org.apache.maven.project.MavenProject;
 public class GenerateYupSchemasMojo extends AbstractMojo {
 
     /**
-     * Path and name of generated TypeScript file.
+     * Path and name of generated file.
      */
     @Parameter
     private File outputFile;
@@ -181,18 +181,6 @@ public class GenerateYupSchemasMojo extends AbstractMojo {
     private boolean scanSpringApplication;
 
     /**
-     * Turns on Jackson2 automatic module discovery.
-     */
-    @Parameter
-    private boolean jackson2ModuleDiscovery;
-
-    /**
-     * Specifies Jackson2 modules to use.
-     */
-    @Parameter
-    private List<String> jackson2Modules;
-
-    /**
      * Specifies level of logging output.
      * Supported values are:
      * <ul>
@@ -226,9 +214,9 @@ public class GenerateYupSchemasMojo extends AbstractMojo {
         settings.scanSpringApplication = scanSpringApplication;
         settings.loadIncludePropertyAnnotations(classLoader, includePropertyAnnotations);
         settings.loadExcludePropertyAnnotations(classLoader, excludePropertyAnnotations);
-        settings.jackson2ModuleDiscovery = jackson2ModuleDiscovery;
-        settings.loadJackson2Modules(classLoader, jackson2Modules);
         settings.classLoader = classLoader;
+        settings.outputKind = TypeScriptOutputKind.global; // Unused, but required by settings validation
+        settings.outputFileType = TypeScriptFileType.implementationFile;
         return settings;
     }
 
@@ -274,11 +262,16 @@ public class GenerateYupSchemasMojo extends AbstractMojo {
             final File output = outputFile != null
                     ? outputFile
                     : new File(
-                            new File(projectBuildDirectory, "typescript-generator"),
+                            new File(projectBuildDirectory, "java-to-yup"),
                             project.getArtifactId() + settings.getExtension());
             settings.validateFileName(output);
 
-            new TypeScriptGenerator(settings).generateTypeScript(Input.from(parameters), Output.to(output));
+            var input = Input.from(parameters);
+            var typeScriptGenerator = new TypeScriptGenerator(settings);
+            var model = typeScriptGenerator.getModelParser().parseModel(input.getSourceTypes());
+            var javaToYupConverter = new JavaToYupConverter(typeScriptGenerator.getModelParser());
+            var beanSchemas = javaToYupConverter.getBeanSchemas(model);
+            System.out.println(beanSchemas);
 
         } catch (IOException e) {
             throw new RuntimeException(e);

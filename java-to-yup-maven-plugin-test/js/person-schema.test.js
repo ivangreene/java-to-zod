@@ -17,6 +17,25 @@ describe('PersonSchema', () => {
         expect(firstName.isValidSync(' \t\r\n')).toBe(false);
     });
 
+    test('should support NotEmpty String', () => {
+        const lastName = PersonSchema.fields.lastName;
+        expect(lastName.isValidSync('Foo')).toBe(true);
+        expect(lastName.isValidSync(' \t\r\n')).toBe(true);
+        expect(lastName.isValidSync(' ')).toBe(true);
+        expect(lastName.isValidSync('\t')).toBe(true);
+        expect(lastName.isValidSync('\n')).toBe(true);
+        expect(lastName.isValidSync(null)).toBe(false);
+        expect(lastName.isValidSync('')).toBe(false);
+    });
+
+    test('should support NotNull String', () => {
+        const job = PersonSchema.fields.job;
+        expect(job.isValidSync('Foo')).toBe(true);
+        expect(job.isValidSync('')).toBe(true);
+        expect(job.isValidSync(' ')).toBe(true);
+        expect(job.isValidSync(null)).toBe(false);
+    });
+
     test('should validate a valid person', () => {
         expect(PersonSchema.isValidSync({
             id: '389ba84f-0c10-41f6-9df5-86faf0ccae11', firstName: 'John', lastName: 'Doe'

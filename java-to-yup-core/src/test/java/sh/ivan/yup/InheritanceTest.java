@@ -15,8 +15,7 @@ import sh.ivan.yup.schema.StringSchema;
 import sh.ivan.yup.schema.attribute.RequiredAttribute;
 import sh.ivan.yup.schema.attribute.SizeAttribute;
 
-class InheritanceTest {
-    JavaToYupConverter converter = new JavaToYupConverter();
+class InheritanceTest extends JavaToYupConverterTest {
 
     @Test
     void shouldHandleBasicAttributeInheritance() {

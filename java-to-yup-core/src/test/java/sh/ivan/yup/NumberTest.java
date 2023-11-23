@@ -6,8 +6,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import org.junit.jupiter.api.Test;
 
-class NumberTest {
-    JavaToYupConverter converter = new JavaToYupConverter();
+class NumberTest extends JavaToYupConverterTest {
 
     @Test
     void testFloat() {

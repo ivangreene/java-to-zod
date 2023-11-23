@@ -7,8 +7,7 @@ import jakarta.validation.constraints.AssertTrue;
 import org.junit.jupiter.api.Test;
 import sh.ivan.yup.schema.ObjectSchema;
 
-class BooleanTest {
-    JavaToYupConverter converter = new JavaToYupConverter();
+class BooleanTest extends JavaToYupConverterTest {
 
     @Test
     void booleanShouldBeBoolean() {

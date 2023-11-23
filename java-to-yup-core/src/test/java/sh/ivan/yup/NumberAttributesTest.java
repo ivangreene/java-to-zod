@@ -23,8 +23,7 @@ import sh.ivan.yup.schema.attribute.NegativeAttribute;
 import sh.ivan.yup.schema.attribute.NullableAttribute;
 import sh.ivan.yup.schema.attribute.PositiveAttribute;
 
-class NumberAttributesTest {
-    JavaToYupConverter converter = new JavaToYupConverter();
+class NumberAttributesTest extends JavaToYupConverterTest {
 
     @Test
     void shouldSupportMax() {

@@ -19,8 +19,7 @@ import sh.ivan.yup.schema.attribute.RequiredAttribute;
 import sh.ivan.yup.schema.attribute.SizeAttribute;
 import sh.ivan.yup.schema.attribute.UuidAttribute;
 
-class StringAttributesTest {
-    JavaToYupConverter converter = new JavaToYupConverter();
+class StringAttributesTest extends JavaToYupConverterTest {
 
     @Test
     void shouldSupportNotBlank() {

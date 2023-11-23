@@ -14,8 +14,7 @@ import sh.ivan.yup.schema.StringSchema;
 import sh.ivan.yup.schema.attribute.RequiredAttribute;
 import sh.ivan.yup.schema.attribute.SizeAttribute;
 
-public class Jackson2Test {
-    JavaToYupConverter converter = new JavaToYupConverter();
+class Jackson2Test extends JavaToYupConverterTest {
 
     @Test
     void shouldUseJsonPropertyNameAndStillGetAnnotationsFromField() {

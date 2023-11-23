@@ -8,8 +8,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import sh.ivan.yup.schema.ObjectSchema;
 
-class ArrayTest {
-    JavaToYupConverter converter = new JavaToYupConverter();
+class ArrayTest extends JavaToYupConverterTest {
 
     @Test
     void shouldHandleListProperty() {

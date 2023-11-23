@@ -1,5 +1,7 @@
 package sh.ivan.yup;
 
+import cz.habarta.typescript.generator.parser.BeanModel;
+import cz.habarta.typescript.generator.parser.Model;
 import cz.habarta.typescript.generator.parser.ModelParser;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -20,15 +22,24 @@ public class ObjectSchemaBuilder {
         this.modelParser = modelParser;
     }
 
-    public ObjectSchema build(Class<?> clazz, Set<Attribute> attributes) {
-        return new ObjectSchema(getFields(clazz), attributes);
+    public Map<String, ObjectSchema> buildBeanSchemas(Model model) {
+        var schemas = new LinkedHashMap<String, ObjectSchema>();
+        model.getBeans().forEach(beanModel -> schemas.put(beanModel.getOrigin().getName(), build(beanModel, Set.of())));
+        return schemas;
     }
 
-    private Map<String, Schema> getFields(Class<?> clazz) {
-        var model = modelParser.parseModel(clazz);
-        var bean = model.getBean(clazz);
+    public ObjectSchema build(Class<?> clazz, Set<Attribute> attributes) {
+        return build(modelParser.parseModel(clazz).getBean(clazz), attributes);
+    }
+
+    private ObjectSchema build(BeanModel beanModel, Set<Attribute> attributes) {
+        return new ObjectSchema(getFields(beanModel), attributes);
+    }
+
+    private Map<String, Schema> getFields(BeanModel beanModel) {
+        var clazz = beanModel.getOrigin();
         var fields = new LinkedHashMap<String, Schema>();
-        bean.getProperties().forEach(propertyModel -> {
+        beanModel.getProperties().forEach(propertyModel -> {
             var propertyDescriptor = new PropertyDescriptor(clazz, propertyModel);
             fields.put(
                     propertyModel.getName(),

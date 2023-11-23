@@ -1,14 +1,14 @@
 package sh.ivan.yup;
 
 import com.google.common.collect.Sets;
-import cz.habarta.typescript.generator.DefaultTypeProcessor;
-import cz.habarta.typescript.generator.Settings;
-import cz.habarta.typescript.generator.parser.Jackson2Parser;
+import cz.habarta.typescript.generator.parser.Model;
+import cz.habarta.typescript.generator.parser.ModelParser;
 import cz.habarta.typescript.generator.type.JGenericArrayType;
 import cz.habarta.typescript.generator.type.JParameterizedType;
 import java.lang.reflect.Type;
 import java.math.BigInteger;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import sh.ivan.yup.schema.ArraySchema;
@@ -41,11 +41,14 @@ public class JavaToYupConverter {
     private final ObjectSchemaBuilder objectSchemaBuilder;
     private final ArraySchemaBuilder arraySchemaBuilder;
 
-    public JavaToYupConverter() {
+    public JavaToYupConverter(ModelParser modelParser) {
         var attributeProcessor = new AttributeProcessor(this);
-        objectSchemaBuilder = new ObjectSchemaBuilder(
-                this, attributeProcessor, new Jackson2Parser(new Settings(), new DefaultTypeProcessor()));
+        objectSchemaBuilder = new ObjectSchemaBuilder(this, attributeProcessor, modelParser);
         arraySchemaBuilder = new ArraySchemaBuilder(this, attributeProcessor);
+    }
+
+    public Map<String, ObjectSchema> getBeanSchemas(Model model) {
+        return objectSchemaBuilder.buildBeanSchemas(model);
     }
 
     public Schema buildSchema(Class<?> clazz) {

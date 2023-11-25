@@ -8,6 +8,14 @@ const AddressSchema = yup.object({
 });
 exports.AddressSchema = AddressSchema;
 
+const BooleanHolderSchema = yup.object({
+  mustBeTrue: yup.boolean().nullable().isTrue(),
+  mustBeFalse: yup.boolean().isFalse(),
+  boxed: yup.boolean().nullable(),
+  primitive: yup.boolean(),
+});
+exports.BooleanHolderSchema = BooleanHolderSchema;
+
 const NumberHolderSchema = yup.object({
   maxed: yup.number().nullable().integer().max(300),
   minned: yup.number().integer().min(100),

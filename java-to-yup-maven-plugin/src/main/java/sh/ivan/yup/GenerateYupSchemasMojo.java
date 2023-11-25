@@ -42,6 +42,18 @@ public class GenerateYupSchemasMojo extends AbstractMojo {
     public File outputFile;
 
     /**
+     * Prefix added to generated schema names.
+     */
+    @Parameter
+    public String schemaNamePrefix = "";
+
+    /**
+     * Suffix added to generated schema names.
+     */
+    @Parameter(defaultValue = "Schema")
+    public String schemaNameSuffix;
+
+    /**
      * Classes to process.
      */
     @Parameter
@@ -267,7 +279,11 @@ public class GenerateYupSchemasMojo extends AbstractMojo {
             var input = Input.from(parameters);
             var typeScriptGenerator = new TypeScriptGenerator(settings);
             var model = typeScriptGenerator.getModelParser().parseModel(input.getSourceTypes());
-            var javaToYupConverter = new JavaToYupConverter(typeScriptGenerator.getModelParser());
+            var configuration = Configuration.builder()
+                    .schemaNamePrefix(schemaNamePrefix)
+                    .schemaNameSuffix(schemaNameSuffix)
+                    .build();
+            var javaToYupConverter = new JavaToYupConverter(typeScriptGenerator.getModelParser(), configuration);
             var beanSchemas = javaToYupConverter.getBeanSchemas(model);
             var schemaFileWriter = new SchemaFileWriter(beanSchemas, output);
             schemaFileWriter.write();

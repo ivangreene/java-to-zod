@@ -21,4 +21,9 @@ public class ReferenceSchema extends Schema {
     protected String yupType() {
         return reference;
     }
+
+    @Override
+    protected String yupType(String prefix) {
+        return yupType();
+    }
 }

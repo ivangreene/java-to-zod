@@ -1,6 +1,14 @@
 const yup = require('yup');
 
-exports.NumberHolderSchema = yup.object({
+const AddressSchema = yup.object({
+  street: yup.string().nullable(),
+  city: yup.string().nullable(),
+  country: yup.string().nullable(),
+  postalCode: yup.string().nullable(),
+});
+exports.AddressSchema = AddressSchema;
+
+const NumberHolderSchema = yup.object({
   maxed: yup.number().nullable().integer().max(300),
   minned: yup.number().integer().min(100),
   negative: yup.number().nullable().integer().negative(),
@@ -8,10 +16,13 @@ exports.NumberHolderSchema = yup.object({
   negativeOrZero: yup.number().nullable().max(0),
   positiveOrZero: yup.number().min(0),
 });
+exports.NumberHolderSchema = NumberHolderSchema;
 
-exports.PersonSchema = yup.object({
+const PersonSchema = yup.object({
   id: yup.string().nullable().uuid(),
   firstName: yup.string().matches(/\S/),
   lastName: yup.string().required(),
   job: yup.string(),
+  address: AddressSchema,
 });
+exports.PersonSchema = PersonSchema;

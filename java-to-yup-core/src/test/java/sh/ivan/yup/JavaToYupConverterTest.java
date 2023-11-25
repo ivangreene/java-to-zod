@@ -5,6 +5,7 @@ import cz.habarta.typescript.generator.Settings;
 import cz.habarta.typescript.generator.parser.Jackson2Parser;
 
 abstract class JavaToYupConverterTest {
-    JavaToYupConverter converter =
-            new JavaToYupConverter(new Jackson2Parser(new Settings(), new DefaultTypeProcessor()));
+    JavaToYupConverter converter = new JavaToYupConverter(
+            new Jackson2Parser(new Settings(), new DefaultTypeProcessor()),
+            Configuration.builder().schemaNamePrefix("").schemaNameSuffix("").build());
 }

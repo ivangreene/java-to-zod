@@ -41,10 +41,13 @@ public class JavaToYupConverter {
     private final ObjectSchemaBuilder objectSchemaBuilder;
     private final ArraySchemaBuilder arraySchemaBuilder;
 
-    public JavaToYupConverter(ModelParser modelParser) {
+    private final Configuration configuration;
+
+    public JavaToYupConverter(ModelParser modelParser, Configuration configuration) {
         var attributeProcessor = new AttributeProcessor(this);
         objectSchemaBuilder = new ObjectSchemaBuilder(this, attributeProcessor, modelParser);
         arraySchemaBuilder = new ArraySchemaBuilder(this, attributeProcessor);
+        this.configuration = configuration;
     }
 
     public Map<String, ObjectSchema> getBeanSchemas(Model model) {
@@ -113,7 +116,7 @@ public class JavaToYupConverter {
                 getSchemaClass(propertyDescriptor.getPropertyModel().getType());
         if (ObjectSchema.class == schemaClass) {
             return new ReferenceSchema(
-                    getTypeName(propertyDescriptor.getPropertyModel().getType()), attributes);
+                    getSchemaName(propertyDescriptor.getPropertyModel().getType()), attributes);
         }
         if (ArraySchema.class == schemaClass) {
             return arraySchemaBuilder.build(propertyDescriptor, attributes);
@@ -121,9 +124,11 @@ public class JavaToYupConverter {
         return buildSchema(propertyDescriptor.getPropertyModel().getType(), attributes);
     }
 
-    private String getTypeName(Type type) {
+    protected String getSchemaName(Type type) {
         if (type instanceof Class<?>) {
-            return ((Class<?>) type).getSimpleName();
+            return configuration.getSchemaNamePrefix()
+                    + ((Class<?>) type).getSimpleName()
+                    + configuration.getSchemaNameSuffix();
         }
         throw new IllegalArgumentException("No name for type " + type);
     }

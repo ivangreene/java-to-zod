@@ -17,6 +17,21 @@ public class SchemaFileWriter {
     }
 
     public void write() throws IOException {
+        ensureDirectoryExists();
+        try (var fileWriter = new FileWriter(outputFile);
+                var printWriter = new PrintWriter(fileWriter)) {
+            printWriter.println("const yup = require('yup');");
+            schemas.forEach((name, schema) -> {
+                printWriter.println();
+                printWriter.printf("const %s = %s;", name, schema.asYupSchema("yup."));
+                printWriter.println();
+                printWriter.printf("exports.%s = %s;", name, name);
+                printWriter.println();
+            });
+        }
+    }
+
+    private void ensureDirectoryExists() throws IOException {
         var directory = outputFile.getParentFile();
         if (!directory.exists()) {
             if (!directory.mkdirs()) {
@@ -24,15 +39,6 @@ public class SchemaFileWriter {
             }
         } else if (!directory.isDirectory()) {
             throw new IOException(directory + " is not a directory");
-        }
-        try (var fileWriter = new FileWriter(outputFile);
-                var printWriter = new PrintWriter(fileWriter)) {
-            printWriter.println("const yup = require('yup');");
-            schemas.forEach((name, schema) -> {
-                printWriter.println();
-                printWriter.printf("exports.%sSchema = %s;", name, schema.asYupSchema("yup."));
-                printWriter.println();
-            });
         }
     }
 }

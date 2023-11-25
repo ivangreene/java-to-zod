@@ -13,6 +13,6 @@ public class EqualsBooleanAttribute implements Attribute {
 
     @Override
     public String yupMethod() {
-        return "equals([" + value + "])";
+        return value ? "isTrue()" : "isFalse()";
     }
 }

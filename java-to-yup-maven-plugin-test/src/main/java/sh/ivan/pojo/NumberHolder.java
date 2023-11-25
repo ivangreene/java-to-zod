@@ -11,7 +11,7 @@ import java.math.BigInteger;
 
 public class NumberHolder {
     @Max(300L)
-    public Integer maxed;
+    public int maxed;
 
     @Min(100L)
     public short minned;

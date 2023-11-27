@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import sh.ivan.yup.schema.ArraySchema;
 import sh.ivan.yup.schema.BooleanSchema;
 import sh.ivan.yup.schema.NumberSchema;
 import sh.ivan.yup.schema.ObjectSchema;
@@ -38,15 +37,16 @@ public class JavaToYupConverter {
             Short.class,
             BigInteger.class);
 
+    private final AttributeProcessor attributeProcessor;
     private final ObjectSchemaBuilder objectSchemaBuilder;
     private final ArraySchemaBuilder arraySchemaBuilder;
 
     private final Configuration configuration;
 
     public JavaToYupConverter(ModelParser modelParser, Configuration configuration) {
-        var attributeProcessor = new AttributeProcessor(this);
-        objectSchemaBuilder = new ObjectSchemaBuilder(this, attributeProcessor, modelParser);
-        arraySchemaBuilder = new ArraySchemaBuilder(this, attributeProcessor);
+        this.attributeProcessor = new AttributeProcessor(this);
+        objectSchemaBuilder = new ObjectSchemaBuilder(this, modelParser);
+        arraySchemaBuilder = new ArraySchemaBuilder(this);
         this.configuration = configuration;
     }
 
@@ -59,6 +59,14 @@ public class JavaToYupConverter {
     }
 
     public Schema buildSchema(Type type, Set<Attribute> attributes) {
+        return buildSchema(type, null, attributes, false);
+    }
+
+    private Schema buildSchema(
+            Type type,
+            PropertyDescriptor propertyDescriptor,
+            Set<Attribute> attributes,
+            boolean useReferenceForObject) {
         if (type == String.class) {
             return new StringSchema(attributes);
         }
@@ -72,7 +80,13 @@ public class JavaToYupConverter {
             return new BooleanSchema(attributes);
         }
         if (isArray(type)) {
-            return arraySchemaBuilder.build(type, attributes);
+            return arraySchemaBuilder.build(propertyDescriptor, attributes);
+        }
+        if (isMap(type)) {
+            return new ObjectSchema(Map.of(), attributes);
+        }
+        if (useReferenceForObject) {
+            return new ReferenceSchema(getSchemaName(type), attributes);
         }
         return objectSchemaBuilder.build((Class<?>) type, attributes);
     }
@@ -89,39 +103,21 @@ public class JavaToYupConverter {
         return new NumberSchema(attributes);
     }
 
-    private Class<? extends Schema> getSchemaClass(Type type) {
-        if (type == String.class || type == UUID.class) {
-            return StringSchema.class;
-        }
-        if (isNumber(type)) {
-            return NumberSchema.class;
-        }
-        if (type == Boolean.class || type == boolean.class) {
-            return BooleanSchema.class;
-        }
-        if (isArray(type)) {
-            return ArraySchema.class;
-        }
-        return ObjectSchema.class;
-    }
-
     public boolean isArray(Type type) {
         return type instanceof Class<?> && ((Class<?>) type).isArray()
                 || type instanceof JParameterizedType && ((JParameterizedType) type).getRawType() == List.class
-                || type instanceof JGenericArrayType;
+                || type instanceof JGenericArrayType
+                || type instanceof PropertyDescriptor && isArray(((PropertyDescriptor) type).getType());
     }
 
-    Schema getPropertySchema(PropertyDescriptor propertyDescriptor, Set<Attribute> attributes) {
-        Class<? extends Schema> schemaClass =
-                getSchemaClass(propertyDescriptor.getPropertyModel().getType());
-        if (ObjectSchema.class == schemaClass) {
-            return new ReferenceSchema(
-                    getSchemaName(propertyDescriptor.getPropertyModel().getType()), attributes);
-        }
-        if (ArraySchema.class == schemaClass) {
-            return arraySchemaBuilder.build(propertyDescriptor, attributes);
-        }
-        return buildSchema(propertyDescriptor.getPropertyModel().getType(), attributes);
+    private boolean isMap(Type type) {
+        return type instanceof JParameterizedType && ((JParameterizedType) type).getRawType() == Map.class;
+    }
+
+    Schema getReferentialSchema(PropertyDescriptor propertyDescriptor) {
+        var attributes = attributeProcessor.getAttributes(
+                propertyDescriptor.getType(), propertyDescriptor.getAnnotatedElements());
+        return buildSchema(propertyDescriptor.getType(), propertyDescriptor, attributes, true);
     }
 
     protected String getSchemaName(Type type) {

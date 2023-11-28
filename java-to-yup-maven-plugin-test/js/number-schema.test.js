@@ -69,4 +69,16 @@ describe('NumberHolderSchema', () => {
         expect(positiveOrZeroPrimitiveFloat.isValidSync(-300)).toBe(false);
         expect(positiveOrZeroPrimitiveFloat.isValidSync(-300.25)).toBe(false);
     });
+
+    test('should support list of negative Integers', () => {
+        const negativeIntegers = NumberHolderSchema.fields.negativeIntegers;
+        expect(negativeIntegers.isValidSync([-1])).toBe(true);
+        expect(negativeIntegers.isValidSync([-1, -2, -3])).toBe(true);
+        expect(negativeIntegers.isValidSync([])).toBe(true);
+        expect(negativeIntegers.isValidSync(null)).toBe(true);
+        expect(negativeIntegers.isValidSync([-1.23])).toBe(false);
+        expect(negativeIntegers.isValidSync([null])).toBe(false);
+        expect(negativeIntegers.isValidSync([1])).toBe(false);
+        expect(negativeIntegers.isValidSync([-1, 1, -3])).toBe(false);
+    });
 });

@@ -15,6 +15,7 @@ const NumberHolderSchema = yup.object({
   positive: yup.number().nullable().integer().positive(),
   negativeOrZero: yup.number().nullable().max(0),
   positiveOrZero: yup.number().defined().min(0),
+  negativeIntegers: yup.array().of(yup.number().defined().integer().negative()).nullable(),
 });
 exports.NumberHolderSchema = NumberHolderSchema;
 

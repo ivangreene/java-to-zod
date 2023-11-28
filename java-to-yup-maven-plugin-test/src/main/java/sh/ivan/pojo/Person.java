@@ -19,4 +19,6 @@ public class Person {
 
     @NotNull
     public Address address;
+
+    public Person child;
 }

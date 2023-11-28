@@ -19,6 +19,12 @@ public class ReferenceSchema extends Schema {
 
     @Override
     protected String yupType() {
-        return "lazy(() => " + reference + ".default(undefined))";
+        throw new UnsupportedOperationException("Implements asYupSchema(String prefix) directly");
+    }
+
+    @Override
+    public String asYupSchema(String prefix) {
+        return prefix + "lazy(() => " + reference + ".default(undefined)" + Attribute.writeAttributes(getAttributes())
+                + ")";
     }
 }

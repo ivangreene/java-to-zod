@@ -67,7 +67,7 @@ class PojoTest extends JavaToYupConverterTest {
         objectSchemaAssert
                 .extracting(ObjectSchema::asYupSchema)
                 .isEqualTo(
-                        "object({ name: string(), age: number().nullable().integer(), address: lazy(() => Address.default(undefined)).nullable(), })");
+                        "object({ name: string(), age: number().nullable().integer(), address: lazy(() => Address.default(undefined).nullable()), })");
     }
 
     static class Person {

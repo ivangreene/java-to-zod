@@ -32,5 +32,6 @@ const PersonSchema = yup.object({
   lastName: yup.string().required(),
   job: yup.string(),
   address: yup.lazy(() => AddressSchema.default(undefined)),
+  child: yup.lazy(() => PersonSchema.default(undefined).nullable()),
 });
 exports.PersonSchema = PersonSchema;

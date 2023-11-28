@@ -35,8 +35,9 @@ class CircularReferenceTest extends JavaToYupConverterTest {
                                         Set.of(new SizeAttribute(1, Integer.MAX_VALUE))),
                                 Set.of()));
         assertThat(schema.asYupSchema())
-                .isEqualTo("object({ name: string(), parent: Person, children: array().of(Person), "
-                        + "listOfListsOfChildren: array().of(array().of(Person).min(1)), })");
+                .isEqualTo(
+                        "object({ name: string(), parent: lazy(() => Person.default(undefined)), children: array().of(lazy(() => Person.default(undefined))), "
+                                + "listOfListsOfChildren: array().of(array().of(lazy(() => Person.default(undefined))).min(1)), })");
     }
 
     static class Person {

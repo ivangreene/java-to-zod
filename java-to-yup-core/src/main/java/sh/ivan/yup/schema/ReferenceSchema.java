@@ -19,11 +19,6 @@ public class ReferenceSchema extends Schema {
 
     @Override
     protected String yupType() {
-        return reference;
-    }
-
-    @Override
-    protected String yupType(String prefix) {
-        return yupType();
+        return "lazy(() => " + reference + ".default(undefined))";
     }
 }

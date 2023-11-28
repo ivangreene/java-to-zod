@@ -82,9 +82,6 @@ public class JavaToYupConverter {
         if (isArray(type)) {
             return arraySchemaBuilder.build(propertyDescriptor, attributes);
         }
-        if (isMap(type)) {
-            return new ObjectSchema(Map.of(), attributes);
-        }
         if (useReferenceForObject) {
             return new ReferenceSchema(getSchemaName(type), attributes);
         }
@@ -106,12 +103,7 @@ public class JavaToYupConverter {
     public boolean isArray(Type type) {
         return type instanceof Class<?> && ((Class<?>) type).isArray()
                 || type instanceof JParameterizedType && ((JParameterizedType) type).getRawType() == List.class
-                || type instanceof JGenericArrayType
-                || type instanceof PropertyDescriptor && isArray(((PropertyDescriptor) type).getType());
-    }
-
-    private boolean isMap(Type type) {
-        return type instanceof JParameterizedType && ((JParameterizedType) type).getRawType() == Map.class;
+                || type instanceof JGenericArrayType;
     }
 
     Schema getReferentialSchema(PropertyDescriptor propertyDescriptor) {

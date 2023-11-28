@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import sh.ivan.yup.schema.ObjectSchema;
 import sh.ivan.yup.schema.Schema;
 import sh.ivan.yup.schema.StringSchema;
+import sh.ivan.yup.schema.attribute.DefinedAttribute;
 import sh.ivan.yup.schema.attribute.NotBlankAttribute;
 import sh.ivan.yup.schema.attribute.NullableAttribute;
 import sh.ivan.yup.schema.attribute.RequiredAttribute;
@@ -24,9 +25,9 @@ class StringAttributesTest extends JavaToYupConverterTest {
     @Test
     void shouldSupportNotBlank() {
         assertThatField("notBlank")
-                .isEqualTo(new StringSchema(Set.of(new NotBlankAttribute())))
+                .isEqualTo(new StringSchema(Set.of(new DefinedAttribute(), new NotBlankAttribute())))
                 .extracting(Schema::asYupSchema)
-                .isEqualTo("string().matches(/\\S/)");
+                .isEqualTo("string().defined().matches(/\\S/)");
     }
 
     @Test
@@ -40,25 +41,25 @@ class StringAttributesTest extends JavaToYupConverterTest {
     @Test
     void shouldSupportSizeMin() {
         assertThatField("min5")
-                .isEqualTo(new StringSchema(Set.of(new SizeAttribute(5, Integer.MAX_VALUE))))
+                .isEqualTo(new StringSchema(Set.of(new DefinedAttribute(), new SizeAttribute(5, Integer.MAX_VALUE))))
                 .extracting(Schema::asYupSchema)
-                .isEqualTo("string().min(5)");
+                .isEqualTo("string().defined().min(5)");
     }
 
     @Test
     void shouldSupportSizeMax() {
         assertThatField("max10")
-                .isEqualTo(new StringSchema(Set.of(new SizeAttribute(0, 10))))
+                .isEqualTo(new StringSchema(Set.of(new DefinedAttribute(), new SizeAttribute(0, 10))))
                 .extracting(Schema::asYupSchema)
-                .isEqualTo("string().max(10)");
+                .isEqualTo("string().defined().max(10)");
     }
 
     @Test
     void shouldSupportSizeMinMaxxing() {
         assertThatField("min5Max10")
-                .isEqualTo(new StringSchema(Set.of(new SizeAttribute(5, 10))))
+                .isEqualTo(new StringSchema(Set.of(new DefinedAttribute(), new SizeAttribute(5, 10))))
                 .extracting(Schema::asYupSchema)
-                .isEqualTo("string().min(5).max(10)");
+                .isEqualTo("string().defined().min(5).max(10)");
     }
 
     @Test

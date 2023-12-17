@@ -19,6 +19,7 @@ import sh.ivan.yup.schema.Schema;
 import sh.ivan.yup.schema.StringSchema;
 import sh.ivan.yup.schema.attribute.Attribute;
 import sh.ivan.yup.schema.attribute.IntegerAttribute;
+import sh.ivan.yup.schema.attribute.OneOfEnumAttribute;
 import sh.ivan.yup.schema.attribute.UuidAttribute;
 
 public class JavaToYupConverter {
@@ -70,6 +71,11 @@ public class JavaToYupConverter {
         if (type == UUID.class) {
             return new StringSchema(Sets.union(attributes, Set.of(new UuidAttribute())));
         }
+        if (isEnum(type)) {
+            @SuppressWarnings("unchecked")
+            var enumClass = (Class<? extends Enum<?>>) type;
+            return new StringSchema(Sets.union(attributes, Set.of(new OneOfEnumAttribute(enumClass))));
+        }
         if (isNumber(type)) {
             return buildNumberSchema((Class<?>) type, attributes);
         }
@@ -88,6 +94,10 @@ public class JavaToYupConverter {
     private boolean isNumber(Type type) {
         return type instanceof Class<?>
                 && (Number.class.isAssignableFrom((Class<?>) type) || PRIMITIVE_NUMBER_TYPES.contains(type));
+    }
+
+    private boolean isEnum(Type type) {
+        return type instanceof Class<?> && ((Class<?>) type).isEnum();
     }
 
     private NumberSchema buildNumberSchema(Class<?> clazz, Set<Attribute> attributes) {

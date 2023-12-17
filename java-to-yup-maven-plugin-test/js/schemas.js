@@ -1,5 +1,10 @@
 const yup = require('yup');
 
+const ApiResponseSchema = yup.object({
+  status: yup.string().nullable().oneOf(['PASSED', 'FAILED', 'UNKNOWN']),
+});
+exports.ApiResponseSchema = ApiResponseSchema;
+
 const BooleanHolderSchema = yup.object({
   mustBeTrue: yup.boolean().nullable().isTrue(),
   mustBeFalse: yup.boolean().defined().isFalse(),

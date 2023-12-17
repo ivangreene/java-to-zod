@@ -23,20 +23,20 @@ public class ArraySchemaBuilder {
         this.converter = converter;
     }
 
-    public Schema build(PropertyDescriptor propertyDescriptor, Set<Attribute> attributes) {
-        var componentPropertyDescriptor = getComponentPropertyDescriptor(propertyDescriptor);
-        return new ArraySchema(converter.getReferentialSchema(componentPropertyDescriptor), attributes);
+    public Schema build(TypeDescriptor typeDescriptor, Set<Attribute> attributes) {
+        var componentTypeDescriptor = getComponentTypeDescriptor(typeDescriptor);
+        return new ArraySchema(converter.getReferentialSchema(componentTypeDescriptor), attributes);
     }
 
-    private PropertyDescriptor getComponentPropertyDescriptor(PropertyDescriptor propertyDescriptor) {
-        var componentType = getComponentType(propertyDescriptor.getType());
-        var componentAnnotatedElements = getComponentAnnotatedElements(propertyDescriptor);
-        return new PropertyDescriptor(componentType, componentAnnotatedElements);
+    private TypeDescriptor getComponentTypeDescriptor(TypeDescriptor typeDescriptor) {
+        var componentType = getComponentType(typeDescriptor.getType());
+        var componentAnnotatedElements = getComponentAnnotatedElements(typeDescriptor);
+        return new TypeDescriptor(componentType, componentAnnotatedElements);
     }
 
-    private Set<AnnotatedElement> getComponentAnnotatedElements(PropertyDescriptor propertyDescriptor) {
+    private Set<AnnotatedElement> getComponentAnnotatedElements(TypeDescriptor typeDescriptor) {
         var annotatedElements = new HashSet<AnnotatedElement>();
-        propertyDescriptor.getAnnotatedElements().forEach(annotatedElement -> {
+        typeDescriptor.getAnnotatedElements().forEach(annotatedElement -> {
             if (annotatedElement instanceof Method) {
                 if (((Method) annotatedElement).getParameterCount() == 0) {
                     var annotatedType = ((Method) annotatedElement).getAnnotatedReturnType();

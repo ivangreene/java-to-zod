@@ -43,8 +43,8 @@ public class ObjectSchemaBuilder {
         var clazz = beanModel.getOrigin();
         var fields = new LinkedHashMap<String, Schema>();
         beanModel.getProperties().forEach(propertyModel -> {
-            var propertyDescriptor = new PropertyDescriptor(clazz, propertyModel);
-            fields.put(propertyModel.getName(), converter.getReferentialSchema(propertyDescriptor));
+            var typeDescriptor = new TypeDescriptor(clazz, propertyModel);
+            fields.put(propertyModel.getName(), converter.getReferentialSchema(typeDescriptor));
         });
         return fields;
     }

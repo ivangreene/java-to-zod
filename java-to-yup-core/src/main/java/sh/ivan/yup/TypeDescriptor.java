@@ -15,11 +15,11 @@ import java.util.stream.Stream;
 import lombok.Data;
 
 @Data
-public class PropertyDescriptor {
+public class TypeDescriptor {
     private final Type type;
     private final Set<AnnotatedElement> annotatedElements;
 
-    public PropertyDescriptor(Class<?> container, PropertyModel propertyModel) {
+    public TypeDescriptor(Class<?> container, PropertyModel propertyModel) {
         this.type = propertyModel.getType();
         var annotatedElements = new HashSet<AnnotatedElement>();
         getField(container, propertyModel).ifPresent(annotatedElements::add);
@@ -27,7 +27,7 @@ public class PropertyDescriptor {
         this.annotatedElements = Set.copyOf(annotatedElements);
     }
 
-    public PropertyDescriptor(Type type, Set<AnnotatedElement> annotatedElements) {
+    public TypeDescriptor(Type type, Set<AnnotatedElement> annotatedElements) {
         this.type = type;
         this.annotatedElements = annotatedElements;
     }

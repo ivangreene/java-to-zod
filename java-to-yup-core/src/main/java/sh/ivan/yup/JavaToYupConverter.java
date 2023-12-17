@@ -63,10 +63,7 @@ public class JavaToYupConverter {
     }
 
     private Schema buildSchema(
-            Type type,
-            PropertyDescriptor propertyDescriptor,
-            Set<Attribute> attributes,
-            boolean useReferenceForObject) {
+            Type type, TypeDescriptor typeDescriptor, Set<Attribute> attributes, boolean useReferenceForObject) {
         if (type == String.class) {
             return new StringSchema(attributes);
         }
@@ -80,7 +77,7 @@ public class JavaToYupConverter {
             return new BooleanSchema(attributes);
         }
         if (isArray(type)) {
-            return arraySchemaBuilder.build(propertyDescriptor, attributes);
+            return arraySchemaBuilder.build(typeDescriptor, attributes);
         }
         if (useReferenceForObject) {
             return new ReferenceSchema(getSchemaName(type), attributes);
@@ -106,10 +103,10 @@ public class JavaToYupConverter {
                 || type instanceof JGenericArrayType;
     }
 
-    Schema getReferentialSchema(PropertyDescriptor propertyDescriptor) {
-        var attributes = attributeProcessor.getAttributes(
-                propertyDescriptor.getType(), propertyDescriptor.getAnnotatedElements());
-        return buildSchema(propertyDescriptor.getType(), propertyDescriptor, attributes, true);
+    Schema getReferentialSchema(TypeDescriptor typeDescriptor) {
+        var attributes =
+                attributeProcessor.getAttributes(typeDescriptor.getType(), typeDescriptor.getAnnotatedElements());
+        return buildSchema(typeDescriptor.getType(), typeDescriptor, attributes, true);
     }
 
     protected String getSchemaName(Type type) {

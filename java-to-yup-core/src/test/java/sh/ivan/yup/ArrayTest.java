@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import sh.ivan.yup.schema.ObjectSchema;
@@ -73,5 +74,22 @@ class ArrayTest extends JavaToYupConverterTest {
         @NotNull
         @NotEmpty
         public List<String> books;
+    }
+
+    @Test
+    void shouldHandleTypeAttributesFromComponentType() {
+        var schema = converter.buildSchema(NumberHolder.class);
+        assertThat(schema).isInstanceOf(ObjectSchema.class);
+        var objectSchema = (ObjectSchema) schema;
+        assertThat(objectSchema.getFields()).hasSize(1);
+        var integersSchema = objectSchema.getFields().get("integers");
+        assertThat(integersSchema.asYupSchema())
+                .isEqualTo("array().of(number().nullable().integer().positive()).defined().min(1)");
+    }
+
+    static class NumberHolder {
+        @NotNull
+        @NotEmpty
+        public List<@Positive Integer> integers;
     }
 }

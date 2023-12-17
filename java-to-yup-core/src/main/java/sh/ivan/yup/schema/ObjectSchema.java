@@ -30,7 +30,10 @@ public class ObjectSchema extends Schema {
                 .append(schema.asYupSchema(prefix))
                 .append(",")
                 .append(prefix.isEmpty() ? " " : ""));
-        return stringBuilder.append(prefix.isEmpty() ? "" : "\n").append("})").toString();
+        return stringBuilder
+                .append(!prefix.isEmpty() && !fields.isEmpty() ? "\n" : "")
+                .append("})")
+                .toString();
     }
 
     @Override

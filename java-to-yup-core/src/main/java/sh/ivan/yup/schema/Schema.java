@@ -27,7 +27,7 @@ public abstract class Schema {
         return asYupSchema("");
     }
 
-    public final String asYupSchema(String prefix) {
+    public String asYupSchema(String prefix) {
         return yupType(prefix) + Attribute.writeAttributes(attributes);
     }
 }

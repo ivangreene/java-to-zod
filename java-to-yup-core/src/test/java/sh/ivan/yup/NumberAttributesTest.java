@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import sh.ivan.yup.schema.NumberSchema;
 import sh.ivan.yup.schema.ObjectSchema;
 import sh.ivan.yup.schema.Schema;
+import sh.ivan.yup.schema.attribute.DefinedAttribute;
 import sh.ivan.yup.schema.attribute.IntegerAttribute;
 import sh.ivan.yup.schema.attribute.MaxAttribute;
 import sh.ivan.yup.schema.attribute.MinAttribute;
@@ -37,9 +38,10 @@ class NumberAttributesTest extends JavaToYupConverterTest {
     @Test
     void shouldSupportMin() {
         assertThatField("minned")
-                .isEqualTo(new NumberSchema(Set.of(new IntegerAttribute(), new MinAttribute(100L))))
+                .isEqualTo(new NumberSchema(
+                        Set.of(new DefinedAttribute(), new IntegerAttribute(), new MinAttribute(100L))))
                 .extracting(Schema::asYupSchema)
-                .isEqualTo("number().integer().min(100)");
+                .isEqualTo("number().defined().integer().min(100)");
     }
 
     @Test
@@ -71,9 +73,9 @@ class NumberAttributesTest extends JavaToYupConverterTest {
     @Test
     void shouldSupportPositiveOrZero() {
         assertThatField("positiveOrZero")
-                .isEqualTo(new NumberSchema(Set.of(new PositiveAttribute(true))))
+                .isEqualTo(new NumberSchema(Set.of(new DefinedAttribute(), new PositiveAttribute(true))))
                 .extracting(Schema::asYupSchema)
-                .isEqualTo("number().min(0)");
+                .isEqualTo("number().defined().min(0)");
     }
 
     static class NumberHolder {

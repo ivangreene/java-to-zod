@@ -17,8 +17,5 @@ public class Person {
     @NotNull
     public String job;
 
-    @NotNull
-    public Address address;
-
     public Person child;
 }

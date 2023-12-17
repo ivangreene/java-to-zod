@@ -17,7 +17,7 @@ class ArrayTest extends JavaToYupConverterTest {
         var objectSchema = (ObjectSchema) schema;
         assertThat(objectSchema.getFields()).hasSize(1);
         var booksSchema = objectSchema.getFields().get("books");
-        assertThat(booksSchema.asYupSchema()).isEqualTo("array().of(string().required())");
+        assertThat(booksSchema.asYupSchema()).isEqualTo("array().of(string().required()).defined()");
     }
 
     static class Author {
@@ -32,7 +32,7 @@ class ArrayTest extends JavaToYupConverterTest {
         var objectSchema = (ObjectSchema) schema;
         assertThat(objectSchema.getFields()).hasSize(1);
         var booksSchema = objectSchema.getFields().get("books");
-        assertThat(booksSchema.asYupSchema()).isEqualTo("array().of(string().required())");
+        assertThat(booksSchema.asYupSchema()).isEqualTo("array().of(string().required()).defined()");
     }
 
     static class GetterAuthor {
@@ -51,7 +51,7 @@ class ArrayTest extends JavaToYupConverterTest {
         var objectSchema = (ObjectSchema) schema;
         assertThat(objectSchema.getFields()).hasSize(1);
         var booksSchema = objectSchema.getFields().get("notes");
-        assertThat(booksSchema.asYupSchema()).isEqualTo("array().of(string().nullable())");
+        assertThat(booksSchema.asYupSchema()).isEqualTo("array().of(string().nullable()).defined()");
     }
 
     static class NotePad {
@@ -66,7 +66,7 @@ class ArrayTest extends JavaToYupConverterTest {
         var objectSchema = (ObjectSchema) schema;
         assertThat(objectSchema.getFields()).hasSize(1);
         var booksSchema = objectSchema.getFields().get("books");
-        assertThat(booksSchema.asYupSchema()).isEqualTo("array().of(string().nullable()).min(1)");
+        assertThat(booksSchema.asYupSchema()).isEqualTo("array().of(string().nullable()).defined().min(1)");
     }
 
     static class PublishedAuthor {

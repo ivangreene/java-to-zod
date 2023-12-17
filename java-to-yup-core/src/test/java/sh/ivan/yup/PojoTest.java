@@ -14,6 +14,7 @@ import sh.ivan.yup.schema.ObjectSchema;
 import sh.ivan.yup.schema.ReferenceSchema;
 import sh.ivan.yup.schema.Schema;
 import sh.ivan.yup.schema.StringSchema;
+import sh.ivan.yup.schema.attribute.DefinedAttribute;
 import sh.ivan.yup.schema.attribute.IntegerAttribute;
 import sh.ivan.yup.schema.attribute.NullableAttribute;
 import sh.ivan.yup.schema.attribute.RequiredAttribute;
@@ -29,14 +30,14 @@ class PojoTest extends JavaToYupConverterTest {
                 .extracting(ObjectSchema::getFields)
                 .asInstanceOf(InstanceOfAssertFactories.map(String.class, Schema.class))
                 .hasSize(4)
-                .containsEntry("street", new StringSchema(Set.of()))
+                .containsEntry("street", new StringSchema(Set.of(new DefinedAttribute())))
                 .containsEntry("streetTwo", new StringSchema(Set.of(new NullableAttribute())))
-                .containsEntry("city", new StringSchema(Set.of()))
-                .containsEntry("country", new StringSchema(Set.of()));
+                .containsEntry("city", new StringSchema(Set.of(new DefinedAttribute())))
+                .containsEntry("country", new StringSchema(Set.of(new DefinedAttribute())));
         objectSchemaAssert
                 .extracting(ObjectSchema::asYupSchema)
                 .isEqualTo(
-                        "object({ street: string(), streetTwo: string().nullable(), city: string(), country: string(), })");
+                        "object({ street: string().defined(), streetTwo: string().nullable(), city: string().defined(), country: string().defined(), })");
     }
 
     @Data
@@ -61,13 +62,13 @@ class PojoTest extends JavaToYupConverterTest {
                 .extracting(ObjectSchema::getFields)
                 .asInstanceOf(InstanceOfAssertFactories.map(String.class, Schema.class))
                 .hasSize(3)
-                .containsEntry("name", new StringSchema(Set.of()))
+                .containsEntry("name", new StringSchema(Set.of(new DefinedAttribute())))
                 .containsEntry("age", new NumberSchema(Set.of(new NullableAttribute(), new IntegerAttribute())))
                 .containsEntry("address", new ReferenceSchema("Address", Set.of(new NullableAttribute())));
         objectSchemaAssert
                 .extracting(ObjectSchema::asYupSchema)
                 .isEqualTo(
-                        "object({ name: string(), age: number().nullable().integer(), address: lazy(() => Address.default(undefined).nullable()), })");
+                        "object({ name: string().defined(), age: number().nullable().integer(), address: lazy(() => Address.default(undefined).nullable()), })");
     }
 
     static class Person {

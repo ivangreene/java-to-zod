@@ -23,7 +23,7 @@ class BooleanTest extends JavaToYupConverterTest {
         var objectSchema = (ObjectSchema) schema;
         assertThat(objectSchema.getFields()).hasSize(1);
         var failedSchema = objectSchema.getFields().get("failed");
-        assertThat(failedSchema.asYupSchema()).isEqualTo("boolean().isFalse()");
+        assertThat(failedSchema.asYupSchema()).isEqualTo("boolean().defined().isFalse()");
     }
 
     static class SucceededResult {
@@ -38,7 +38,7 @@ class BooleanTest extends JavaToYupConverterTest {
         var objectSchema = (ObjectSchema) schema;
         assertThat(objectSchema.getFields()).hasSize(1);
         var failedSchema = objectSchema.getFields().get("failed");
-        assertThat(failedSchema.asYupSchema()).isEqualTo("boolean().isTrue()");
+        assertThat(failedSchema.asYupSchema()).isEqualTo("boolean().defined().isTrue()");
     }
 
     static class FailedResult {

@@ -38,13 +38,22 @@ describe('PersonSchema', () => {
 
     test('should validate a valid person', () => {
         expect(PersonSchema.isValidSync({
-            id: '389ba84f-0c10-41f6-9df5-86faf0ccae11', firstName: 'John', lastName: 'Doe'
+            id: '389ba84f-0c10-41f6-9df5-86faf0ccae11', firstName: 'John', lastName: 'Doe', job: 'Human'
+        })).toBe(true);
+        expect(PersonSchema.isValidSync({
+            firstName: 'John', lastName: 'Doe', job: 'Human'
         })).toBe(true);
     });
 
-    test('should invalidate an invalid person', () => {
+    test('should invalidate on missing NotEmpty/NotBlank/NotNull fields', () => {
         expect(PersonSchema.isValidSync({
-            id: '1000', firstName: ' ', lastName: null
+            firstName: 'John', lastName: 'Doe'
+        })).toBe(false);
+        expect(PersonSchema.isValidSync({
+            lastName: 'Doe', job: 'Human'
+        })).toBe(false);
+        expect(PersonSchema.isValidSync({
+            firstName: 'John', job: 'Human'
         })).toBe(false);
     });
 });

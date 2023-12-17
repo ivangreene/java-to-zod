@@ -31,6 +31,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import sh.ivan.yup.schema.attribute.Attribute;
+import sh.ivan.yup.schema.attribute.DefinedAttribute;
 import sh.ivan.yup.schema.attribute.EqualsBooleanAttribute;
 import sh.ivan.yup.schema.attribute.MaxAttribute;
 import sh.ivan.yup.schema.attribute.MinAttribute;
@@ -84,13 +85,18 @@ public class AttributeProcessor {
     }
 
     public Set<Attribute> getAttributesForAnnotations(Type type, Set<Annotation> annotations) {
-        var attributes = new HashSet<Attribute>();
-        if (!(type instanceof Class<?> && ((Class<?>) type).isPrimitive())
-                && annotations.stream().map(Annotation::annotationType).noneMatch(NOT_NULL_ANNOTATIONS::contains)) {
+        var attributes = new HashSet<>(processAnnotations(type, annotations));
+        if (isNullable(type, annotations)) {
             attributes.add(new NullableAttribute());
+        } else if (!attributes.contains(new RequiredAttribute())) {
+            attributes.add(new DefinedAttribute());
         }
-        attributes.addAll(processAnnotations(type, annotations));
         return Set.copyOf(attributes);
+    }
+
+    private boolean isNullable(Type type, Set<Annotation> annotations) {
+        return !(type instanceof Class<?> && ((Class<?>) type).isPrimitive())
+                && annotations.stream().map(Annotation::annotationType).noneMatch(NOT_NULL_ANNOTATIONS::contains);
     }
 
     private Set<Attribute> processAnnotations(Type type, Set<Annotation> annotations) {

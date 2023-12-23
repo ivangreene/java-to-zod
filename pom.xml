@@ -15,6 +15,7 @@
   <scm>
     <connection>scm:git:git@github.com:ivangreene/java-to-yup.git</connection>
     <developerConnection>scm:git:git@github.com:ivangreene/java-to-yup.git</developerConnection>
+    <tag>HEAD</tag>
     <url>https://github.com/ivangreene/java-to-yup</url>
   </scm>
   <distributionManagement>

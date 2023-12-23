@@ -8,9 +8,7 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v3
     - name: Set up JDK 17
@@ -23,7 +21,7 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: '20.x'
-    - name: Install dependencies
+    - name: Install yarn dependencies
       run: yarn --frozen-lockfile --cwd java-to-yup-maven-plugin-test/js
     - name: Build with Maven
       run: ./mvnw -B package

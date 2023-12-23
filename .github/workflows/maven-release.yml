@@ -42,6 +42,8 @@ jobs:
         else
           echo "auto_release=false" >> $GITHUB_ENV
         fi
+    - name: Run spotless check (since we disable it during release)
+      run: ./mvnw spotless:check
     - name: Release With Maven
       run: |
         ./mvnw -B -U \
@@ -54,6 +56,7 @@ jobs:
           -Dgpg.passphrase='${{ secrets.MAVEN_GPG_PASSPHRASE }}' \
           -DreleaseVersion=${{ github.event.inputs.releaseVersion }} \
           -DdevelopmentVersion=${{ github.event.inputs.developmentVersion }} \
+          -Dspotless.check.skip=true \
           deploy
       env:
         MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}

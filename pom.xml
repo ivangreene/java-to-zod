@@ -13,10 +13,10 @@
     <module>java-to-yup-maven-plugin-test</module>
   </modules>
   <scm>
-    <connection>scm:git:git@github.com:ivangreene/java-to-yup.git</connection>
-    <developerConnection>scm:git:git@github.com:ivangreene/java-to-yup.git</developerConnection>
+    <connection>scm:git:${project.scm.url}</connection>
+    <developerConnection>scm:git:${project.scm.url}</developerConnection>
     <tag>HEAD</tag>
-    <url>https://github.com/ivangreene/java-to-yup</url>
+    <url>https://github.com/ivangreene/java-to-yup.git</url>
   </scm>
   <distributionManagement>
     <repository>

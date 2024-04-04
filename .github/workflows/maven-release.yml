@@ -56,6 +56,20 @@ jobs:
         ./mvnw -B -U \
           -Pci-cd \
           release:prepare \
+          -s settings.xml \
+          -Dgpg.passphrase='${{ secrets.MAVEN_GPG_PASSPHRASE }}' \
+          -DreleaseVersion=${{ github.event.inputs.releaseVersion }} \
+          -DdevelopmentVersion=${{ github.event.inputs.developmentVersion }} \
+      env:
+        MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+        MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
+        AUTO_RELEASE_AFTER_CLOSE: ${{ env.auto_release }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Release With Maven
+      run: |
+        ./mvnw -B -U \
+          -Pci-cd \
+          -DskipTests \
           release:perform \
           javadoc:jar \
           source:jar \

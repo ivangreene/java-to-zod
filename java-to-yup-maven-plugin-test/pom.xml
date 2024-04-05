@@ -62,6 +62,17 @@
             </configuration>
           </execution>
           <execution>
+            <id>install-js-deps</id>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <phase>test-compile</phase>
+            <configuration>
+              <executable>yarn</executable>
+              <workingDirectory>js</workingDirectory>
+            </configuration>
+          </execution>
+          <execution>
             <id>run-js-tests</id>
             <goals>
               <goal>exec</goal>

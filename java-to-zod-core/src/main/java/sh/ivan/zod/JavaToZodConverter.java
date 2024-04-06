@@ -7,11 +7,14 @@ import cz.habarta.typescript.generator.type.JGenericArrayType;
 import cz.habarta.typescript.generator.type.JParameterizedType;
 import java.lang.reflect.Type;
 import java.math.BigInteger;
+import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import sh.ivan.zod.schema.BooleanSchema;
+import sh.ivan.zod.schema.DateSchema;
 import sh.ivan.zod.schema.EnumSchema;
 import sh.ivan.zod.schema.LiteralBooleanSchema;
 import sh.ivan.zod.schema.NumberSchema;
@@ -78,6 +81,9 @@ public class JavaToZodConverter {
             var enumClass = (Class<? extends Enum<?>>) type;
             return new EnumSchema(enumClass, attributes);
         }
+        if (isDate(type)) {
+            return new DateSchema(attributes);
+        }
         if (isNumber(type)) {
             return buildNumberSchema((Class<?>) type, attributes);
         }
@@ -108,6 +114,10 @@ public class JavaToZodConverter {
     private boolean isNumber(Type type) {
         return type instanceof Class<?>
                 && (Number.class.isAssignableFrom((Class<?>) type) || PRIMITIVE_NUMBER_TYPES.contains(type));
+    }
+
+    private boolean isDate(Type type) {
+        return type == Date.class || type == Instant.class;
     }
 
     private boolean isEnum(Type type) {

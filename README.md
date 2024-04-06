@@ -35,8 +35,8 @@ public enum AccountType {
 Running the java-to-zod plugin will give you:
 ```js
 const PersonSchema = zod.object({
-    givenName: zod.string(),
-    surname: zod.string(),
+    givenName: zod.string().min(1),
+    surname: zod.string().min(1),
     age: zod.number().int().positive(),
     accountType: zod.enum(['PREMIUM', 'STANDARD', 'BASIC']),
 });

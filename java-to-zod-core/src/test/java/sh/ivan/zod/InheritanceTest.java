@@ -19,25 +19,19 @@ class InheritanceTest extends JavaToZodConverterTest {
     @Test
     void shouldHandleBasicAttributeInheritance() {
         assertThatField("name")
-                .isEqualTo(new StringSchema(Set.of(
-                        new SizeAttribute(1, Integer.MAX_VALUE),
-                        new SizeAttribute(5, Integer.MAX_VALUE),
-                        new SizeAttribute(0, 50))))
+                .isEqualTo(new StringSchema(Set.of(new SizeAttribute(5, Integer.MAX_VALUE), new SizeAttribute(0, 50))))
                 .extracting(Schema::asZodSchema)
-                .isEqualTo("string().min(1).min(5).max(50)");
+                .isEqualTo("string().min(5).max(50)");
     }
 
     @Test
     void shouldHandleAnnotatedListItemInheritance() {
         assertThatField("favoriteFoods")
                 .isEqualTo(new ArraySchema(
-                        new StringSchema(Set.of(
-                                new SizeAttribute(1, Integer.MAX_VALUE),
-                                new SizeAttribute(3, Integer.MAX_VALUE),
-                                new SizeAttribute(0, 40))),
+                        new StringSchema(Set.of(new SizeAttribute(3, Integer.MAX_VALUE), new SizeAttribute(0, 40))),
                         Set.of(new SizeAttribute(1, Integer.MAX_VALUE), new SizeAttribute(0, 5))))
                 .extracting(Schema::asZodSchema)
-                .isEqualTo("array(string().min(1).min(3).max(40)).min(1).max(5)");
+                .isEqualTo("array(string().min(3).max(40)).min(1).max(5)");
     }
 
     static class Animal {

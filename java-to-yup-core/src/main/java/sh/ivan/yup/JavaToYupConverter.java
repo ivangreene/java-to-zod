@@ -12,14 +12,16 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import sh.ivan.yup.schema.BooleanSchema;
+import sh.ivan.yup.schema.EnumSchema;
+import sh.ivan.yup.schema.LiteralBooleanSchema;
 import sh.ivan.yup.schema.NumberSchema;
 import sh.ivan.yup.schema.ObjectSchema;
 import sh.ivan.yup.schema.ReferenceSchema;
 import sh.ivan.yup.schema.Schema;
 import sh.ivan.yup.schema.StringSchema;
 import sh.ivan.yup.schema.attribute.Attribute;
+import sh.ivan.yup.schema.attribute.EqualsBooleanAttribute;
 import sh.ivan.yup.schema.attribute.IntegerAttribute;
-import sh.ivan.yup.schema.attribute.OneOfEnumAttribute;
 import sh.ivan.yup.schema.attribute.UuidAttribute;
 
 public class JavaToYupConverter {
@@ -74,13 +76,13 @@ public class JavaToYupConverter {
         if (isEnum(type)) {
             @SuppressWarnings("unchecked")
             var enumClass = (Class<? extends Enum<?>>) type;
-            return new StringSchema(Sets.union(attributes, Set.of(new OneOfEnumAttribute(enumClass))));
+            return new EnumSchema(enumClass, attributes);
         }
         if (isNumber(type)) {
             return buildNumberSchema((Class<?>) type, attributes);
         }
         if (type == Boolean.class || type == boolean.class) {
-            return new BooleanSchema(attributes);
+            return getBooleanSchema(attributes);
         }
         if (isArray(type)) {
             return arraySchemaBuilder.build(typeDescriptor, attributes);
@@ -89,6 +91,18 @@ public class JavaToYupConverter {
             return new ReferenceSchema(getSchemaName(type), attributes);
         }
         return objectSchemaBuilder.build((Class<?>) type, attributes);
+    }
+
+    private Schema getBooleanSchema(Set<Attribute> attributes) {
+        var equalsBooleanAttribute = attributes.stream()
+                .filter(attribute -> attribute instanceof EqualsBooleanAttribute)
+                .findAny();
+        if (equalsBooleanAttribute.isPresent()) {
+            return new LiteralBooleanSchema(
+                    ((EqualsBooleanAttribute) equalsBooleanAttribute.get()).isValue(),
+                    Sets.difference(attributes, Set.of(equalsBooleanAttribute.get())));
+        }
+        return new BooleanSchema(attributes);
     }
 
     private boolean isNumber(Type type) {

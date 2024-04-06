@@ -19,7 +19,7 @@ public class ArraySchema extends Schema {
 
     @Override
     protected String yupType(String prefix) {
-        return prefix + "array().of(" + componentType.asYupSchema(prefix) + ")";
+        return prefix + "array(" + componentType.asYupSchema(prefix) + ")";
     }
 
     @Override

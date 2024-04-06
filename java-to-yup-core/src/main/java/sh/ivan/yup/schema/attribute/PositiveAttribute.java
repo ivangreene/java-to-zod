@@ -16,7 +16,7 @@ public class PositiveAttribute implements Attribute {
 
     @Override
     public int priority() {
-        return 35;
+        return 25;
     }
 
     @Override

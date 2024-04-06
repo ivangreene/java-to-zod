@@ -18,7 +18,7 @@ class ArrayTest extends JavaToYupConverterTest {
         var objectSchema = (ObjectSchema) schema;
         assertThat(objectSchema.getFields()).hasSize(1);
         var booksSchema = objectSchema.getFields().get("books");
-        assertThat(booksSchema.asYupSchema()).isEqualTo("array().of(string().required()).defined()");
+        assertThat(booksSchema.asYupSchema()).isEqualTo("array(string().min(1))");
     }
 
     static class Author {
@@ -33,7 +33,7 @@ class ArrayTest extends JavaToYupConverterTest {
         var objectSchema = (ObjectSchema) schema;
         assertThat(objectSchema.getFields()).hasSize(1);
         var booksSchema = objectSchema.getFields().get("books");
-        assertThat(booksSchema.asYupSchema()).isEqualTo("array().of(string().required()).defined()");
+        assertThat(booksSchema.asYupSchema()).isEqualTo("array(string().min(1))");
     }
 
     static class GetterAuthor {
@@ -52,7 +52,7 @@ class ArrayTest extends JavaToYupConverterTest {
         var objectSchema = (ObjectSchema) schema;
         assertThat(objectSchema.getFields()).hasSize(1);
         var booksSchema = objectSchema.getFields().get("notes");
-        assertThat(booksSchema.asYupSchema()).isEqualTo("array().of(string().nullable()).defined()");
+        assertThat(booksSchema.asYupSchema()).isEqualTo("array(string().optional().nullable())");
     }
 
     static class NotePad {
@@ -67,7 +67,7 @@ class ArrayTest extends JavaToYupConverterTest {
         var objectSchema = (ObjectSchema) schema;
         assertThat(objectSchema.getFields()).hasSize(1);
         var booksSchema = objectSchema.getFields().get("books");
-        assertThat(booksSchema.asYupSchema()).isEqualTo("array().of(string().nullable()).defined().min(1)");
+        assertThat(booksSchema.asYupSchema()).isEqualTo("array(string().optional().nullable()).min(1)");
     }
 
     static class PublishedAuthor {
@@ -84,7 +84,7 @@ class ArrayTest extends JavaToYupConverterTest {
         assertThat(objectSchema.getFields()).hasSize(1);
         var integersSchema = objectSchema.getFields().get("integers");
         assertThat(integersSchema.asYupSchema())
-                .isEqualTo("array().of(number().nullable().integer().positive()).defined().min(1)");
+                .isEqualTo("array(number().int().positive().optional().nullable()).min(1)");
     }
 
     static class NumberHolder {

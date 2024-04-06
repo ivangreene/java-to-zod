@@ -16,7 +16,7 @@ public class NegativeAttribute implements Attribute {
 
     @Override
     public int priority() {
-        return 30;
+        return 20;
     }
 
     @Override

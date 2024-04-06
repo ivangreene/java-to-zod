@@ -1,4 +1,5 @@
 const { PersonSchema } = require('./schemas');
+const { isValid } = require('./test-utils');
 
 describe('PersonSchema', () => {
     test('should support circular reference validation', () => {
@@ -13,7 +14,7 @@ describe('PersonSchema', () => {
             job: 'Human',
             child,
         };
-        expect(PersonSchema.isValidSync(parent)).toBe(true);
+        expect(isValid(PersonSchema, parent)).toBe(true);
     });
 
     test('should invalidate invalid circular reference', () => {
@@ -28,9 +29,9 @@ describe('PersonSchema', () => {
             job: 'Human',
             child: invalidChild,
         };
-        expect(PersonSchema.isValidSync(parent)).toBe(false);
+        expect(isValid(PersonSchema, parent)).toBe(false);
         delete parent.child;
-        expect(PersonSchema.isValidSync(parent)).toBe(true);
+        expect(isValid(PersonSchema, parent)).toBe(true);
     });
 
     test('should support arbitrary depth', () => {
@@ -54,8 +55,8 @@ describe('PersonSchema', () => {
                 },
             },
         };
-        expect(PersonSchema.isValidSync(parent)).toBe(false);
+        expect(isValid(PersonSchema, parent)).toBe(false);
         delete parent.child.child.child;
-        expect(PersonSchema.isValidSync(parent)).toBe(true);
+        expect(isValid(PersonSchema, parent)).toBe(true);
     });
 });

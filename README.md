@@ -35,10 +35,10 @@ public enum AccountType {
 Running the java-to-yup plugin will give you:
 ```js
 const PersonSchema = yup.object({
-    givenName: yup.string().required(),
-    surname: yup.string().required(),
-    age: yup.number().defined().integer().positive(),
-    accountType: yup.string().defined().oneOf(['PREMIUM', 'STANDARD', 'BASIC']),
+    givenName: yup.string(),
+    surname: yup.string(),
+    age: yup.number().int().positive(),
+    accountType: yup.enum(['PREMIUM', 'STANDARD', 'BASIC']),
 });
 ```
 

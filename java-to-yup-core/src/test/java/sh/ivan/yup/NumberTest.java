@@ -29,34 +29,34 @@ class NumberTest extends JavaToYupConverterTest {
 
     @Test
     void testLong() {
-        assertThat(converter.buildSchema(Long.class).asYupSchema()).isEqualTo("number().integer()");
-        assertThat(converter.buildSchema(long.class).asYupSchema()).isEqualTo("number().integer()");
+        assertThat(converter.buildSchema(Long.class).asYupSchema()).isEqualTo("number().int()");
+        assertThat(converter.buildSchema(long.class).asYupSchema()).isEqualTo("number().int()");
         assertThat(converter.buildSchema(Long.class)).isEqualTo(converter.buildSchema(long.class));
     }
 
     @Test
     void testInteger() {
-        assertThat(converter.buildSchema(Integer.class).asYupSchema()).isEqualTo("number().integer()");
-        assertThat(converter.buildSchema(int.class).asYupSchema()).isEqualTo("number().integer()");
+        assertThat(converter.buildSchema(Integer.class).asYupSchema()).isEqualTo("number().int()");
+        assertThat(converter.buildSchema(int.class).asYupSchema()).isEqualTo("number().int()");
         assertThat(converter.buildSchema(Integer.class)).isEqualTo(converter.buildSchema(int.class));
     }
 
     @Test
     void testByte() {
-        assertThat(converter.buildSchema(Byte.class).asYupSchema()).isEqualTo("number().integer()");
-        assertThat(converter.buildSchema(byte.class).asYupSchema()).isEqualTo("number().integer()");
+        assertThat(converter.buildSchema(Byte.class).asYupSchema()).isEqualTo("number().int()");
+        assertThat(converter.buildSchema(byte.class).asYupSchema()).isEqualTo("number().int()");
         assertThat(converter.buildSchema(Byte.class)).isEqualTo(converter.buildSchema(byte.class));
     }
 
     @Test
     void testShort() {
-        assertThat(converter.buildSchema(Short.class).asYupSchema()).isEqualTo("number().integer()");
-        assertThat(converter.buildSchema(short.class).asYupSchema()).isEqualTo("number().integer()");
+        assertThat(converter.buildSchema(Short.class).asYupSchema()).isEqualTo("number().int()");
+        assertThat(converter.buildSchema(short.class).asYupSchema()).isEqualTo("number().int()");
         assertThat(converter.buildSchema(Short.class)).isEqualTo(converter.buildSchema(short.class));
     }
 
     @Test
     void testBigInteger() {
-        assertThat(converter.buildSchema(BigInteger.class).asYupSchema()).isEqualTo("number().integer()");
+        assertThat(converter.buildSchema(BigInteger.class).asYupSchema()).isEqualTo("number().int()");
     }
 }

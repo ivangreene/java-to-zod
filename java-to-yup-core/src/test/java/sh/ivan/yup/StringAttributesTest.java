@@ -13,10 +13,8 @@ import org.junit.jupiter.api.Test;
 import sh.ivan.yup.schema.ObjectSchema;
 import sh.ivan.yup.schema.Schema;
 import sh.ivan.yup.schema.StringSchema;
-import sh.ivan.yup.schema.attribute.DefinedAttribute;
 import sh.ivan.yup.schema.attribute.NotBlankAttribute;
-import sh.ivan.yup.schema.attribute.NullableAttribute;
-import sh.ivan.yup.schema.attribute.RequiredAttribute;
+import sh.ivan.yup.schema.attribute.OptionalNullableAttribute;
 import sh.ivan.yup.schema.attribute.SizeAttribute;
 import sh.ivan.yup.schema.attribute.UuidAttribute;
 
@@ -25,49 +23,49 @@ class StringAttributesTest extends JavaToYupConverterTest {
     @Test
     void shouldSupportNotBlank() {
         assertThatField("notBlank")
-                .isEqualTo(new StringSchema(Set.of(new DefinedAttribute(), new NotBlankAttribute())))
+                .isEqualTo(new StringSchema(Set.of(new NotBlankAttribute())))
                 .extracting(Schema::asYupSchema)
-                .isEqualTo("string().defined().matches(/\\S/)");
+                .isEqualTo("string().regex(/\\S/)");
     }
 
     @Test
     void shouldSupportNotEmpty() {
         assertThatField("notEmpty")
-                .isEqualTo(new StringSchema(Set.of(new RequiredAttribute())))
+                .isEqualTo(new StringSchema(Set.of(new SizeAttribute(1, Integer.MAX_VALUE))))
                 .extracting(Schema::asYupSchema)
-                .isEqualTo("string().required()");
+                .isEqualTo("string().min(1)");
     }
 
     @Test
     void shouldSupportSizeMin() {
         assertThatField("min5")
-                .isEqualTo(new StringSchema(Set.of(new DefinedAttribute(), new SizeAttribute(5, Integer.MAX_VALUE))))
+                .isEqualTo(new StringSchema(Set.of(new SizeAttribute(5, Integer.MAX_VALUE))))
                 .extracting(Schema::asYupSchema)
-                .isEqualTo("string().defined().min(5)");
+                .isEqualTo("string().min(5)");
     }
 
     @Test
     void shouldSupportSizeMax() {
         assertThatField("max10")
-                .isEqualTo(new StringSchema(Set.of(new DefinedAttribute(), new SizeAttribute(0, 10))))
+                .isEqualTo(new StringSchema(Set.of(new SizeAttribute(0, 10))))
                 .extracting(Schema::asYupSchema)
-                .isEqualTo("string().defined().max(10)");
+                .isEqualTo("string().max(10)");
     }
 
     @Test
     void shouldSupportSizeMinMaxxing() {
         assertThatField("min5Max10")
-                .isEqualTo(new StringSchema(Set.of(new DefinedAttribute(), new SizeAttribute(5, 10))))
+                .isEqualTo(new StringSchema(Set.of(new SizeAttribute(5, 10))))
                 .extracting(Schema::asYupSchema)
-                .isEqualTo("string().defined().min(5).max(10)");
+                .isEqualTo("string().min(5).max(10)");
     }
 
     @Test
     void shouldSupportUUID() {
         assertThatField("id")
-                .isEqualTo(new StringSchema(Set.of(new NullableAttribute(), new UuidAttribute())))
+                .isEqualTo(new StringSchema(Set.of(new OptionalNullableAttribute(), new UuidAttribute())))
                 .extracting(Schema::asYupSchema)
-                .isEqualTo("string().nullable().uuid()");
+                .isEqualTo("string().uuid().optional().nullable()");
     }
 
     static class StringHolder {

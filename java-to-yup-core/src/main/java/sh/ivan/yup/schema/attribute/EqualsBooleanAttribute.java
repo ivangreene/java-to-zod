@@ -8,11 +8,12 @@ public class EqualsBooleanAttribute implements Attribute {
 
     @Override
     public int priority() {
-        return 20;
+        return -1;
     }
 
     @Override
     public String yupMethod() {
-        return value ? "isTrue()" : "isFalse()";
+        throw new UnsupportedOperationException(
+                "This attribute is not written to the schema, transform to LiteralBooleanSchema before writing");
     }
 }

@@ -12,8 +12,6 @@ import sh.ivan.yup.schema.ArraySchema;
 import sh.ivan.yup.schema.ObjectSchema;
 import sh.ivan.yup.schema.Schema;
 import sh.ivan.yup.schema.StringSchema;
-import sh.ivan.yup.schema.attribute.DefinedAttribute;
-import sh.ivan.yup.schema.attribute.RequiredAttribute;
 import sh.ivan.yup.schema.attribute.SizeAttribute;
 
 class InheritanceTest extends JavaToYupConverterTest {
@@ -22,9 +20,11 @@ class InheritanceTest extends JavaToYupConverterTest {
     void shouldHandleBasicAttributeInheritance() {
         assertThatField("name")
                 .isEqualTo(new StringSchema(Set.of(
-                        new RequiredAttribute(), new SizeAttribute(5, Integer.MAX_VALUE), new SizeAttribute(0, 50))))
+                        new SizeAttribute(1, Integer.MAX_VALUE),
+                        new SizeAttribute(5, Integer.MAX_VALUE),
+                        new SizeAttribute(0, 50))))
                 .extracting(Schema::asYupSchema)
-                .isEqualTo("string().required().min(5).max(50)");
+                .isEqualTo("string().min(1).min(5).max(50)");
     }
 
     @Test
@@ -32,15 +32,12 @@ class InheritanceTest extends JavaToYupConverterTest {
         assertThatField("favoriteFoods")
                 .isEqualTo(new ArraySchema(
                         new StringSchema(Set.of(
-                                new RequiredAttribute(),
+                                new SizeAttribute(1, Integer.MAX_VALUE),
                                 new SizeAttribute(3, Integer.MAX_VALUE),
                                 new SizeAttribute(0, 40))),
-                        Set.of(
-                                new DefinedAttribute(),
-                                new SizeAttribute(1, Integer.MAX_VALUE),
-                                new SizeAttribute(0, 5))))
+                        Set.of(new SizeAttribute(1, Integer.MAX_VALUE), new SizeAttribute(0, 5))))
                 .extracting(Schema::asYupSchema)
-                .isEqualTo("array().of(string().required().min(3).max(40)).defined().min(1).max(5)");
+                .isEqualTo("array(string().min(1).min(3).max(40)).min(1).max(5)");
     }
 
     static class Animal {

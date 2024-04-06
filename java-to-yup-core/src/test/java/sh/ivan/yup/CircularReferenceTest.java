@@ -13,7 +13,6 @@ import sh.ivan.yup.schema.ObjectSchema;
 import sh.ivan.yup.schema.ReferenceSchema;
 import sh.ivan.yup.schema.Schema;
 import sh.ivan.yup.schema.StringSchema;
-import sh.ivan.yup.schema.attribute.DefinedAttribute;
 import sh.ivan.yup.schema.attribute.SizeAttribute;
 
 class CircularReferenceTest extends JavaToYupConverterTest {
@@ -25,24 +24,20 @@ class CircularReferenceTest extends JavaToYupConverterTest {
                 .extracting(ObjectSchema::getFields)
                 .asInstanceOf(InstanceOfAssertFactories.map(String.class, Schema.class))
                 .hasSize(4)
-                .containsEntry("name", new StringSchema(Set.of(new DefinedAttribute())))
-                .containsEntry("parent", new ReferenceSchema("Person", Set.of(new DefinedAttribute())))
-                .containsEntry(
-                        "children",
-                        new ArraySchema(
-                                new ReferenceSchema("Person", Set.of(new DefinedAttribute())),
-                                Set.of(new DefinedAttribute())))
+                .containsEntry("name", new StringSchema(Set.of()))
+                .containsEntry("parent", new ReferenceSchema("Person", Set.of()))
+                .containsEntry("children", new ArraySchema(new ReferenceSchema("Person", Set.of()), Set.of()))
                 .containsEntry(
                         "listOfListsOfChildren",
                         new ArraySchema(
                                 new ArraySchema(
-                                        new ReferenceSchema("Person", Set.of(new DefinedAttribute())),
-                                        Set.of(new DefinedAttribute(), new SizeAttribute(1, Integer.MAX_VALUE))),
-                                Set.of(new DefinedAttribute())));
+                                        new ReferenceSchema("Person", Set.of()),
+                                        Set.of(new SizeAttribute(1, Integer.MAX_VALUE))),
+                                Set.of()));
         assertThat(schema.asYupSchema())
                 .isEqualTo(
-                        "object({ name: string().defined(), parent: lazy(() => Person.default(undefined).defined()), children: array().of(lazy(() => Person.default(undefined).defined())).defined(), "
-                                + "listOfListsOfChildren: array().of(array().of(lazy(() => Person.default(undefined).defined())).defined().min(1)).defined(), })");
+                        "object({ name: string(), parent: lazy(() => Person.default(undefined)), children: array(lazy(() => Person.default(undefined))), "
+                                + "listOfListsOfChildren: array(array(lazy(() => Person.default(undefined))).min(1)), })");
     }
 
     static class Person {

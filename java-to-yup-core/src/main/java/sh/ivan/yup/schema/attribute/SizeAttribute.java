@@ -9,7 +9,8 @@ public class SizeAttribute implements Attribute {
 
     @Override
     public int priority() {
-        return min > 0 ? 50 : 51;
+        // TODO: Do not add duplicate min = 1 if already have another min > 0
+        return (min == 1 && max == Integer.MAX_VALUE) ? 50 : min > 0 ? 51 : 52;
     }
 
     @Override

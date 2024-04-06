@@ -1,58 +1,59 @@
 const { PersonSchema } = require('./schemas');
+const { isValid } = require('./test-utils');
 
 describe('PersonSchema', () => {
     test('should support nullable UUID', () => {
-        const id = PersonSchema.fields.id;
-        expect(id.isValidSync('389ba84f-0c10-41f6-9df5-86faf0ccae11')).toBe(true);
-        expect(id.isValidSync(null)).toBe(true);
-        expect(id.isValidSync('389ba84f-0c10-41f6-9df5-86faf0ccae1')).toBe(false);
-        expect(id.isValidSync('1000')).toBe(false);
+        const id = PersonSchema.shape.id;
+        expect(isValid(id, '389ba84f-0c10-41f6-9df5-86faf0ccae11')).toBe(true);
+        expect(isValid(id, null)).toBe(true);
+        expect(isValid(id, '389ba84f-0c10-41f6-9df5-86faf0ccae1')).toBe(false);
+        expect(isValid(id, '1000')).toBe(false);
     });
 
     test('should support NotBlank String', () => {
-        const firstName = PersonSchema.fields.firstName;
-        expect(firstName.isValidSync('Foo')).toBe(true);
-        expect(firstName.isValidSync(null)).toBe(false);
-        expect(firstName.isValidSync('')).toBe(false);
-        expect(firstName.isValidSync(' \t\r\n')).toBe(false);
+        const firstName = PersonSchema.shape.firstName;
+        expect(isValid(firstName, 'Foo')).toBe(true);
+        expect(isValid(firstName, null)).toBe(false);
+        expect(isValid(firstName, '')).toBe(false);
+        expect(isValid(firstName, ' \t\r\n')).toBe(false);
     });
 
     test('should support NotEmpty String', () => {
-        const lastName = PersonSchema.fields.lastName;
-        expect(lastName.isValidSync('Foo')).toBe(true);
-        expect(lastName.isValidSync(' \t\r\n')).toBe(true);
-        expect(lastName.isValidSync(' ')).toBe(true);
-        expect(lastName.isValidSync('\t')).toBe(true);
-        expect(lastName.isValidSync('\n')).toBe(true);
-        expect(lastName.isValidSync(null)).toBe(false);
-        expect(lastName.isValidSync('')).toBe(false);
+        const lastName = PersonSchema.shape.lastName;
+        expect(isValid(lastName, 'Foo')).toBe(true);
+        expect(isValid(lastName, ' \t\r\n')).toBe(true);
+        expect(isValid(lastName, ' ')).toBe(true);
+        expect(isValid(lastName, '\t')).toBe(true);
+        expect(isValid(lastName, '\n')).toBe(true);
+        expect(isValid(lastName, null)).toBe(false);
+        expect(isValid(lastName, '')).toBe(false);
     });
 
     test('should support NotNull String', () => {
-        const job = PersonSchema.fields.job;
-        expect(job.isValidSync('Foo')).toBe(true);
-        expect(job.isValidSync('')).toBe(true);
-        expect(job.isValidSync(' ')).toBe(true);
-        expect(job.isValidSync(null)).toBe(false);
+        const job = PersonSchema.shape.job;
+        expect(isValid(job, 'Foo')).toBe(true);
+        expect(isValid(job, '')).toBe(true);
+        expect(isValid(job, ' ')).toBe(true);
+        expect(isValid(job, null)).toBe(false);
     });
 
     test('should validate a valid person', () => {
-        expect(PersonSchema.isValidSync({
+        expect(isValid(PersonSchema, {
             id: '389ba84f-0c10-41f6-9df5-86faf0ccae11', firstName: 'John', lastName: 'Doe', job: 'Human'
         })).toBe(true);
-        expect(PersonSchema.isValidSync({
+        expect(isValid(PersonSchema, {
             firstName: 'John', lastName: 'Doe', job: 'Human'
         })).toBe(true);
     });
 
     test('should invalidate on missing NotEmpty/NotBlank/NotNull fields', () => {
-        expect(PersonSchema.isValidSync({
+        expect(isValid(PersonSchema, {
             firstName: 'John', lastName: 'Doe'
         })).toBe(false);
-        expect(PersonSchema.isValidSync({
+        expect(isValid(PersonSchema, {
             lastName: 'Doe', job: 'Human'
         })).toBe(false);
-        expect(PersonSchema.isValidSync({
+        expect(isValid(PersonSchema, {
             firstName: 'John', job: 'Human'
         })).toBe(false);
     });

@@ -1,33 +1,34 @@
 const { BooleanHolderSchema } = require('./schemas');
+const { isValid } = require('./test-utils');
 
 describe('BooleanHolderSchema', () => {
     test('should support AssertTrue on boxed', () => {
-        const mustBeTrue = BooleanHolderSchema.fields.mustBeTrue;
-        expect(mustBeTrue.isValidSync(true)).toBe(true);
-        expect(mustBeTrue.isValidSync(null)).toBe(true);
-        expect(mustBeTrue.isValidSync(false)).toBe(false);
+        const mustBeTrue = BooleanHolderSchema.shape.mustBeTrue;
+        expect(isValid(mustBeTrue, true)).toBe(true);
+        expect(isValid(mustBeTrue, null)).toBe(true);
+        expect(isValid(mustBeTrue, false)).toBe(false);
     });
 
     test('should support AssertFalse on primitive', () => {
-        const mustBeFalse = BooleanHolderSchema.fields.mustBeFalse;
-        expect(mustBeFalse.isValidSync(false)).toBe(true);
-        expect(mustBeFalse.isValidSync(null)).toBe(false);
-        expect(mustBeFalse.isValidSync(true)).toBe(false);
+        const mustBeFalse = BooleanHolderSchema.shape.mustBeFalse;
+        expect(isValid(mustBeFalse, false)).toBe(true);
+        expect(isValid(mustBeFalse, null)).toBe(false);
+        expect(isValid(mustBeFalse, true)).toBe(false);
     });
 
     test('should support boxed', () => {
-        const boxed = BooleanHolderSchema.fields.boxed;
-        expect(boxed.isValidSync(false)).toBe(true);
-        expect(boxed.isValidSync(true)).toBe(true);
-        expect(boxed.isValidSync(null)).toBe(true);
-        expect(boxed.isValidSync('foo')).toBe(false);
+        const boxed = BooleanHolderSchema.shape.boxed;
+        expect(isValid(boxed, false)).toBe(true);
+        expect(isValid(boxed, true)).toBe(true);
+        expect(isValid(boxed, null)).toBe(true);
+        expect(isValid(boxed, 'foo')).toBe(false);
     });
 
     test('should support primitive', () => {
-        const primitive = BooleanHolderSchema.fields.primitive;
-        expect(primitive.isValidSync(false)).toBe(true);
-        expect(primitive.isValidSync(true)).toBe(true);
-        expect(primitive.isValidSync(null)).toBe(false);
-        expect(primitive.isValidSync('foo')).toBe(false);
+        const primitive = BooleanHolderSchema.shape.primitive;
+        expect(isValid(primitive, false)).toBe(true);
+        expect(isValid(primitive, true)).toBe(true);
+        expect(isValid(primitive, null)).toBe(false);
+        expect(isValid(primitive, 'foo')).toBe(false);
     });
 });

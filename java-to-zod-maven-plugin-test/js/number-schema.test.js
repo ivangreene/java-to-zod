@@ -1,5 +1,5 @@
-const { NumberHolderSchema } = require('./schemas');
-const { isValid } = require('./test-utils');
+import { NumberHolderSchema } from './schemas';
+import { isValid } from './test-utils';
 
 describe('NumberHolderSchema', () => {
     test('should support maxed Integer', () => {

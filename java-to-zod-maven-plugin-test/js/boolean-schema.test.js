@@ -1,5 +1,5 @@
-const { BooleanHolderSchema } = require('./schemas');
-const { isValid } = require('./test-utils');
+import { BooleanHolderSchema } from './schemas';
+import { isValid } from './test-utils';
 
 describe('BooleanHolderSchema', () => {
     test('should support AssertTrue on boxed', () => {

@@ -30,8 +30,6 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: '20.x'
-    - name: Install yarn dependencies
-      run: yarn --frozen-lockfile --cwd java-to-yup-maven-plugin-test/js
     - name: Configure Git User
       run: |
         git config user.email "actions@github.com"

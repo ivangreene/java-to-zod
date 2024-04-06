@@ -1,6 +1,6 @@
-# Java to Yup
+# Java to Zod
 
-Convert POJOs to [Yup](https://github.com/jquense/yup) schemas.
+Convert POJOs to [Zod](https://zod.dev/) schemas.
 Uses [JSR-380 (bean validation) annotations](https://www.baeldung.com/java-validation)
 to specify the constraints.
 
@@ -32,13 +32,13 @@ public enum AccountType {
 }
 ```
 
-Running the java-to-yup plugin will give you:
+Running the java-to-zod plugin will give you:
 ```js
-const PersonSchema = yup.object({
-    givenName: yup.string(),
-    surname: yup.string(),
-    age: yup.number().int().positive(),
-    accountType: yup.enum(['PREMIUM', 'STANDARD', 'BASIC']),
+const PersonSchema = zod.object({
+    givenName: zod.string(),
+    surname: zod.string(),
+    age: zod.number().int().positive(),
+    accountType: zod.enum(['PREMIUM', 'STANDARD', 'BASIC']),
 });
 ```
 

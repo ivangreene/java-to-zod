@@ -1,5 +1,5 @@
-const { PersonSchema } = require('./schemas');
-const { isValid } = require('./test-utils');
+import { PersonSchema } from './schemas';
+import { isValid } from './test-utils';
 
 describe('PersonSchema', () => {
     test('should support nullable UUID', () => {

@@ -1,5 +1,5 @@
-const { ApiResponseSchema } = require('./schemas');
-const { isValid } = require('./test-utils');
+import { ApiResponseSchema } from './schemas';
+import { isValid } from './test-utils';
 
 describe('ApiResponse.received', () => {
     test('date or null/undefined values should be valid', () => {

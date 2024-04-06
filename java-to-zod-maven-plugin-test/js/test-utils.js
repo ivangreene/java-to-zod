@@ -1,4 +1,4 @@
-exports.isValid = function isValid(schema, value) {
+export function isValid(schema, value) {
     try {
         schema.parse(value);
         return true;

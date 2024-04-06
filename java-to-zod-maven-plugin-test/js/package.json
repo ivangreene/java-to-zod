@@ -5,8 +5,12 @@
   "author": "Ivan Greene",
   "license": "Apache-2.0",
   "private": true,
+  "type": "module",
+  "jest": {
+    "transform": {}
+  },
   "scripts": {
-    "test": "jest"
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
   },
   "dependencies": {
     "zod": "^3.22.4"

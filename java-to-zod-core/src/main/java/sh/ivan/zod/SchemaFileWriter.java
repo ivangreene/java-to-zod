@@ -20,12 +20,10 @@ public class SchemaFileWriter {
         ensureDirectoryExists();
         try (var fileWriter = new FileWriter(outputFile);
                 var printWriter = new PrintWriter(fileWriter)) {
-            printWriter.println("const zod = require('zod');");
+            printWriter.println("import { z as zod } from 'zod';");
             schemas.forEach((name, schema) -> {
                 printWriter.println();
-                printWriter.printf("const %s = %s;", name, schema.asZodSchema("zod."));
-                printWriter.println();
-                printWriter.printf("exports.%s = %s;", name, name);
+                printWriter.printf("export const %s = %s;", name, schema.asZodSchema("zod."));
                 printWriter.println();
             });
         }

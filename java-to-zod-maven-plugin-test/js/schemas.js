@@ -2,6 +2,7 @@ const zod = require('zod');
 
 const ApiResponseSchema = zod.object({
   status: zod.enum(['PASSED', 'FAILED', 'UNKNOWN']).optional().nullable(),
+  received: zod.date().optional().nullable(),
 });
 exports.ApiResponseSchema = ApiResponseSchema;
 

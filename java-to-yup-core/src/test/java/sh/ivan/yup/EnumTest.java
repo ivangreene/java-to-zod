@@ -8,7 +8,7 @@ class EnumTest extends JavaToYupConverterTest {
     @Test
     void shouldSupportEnum() {
         assertThat(converter.buildSchema(Status.class).asYupSchema())
-                .isEqualTo("string().oneOf(['PASSED', 'FAILED', 'UNKNOWN'])");
+                .isEqualTo("enum(['PASSED', 'FAILED', 'UNKNOWN'])");
     }
 
     enum Status {

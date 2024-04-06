@@ -1,34 +1,34 @@
-const yup = require('yup');
+const zod = require('zod');
 
-const ApiResponseSchema = yup.object({
-  status: yup.string().nullable().oneOf(['PASSED', 'FAILED', 'UNKNOWN']),
+const ApiResponseSchema = zod.object({
+  status: zod.enum(['PASSED', 'FAILED', 'UNKNOWN']).optional().nullable(),
 });
 exports.ApiResponseSchema = ApiResponseSchema;
 
-const BooleanHolderSchema = yup.object({
-  mustBeTrue: yup.boolean().nullable().isTrue(),
-  mustBeFalse: yup.boolean().defined().isFalse(),
-  boxed: yup.boolean().nullable(),
-  primitive: yup.boolean().defined(),
+const BooleanHolderSchema = zod.object({
+  mustBeTrue: zod.literal(true).optional().nullable(),
+  mustBeFalse: zod.literal(false),
+  boxed: zod.boolean().optional().nullable(),
+  primitive: zod.boolean(),
 });
 exports.BooleanHolderSchema = BooleanHolderSchema;
 
-const NumberHolderSchema = yup.object({
-  maxed: yup.number().nullable().integer().max(300),
-  minned: yup.number().defined().integer().min(100),
-  negative: yup.number().nullable().integer().negative(),
-  positive: yup.number().nullable().integer().positive(),
-  negativeOrZero: yup.number().nullable().max(0),
-  positiveOrZero: yup.number().defined().min(0),
-  negativeIntegers: yup.array().of(yup.number().defined().integer().negative()).nullable(),
+const NumberHolderSchema = zod.object({
+  maxed: zod.number().int().max(300).optional().nullable(),
+  minned: zod.number().int().min(100),
+  negative: zod.number().int().negative().optional().nullable(),
+  positive: zod.number().int().positive().optional().nullable(),
+  negativeOrZero: zod.number().max(0).optional().nullable(),
+  positiveOrZero: zod.number().min(0),
+  negativeIntegers: zod.array(zod.number().int().negative()).optional().nullable(),
 });
 exports.NumberHolderSchema = NumberHolderSchema;
 
-const PersonSchema = yup.object({
-  id: yup.string().nullable().uuid(),
-  firstName: yup.string().defined().matches(/\S/),
-  lastName: yup.string().required(),
-  job: yup.string().defined(),
-  child: yup.lazy(() => PersonSchema.default(undefined).nullable()),
+const PersonSchema = zod.object({
+  id: zod.string().uuid().optional().nullable(),
+  firstName: zod.string().regex(/\S/),
+  lastName: zod.string().min(1),
+  job: zod.string(),
+  child: zod.lazy(() => PersonSchema.default(undefined).optional().nullable()),
 });
 exports.PersonSchema = PersonSchema;

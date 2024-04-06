@@ -8,7 +8,7 @@ public class MaxAttribute implements Attribute {
 
     @Override
     public int priority() {
-        return 45;
+        return 35;
     }
 
     @Override

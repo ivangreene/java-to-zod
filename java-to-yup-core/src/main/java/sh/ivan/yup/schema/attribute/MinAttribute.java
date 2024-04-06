@@ -8,7 +8,7 @@ public class MinAttribute implements Attribute {
 
     @Override
     public int priority() {
-        return 40;
+        return 30;
     }
 
     @Override

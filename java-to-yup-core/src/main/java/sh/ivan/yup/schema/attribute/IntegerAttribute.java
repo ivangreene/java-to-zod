@@ -8,11 +8,11 @@ import lombok.ToString;
 public class IntegerAttribute implements Attribute {
     @Override
     public int priority() {
-        return 10;
+        return 5;
     }
 
     @Override
     public String yupMethod() {
-        return "integer()";
+        return "int()";
     }
 }

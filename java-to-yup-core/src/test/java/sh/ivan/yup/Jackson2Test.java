@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import sh.ivan.yup.schema.ObjectSchema;
 import sh.ivan.yup.schema.Schema;
 import sh.ivan.yup.schema.StringSchema;
-import sh.ivan.yup.schema.attribute.RequiredAttribute;
 import sh.ivan.yup.schema.attribute.SizeAttribute;
 
 class Jackson2Test extends JavaToYupConverterTest {
@@ -24,10 +23,12 @@ class Jackson2Test extends JavaToYupConverterTest {
                 .extracting(ObjectSchema::getFields)
                 .asInstanceOf(InstanceOfAssertFactories.map(String.class, Schema.class))
                 .hasSize(1)
-                .containsEntry("name", new StringSchema(Set.of(new RequiredAttribute(), new SizeAttribute(0, 400))));
+                .containsEntry(
+                        "name",
+                        new StringSchema(Set.of(new SizeAttribute(1, Integer.MAX_VALUE), new SizeAttribute(0, 400))));
         objectSchemaAssert
                 .extracting(ObjectSchema::asYupSchema)
-                .isEqualTo("object({ name: string().required().max(400), })");
+                .isEqualTo("object({ name: string().min(1).max(400), })");
     }
 
     static class Person {

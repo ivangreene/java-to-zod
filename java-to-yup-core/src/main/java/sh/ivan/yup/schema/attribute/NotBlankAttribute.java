@@ -13,6 +13,6 @@ public class NotBlankAttribute implements Attribute {
 
     @Override
     public String yupMethod() {
-        return "matches(/\\S/)";
+        return "regex(/\\S/)";
     }
 }

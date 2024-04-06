@@ -14,10 +14,8 @@ import sh.ivan.yup.schema.ObjectSchema;
 import sh.ivan.yup.schema.ReferenceSchema;
 import sh.ivan.yup.schema.Schema;
 import sh.ivan.yup.schema.StringSchema;
-import sh.ivan.yup.schema.attribute.DefinedAttribute;
 import sh.ivan.yup.schema.attribute.IntegerAttribute;
-import sh.ivan.yup.schema.attribute.NullableAttribute;
-import sh.ivan.yup.schema.attribute.RequiredAttribute;
+import sh.ivan.yup.schema.attribute.OptionalNullableAttribute;
 import sh.ivan.yup.schema.attribute.SizeAttribute;
 
 class PojoTest extends JavaToYupConverterTest {
@@ -30,14 +28,14 @@ class PojoTest extends JavaToYupConverterTest {
                 .extracting(ObjectSchema::getFields)
                 .asInstanceOf(InstanceOfAssertFactories.map(String.class, Schema.class))
                 .hasSize(4)
-                .containsEntry("street", new StringSchema(Set.of(new DefinedAttribute())))
-                .containsEntry("streetTwo", new StringSchema(Set.of(new NullableAttribute())))
-                .containsEntry("city", new StringSchema(Set.of(new DefinedAttribute())))
-                .containsEntry("country", new StringSchema(Set.of(new DefinedAttribute())));
+                .containsEntry("street", new StringSchema(Set.of()))
+                .containsEntry("streetTwo", new StringSchema(Set.of(new OptionalNullableAttribute())))
+                .containsEntry("city", new StringSchema(Set.of()))
+                .containsEntry("country", new StringSchema(Set.of()));
         objectSchemaAssert
                 .extracting(ObjectSchema::asYupSchema)
                 .isEqualTo(
-                        "object({ street: string().defined(), streetTwo: string().nullable(), city: string().defined(), country: string().defined(), })");
+                        "object({ street: string(), streetTwo: string().optional().nullable(), city: string(), country: string(), })");
     }
 
     @Data
@@ -62,13 +60,13 @@ class PojoTest extends JavaToYupConverterTest {
                 .extracting(ObjectSchema::getFields)
                 .asInstanceOf(InstanceOfAssertFactories.map(String.class, Schema.class))
                 .hasSize(3)
-                .containsEntry("name", new StringSchema(Set.of(new DefinedAttribute())))
-                .containsEntry("age", new NumberSchema(Set.of(new NullableAttribute(), new IntegerAttribute())))
-                .containsEntry("address", new ReferenceSchema("Address", Set.of(new NullableAttribute())));
+                .containsEntry("name", new StringSchema(Set.of()))
+                .containsEntry("age", new NumberSchema(Set.of(new OptionalNullableAttribute(), new IntegerAttribute())))
+                .containsEntry("address", new ReferenceSchema("Address", Set.of(new OptionalNullableAttribute())));
         objectSchemaAssert
                 .extracting(ObjectSchema::asYupSchema)
                 .isEqualTo(
-                        "object({ name: string().defined(), age: number().nullable().integer(), address: lazy(() => Address.default(undefined).nullable()), })");
+                        "object({ name: string(), age: number().int().optional().nullable(), address: lazy(() => Address.default(undefined).optional().nullable()), })");
     }
 
     static class Person {
@@ -87,10 +85,12 @@ class PojoTest extends JavaToYupConverterTest {
                 .extracting(ObjectSchema::getFields)
                 .asInstanceOf(InstanceOfAssertFactories.map(String.class, Schema.class))
                 .hasSize(1)
-                .containsEntry("name", new StringSchema(Set.of(new SizeAttribute(1, 50), new RequiredAttribute())));
+                .containsEntry(
+                        "name",
+                        new StringSchema(Set.of(new SizeAttribute(1, 50), new SizeAttribute(1, Integer.MAX_VALUE))));
         objectSchemaAssert
                 .extracting(ObjectSchema::asYupSchema)
-                .isEqualTo("object({ name: string().required().min(1).max(50), })");
+                .isEqualTo("object({ name: string().min(1).min(1).max(50), })");
     }
 
     static class Book {

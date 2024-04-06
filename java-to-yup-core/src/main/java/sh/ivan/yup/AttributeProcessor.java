@@ -31,15 +31,13 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import sh.ivan.yup.schema.attribute.Attribute;
-import sh.ivan.yup.schema.attribute.DefinedAttribute;
 import sh.ivan.yup.schema.attribute.EqualsBooleanAttribute;
 import sh.ivan.yup.schema.attribute.MaxAttribute;
 import sh.ivan.yup.schema.attribute.MinAttribute;
 import sh.ivan.yup.schema.attribute.NegativeAttribute;
 import sh.ivan.yup.schema.attribute.NotBlankAttribute;
-import sh.ivan.yup.schema.attribute.NullableAttribute;
+import sh.ivan.yup.schema.attribute.OptionalNullableAttribute;
 import sh.ivan.yup.schema.attribute.PositiveAttribute;
-import sh.ivan.yup.schema.attribute.RequiredAttribute;
 import sh.ivan.yup.schema.attribute.SizeAttribute;
 
 public class AttributeProcessor {
@@ -87,9 +85,7 @@ public class AttributeProcessor {
     public Set<Attribute> getAttributesForAnnotations(Type type, Set<Annotation> annotations) {
         var attributes = new HashSet<>(processAnnotations(type, annotations));
         if (isNullable(type, annotations)) {
-            attributes.add(new NullableAttribute());
-        } else if (!attributes.contains(new RequiredAttribute())) {
-            attributes.add(new DefinedAttribute());
+            attributes.add(new OptionalNullableAttribute());
         }
         return Set.copyOf(attributes);
     }
@@ -112,10 +108,7 @@ public class AttributeProcessor {
             return new SizeAttribute(((Size) annotation).min(), ((Size) annotation).max());
         }
         if (annotation.annotationType() == NotEmpty.class) {
-            if (type == String.class) {
-                return new RequiredAttribute();
-            }
-            if (converter.isArray(type)) {
+            if (type == String.class || converter.isArray(type)) {
                 return new SizeAttribute(1, Integer.MAX_VALUE);
             }
         }

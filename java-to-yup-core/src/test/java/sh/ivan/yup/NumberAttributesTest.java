@@ -16,12 +16,11 @@ import org.junit.jupiter.api.Test;
 import sh.ivan.yup.schema.NumberSchema;
 import sh.ivan.yup.schema.ObjectSchema;
 import sh.ivan.yup.schema.Schema;
-import sh.ivan.yup.schema.attribute.DefinedAttribute;
 import sh.ivan.yup.schema.attribute.IntegerAttribute;
 import sh.ivan.yup.schema.attribute.MaxAttribute;
 import sh.ivan.yup.schema.attribute.MinAttribute;
 import sh.ivan.yup.schema.attribute.NegativeAttribute;
-import sh.ivan.yup.schema.attribute.NullableAttribute;
+import sh.ivan.yup.schema.attribute.OptionalNullableAttribute;
 import sh.ivan.yup.schema.attribute.PositiveAttribute;
 
 class NumberAttributesTest extends JavaToYupConverterTest {
@@ -30,52 +29,51 @@ class NumberAttributesTest extends JavaToYupConverterTest {
     void shouldSupportMax() {
         assertThatField("maxed")
                 .isEqualTo(new NumberSchema(
-                        Set.of(new NullableAttribute(), new IntegerAttribute(), new MaxAttribute(300L))))
+                        Set.of(new OptionalNullableAttribute(), new IntegerAttribute(), new MaxAttribute(300L))))
                 .extracting(Schema::asYupSchema)
-                .isEqualTo("number().nullable().integer().max(300)");
+                .isEqualTo("number().int().max(300).optional().nullable()");
     }
 
     @Test
     void shouldSupportMin() {
         assertThatField("minned")
-                .isEqualTo(new NumberSchema(
-                        Set.of(new DefinedAttribute(), new IntegerAttribute(), new MinAttribute(100L))))
+                .isEqualTo(new NumberSchema(Set.of(new IntegerAttribute(), new MinAttribute(100L))))
                 .extracting(Schema::asYupSchema)
-                .isEqualTo("number().defined().integer().min(100)");
+                .isEqualTo("number().int().min(100)");
     }
 
     @Test
     void shouldSupportNegative() {
         assertThatField("negative")
                 .isEqualTo(new NumberSchema(
-                        Set.of(new NullableAttribute(), new IntegerAttribute(), new NegativeAttribute(false))))
+                        Set.of(new OptionalNullableAttribute(), new IntegerAttribute(), new NegativeAttribute(false))))
                 .extracting(Schema::asYupSchema)
-                .isEqualTo("number().nullable().integer().negative()");
+                .isEqualTo("number().int().negative().optional().nullable()");
     }
 
     @Test
     void shouldSupportPositive() {
         assertThatField("positive")
                 .isEqualTo(new NumberSchema(
-                        Set.of(new NullableAttribute(), new IntegerAttribute(), new PositiveAttribute(false))))
+                        Set.of(new OptionalNullableAttribute(), new IntegerAttribute(), new PositiveAttribute(false))))
                 .extracting(Schema::asYupSchema)
-                .isEqualTo("number().nullable().integer().positive()");
+                .isEqualTo("number().int().positive().optional().nullable()");
     }
 
     @Test
     void shouldSupportNegativeOrZero() {
         assertThatField("negativeOrZero")
-                .isEqualTo(new NumberSchema(Set.of(new NullableAttribute(), new NegativeAttribute(true))))
+                .isEqualTo(new NumberSchema(Set.of(new OptionalNullableAttribute(), new NegativeAttribute(true))))
                 .extracting(Schema::asYupSchema)
-                .isEqualTo("number().nullable().max(0)");
+                .isEqualTo("number().max(0).optional().nullable()");
     }
 
     @Test
     void shouldSupportPositiveOrZero() {
         assertThatField("positiveOrZero")
-                .isEqualTo(new NumberSchema(Set.of(new DefinedAttribute(), new PositiveAttribute(true))))
+                .isEqualTo(new NumberSchema(Set.of(new PositiveAttribute(true))))
                 .extracting(Schema::asYupSchema)
-                .isEqualTo("number().defined().min(0)");
+                .isEqualTo("number().min(0)");
     }
 
     static class NumberHolder {

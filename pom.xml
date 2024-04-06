@@ -7,6 +7,18 @@
   <packaging>pom</packaging>
   <name>java-to-yup</name>
   <url>https://github.com/ivangreene/java-to-yup</url>
+  <licenses>
+    <license>
+      <name>Apache-2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <name>Ivan Greene</name>
+      <email>ivan@ivan.sh</email>
+    </developer>
+  </developers>
   <modules>
     <module>java-to-yup-core</module>
     <module>java-to-yup-maven-plugin</module>

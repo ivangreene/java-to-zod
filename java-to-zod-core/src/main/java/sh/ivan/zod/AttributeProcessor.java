@@ -87,6 +87,14 @@ public class AttributeProcessor {
         if (isNullable(type, annotations)) {
             attributes.add(new OptionalNullableAttribute());
         }
+        if (attributes.contains(new SizeAttribute(1, Integer.MAX_VALUE))
+                && attributes.stream()
+                        .anyMatch(attribute -> attribute instanceof SizeAttribute
+                                && ((SizeAttribute) attribute).getMin() > 0
+                                && (((SizeAttribute) attribute).getMin() > 1
+                                        || ((SizeAttribute) attribute).getMax() != Integer.MAX_VALUE))) {
+            attributes.remove(new SizeAttribute(1, Integer.MAX_VALUE));
+        }
         return Set.copyOf(attributes);
     }
 

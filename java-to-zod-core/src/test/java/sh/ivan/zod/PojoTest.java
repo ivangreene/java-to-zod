@@ -85,12 +85,10 @@ class PojoTest extends JavaToZodConverterTest {
                 .extracting(ObjectSchema::getFields)
                 .asInstanceOf(InstanceOfAssertFactories.map(String.class, Schema.class))
                 .hasSize(1)
-                .containsEntry(
-                        "name",
-                        new StringSchema(Set.of(new SizeAttribute(1, 50), new SizeAttribute(1, Integer.MAX_VALUE))));
+                .containsEntry("name", new StringSchema(Set.of(new SizeAttribute(1, 50))));
         objectSchemaAssert
                 .extracting(ObjectSchema::asZodSchema)
-                .isEqualTo("object({ name: string().min(1).min(1).max(50), })");
+                .isEqualTo("object({ name: string().min(1).max(50), })");
     }
 
     static class Book {

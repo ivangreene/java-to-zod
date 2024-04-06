@@ -6,6 +6,7 @@
   <version>0.2.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>java-to-yup</name>
+  <description>Convert POJOs to Yup schemas</description>
   <url>https://github.com/ivangreene/java-to-yup</url>
   <licenses>
     <license>

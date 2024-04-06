@@ -57,8 +57,6 @@ jobs:
           -Pci-cd \
           release:prepare \
           release:perform \
-          javadoc:jar \
-          source:jar \
           -s settings.xml \
           -Dgpg.passphrase='${{ secrets.MAVEN_GPG_PASSPHRASE }}' \
           -DreleaseVersion=${{ github.event.inputs.releaseVersion }} \

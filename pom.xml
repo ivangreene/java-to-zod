@@ -2,12 +2,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>sh.ivan</groupId>
-  <artifactId>java-to-yup</artifactId>
+  <artifactId>java-to-zod</artifactId>
   <version>0.2.0-SNAPSHOT</version>
   <packaging>pom</packaging>
-  <name>java-to-yup</name>
-  <description>Convert POJOs to Yup schemas</description>
-  <url>https://github.com/ivangreene/java-to-yup</url>
+  <name>java-to-zod</name>
+  <description>Convert POJOs to Zod schemas</description>
+  <url>https://github.com/ivangreene/java-to-zod</url>
   <licenses>
     <license>
       <name>Apache-2.0</name>
@@ -21,15 +21,15 @@
     </developer>
   </developers>
   <modules>
-    <module>java-to-yup-core</module>
-    <module>java-to-yup-maven-plugin</module>
-    <module>java-to-yup-maven-plugin-test</module>
+    <module>java-to-zod-core</module>
+    <module>java-to-zod-maven-plugin</module>
+    <module>java-to-zod-maven-plugin-test</module>
   </modules>
   <scm>
     <connection>scm:git:${project.scm.url}</connection>
     <developerConnection>scm:git:${project.scm.url}</developerConnection>
     <tag>HEAD</tag>
-    <url>https://github.com/ivangreene/java-to-yup.git</url>
+    <url>https://github.com/ivangreene/java-to-zod.git</url>
   </scm>
   <distributionManagement>
     <repository>

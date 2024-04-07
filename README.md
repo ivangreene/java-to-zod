@@ -47,7 +47,7 @@ Goes well with
 and shares many of the same configuration options
 for scanning source classes.
 
-Example configuration:
+## Example configuration
 ```xml
 <plugin>
   <groupId>sh.ivan</groupId>
@@ -72,5 +72,5 @@ Example configuration:
 </plugin>
 ```
 
-See [typescript-generator docs](https://www.habarta.cz/typescript-generator/maven/typescript-generator-maven-plugin/generate-mojo.html)
-for other configuration properties that can be used to control class scanning.
+See [plugin configuration docs](https://java-to-zod.ivan.sh/java-to-zod-maven-plugin/generate-mojo.html)
+for all configuration properties.

@@ -27,7 +27,7 @@
   </modules>
   <scm>
     <connection>scm:git:${project.scm.url}</connection>
-    <developerConnection>scm:git:git@${repository}</developerConnection>
+    <developerConnection>${project.scm.connection}</developerConnection>
     <tag>HEAD</tag>
     <url>https://${repository}</url>
   </scm>

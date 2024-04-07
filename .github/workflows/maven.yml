@@ -21,14 +21,5 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: '20.x'
-    - name: Configure Git User
-      run: |
-        git config --global user.email "actions@github.com"
-        git config --global user.name "GitHub Actions"
-    - name: Deploy site
-      run: |
-        ./mvnw -B -U -Pci-cd site site:stage scm-publish:publish-scm
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Build with Maven
       run: ./mvnw -B package

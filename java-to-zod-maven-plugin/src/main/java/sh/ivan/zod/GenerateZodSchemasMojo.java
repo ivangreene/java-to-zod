@@ -38,7 +38,9 @@ public class GenerateZodSchemasMojo extends AbstractMojo {
     /**
      * Path and name of generated file.
      */
-    @Parameter
+    @Parameter(
+            defaultValue = "${project.build.directory}/java-to-zod/${project.artifactId}-schemas.js",
+            required = true)
     public File outputFile;
 
     /**
@@ -272,10 +274,6 @@ public class GenerateZodSchemasMojo extends AbstractMojo {
             parameters.scanningAcceptedPackages = scanningAcceptedPackages;
             parameters.debug = loggingLevel == Logger.Level.Debug;
 
-            File output = outputFile != null
-                    ? outputFile
-                    : new File(new File(projectBuildDirectory, "java-to-zod"), project.getArtifactId() + ".js");
-
             var input = Input.from(parameters);
             var typeScriptGenerator = new TypeScriptGenerator(settings);
             var model = typeScriptGenerator.getModelParser().parseModel(input.getSourceTypes());
@@ -285,7 +283,7 @@ public class GenerateZodSchemasMojo extends AbstractMojo {
                     .build();
             var javaToZodConverter = new JavaToZodConverter(typeScriptGenerator.getModelParser(), configuration);
             var beanSchemas = javaToZodConverter.getBeanSchemas(model);
-            var schemaFileWriter = new SchemaFileWriter(beanSchemas, output);
+            var schemaFileWriter = new SchemaFileWriter(beanSchemas, outputFile);
             schemaFileWriter.write();
 
         } catch (IOException e) {

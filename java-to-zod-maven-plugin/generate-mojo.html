@@ -29,7 +29,7 @@
           <ul class="breadcrumb">
         <li id="publishDate">Last Published: 2024-04-07<span class="divider">|</span>
 </li>
-          <li id="projectVersion">Version: 0.4.0</li>
+          <li id="projectVersion">Version: 0.4.1</li>
         <li class="pull-right"><a href="./">java-to-zod-maven-plugin</a></li>
           </ul>
         </div>
@@ -62,7 +62,7 @@
       
 <p><strong>Full name</strong>:</p>
       
-<p>sh.ivan:java-to-zod-maven-plugin:0.4.0:generate</p>
+<p>sh.ivan:java-to-zod-maven-plugin:0.4.1:generate</p>
       
 <p><strong>Description</strong>:</p>
       
@@ -122,6 +122,17 @@
  
 <li></li>
 </ul> Required parameter, recommended value is <code>jackson2</code>.<br /></td>
+          </tr>
+          
+<tr class="a">
+            
+<td><code><a href="#outputFile">&lt;outputFile&gt;</a></code></td>
+            
+<td><code>File</code></td>
+            
+<td><code>-</code></td>
+            
+<td>Path and name of generated file.<br /><strong>Default value is</strong>: <code>${project.build.directory}/java-to-zod/${project.artifactId}-schemas.js</code>.<br /></td>
           </tr>
         </table>
       </section>
@@ -328,17 +339,6 @@
           
 <tr class="a">
             
-<td><code><a href="#outputFile">&lt;outputFile&gt;</a></code></td>
-            
-<td><code>File</code></td>
-            
-<td><code>-</code></td>
-            
-<td>Path and name of generated file.<br /></td>
-          </tr>
-          
-<tr class="b">
-            
 <td><code><a href="#scanningAcceptedPackages">&lt;scanningAcceptedPackages&gt;</a></code></td>
             
 <td><code>List&lt;String&gt;</code></td>
@@ -361,7 +361,7 @@
 </ul> This parameter is passed directly to underlying classpath scanning library (ClassGraph) without any validation or interpretation.<br /></td>
           </tr>
           
-<tr class="a">
+<tr class="b">
             
 <td><code><a href="#scanSpringApplication">&lt;scanSpringApplication&gt;</a></code></td>
             
@@ -372,7 +372,7 @@
 <td>If <code>true</code> Spring REST application will be loaded and scanned for classes to process. It is needed to specify application class using another parameter (for example <code>classes</code>).<br /></td>
           </tr>
           
-<tr class="b">
+<tr class="a">
             
 <td><code><a href="#schemaNamePrefix">&lt;schemaNamePrefix&gt;</a></code></td>
             
@@ -383,7 +383,7 @@
 <td>Prefix added to generated schema names.<br /></td>
           </tr>
           
-<tr class="a">
+<tr class="b">
             
 <td><code><a href="#schemaNameSuffix">&lt;schemaNameSuffix&gt;</a></code></td>
             
@@ -394,7 +394,7 @@
 <td>Suffix added to generated schema names.<br /><strong>Default value is</strong>: <code>Schema</code>.<br /></td>
           </tr>
           
-<tr class="b">
+<tr class="a">
             
 <td><code><a href="#skip">&lt;skip&gt;</a></code></td>
             
@@ -614,7 +614,9 @@
           
 <li><strong>Type</strong>: <code>java.io.File</code></li>
           
-<li><strong>Required</strong>: <code>No</code></li>
+<li><strong>Required</strong>: <code>Yes</code></li>
+          
+<li><strong>Default</strong>: <code>${project.build.directory}/java-to-zod/${project.artifactId}-schemas.js</code></li>
         </ul><hr /></section><section>
 <h4><strong>&lt;scanningAcceptedPackages&gt;</strong></h4>
         

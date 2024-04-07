@@ -35,9 +35,8 @@ class CircularReferenceTest extends JavaToZodConverterTest {
                                         Set.of(new SizeAttribute(1, Integer.MAX_VALUE))),
                                 Set.of()));
         assertThat(schema.asZodSchema())
-                .isEqualTo(
-                        "object({ name: string(), parent: lazy(() => Person.default(undefined)), children: array(lazy(() => Person.default(undefined))), "
-                                + "listOfListsOfChildren: array(array(lazy(() => Person.default(undefined))).min(1)), })");
+                .isEqualTo("object({ name: string(), parent: lazy(() => Person), children: array(lazy(() => Person)), "
+                        + "listOfListsOfChildren: array(array(lazy(() => Person)).min(1)), })");
     }
 
     static class Person {

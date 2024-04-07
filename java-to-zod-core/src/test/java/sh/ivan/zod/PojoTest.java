@@ -66,7 +66,7 @@ class PojoTest extends JavaToZodConverterTest {
         objectSchemaAssert
                 .extracting(ObjectSchema::asZodSchema)
                 .isEqualTo(
-                        "object({ name: string(), age: number().int().optional().nullable(), address: lazy(() => Address.default(undefined).optional().nullable()), })");
+                        "object({ name: string(), age: number().int().optional().nullable(), address: lazy(() => Address.optional().nullable()), })");
     }
 
     static class Person {

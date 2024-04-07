@@ -24,7 +24,6 @@ public class ReferenceSchema extends Schema {
 
     @Override
     public String asZodSchema(String prefix) {
-        return prefix + "lazy(() => " + reference + ".default(undefined)" + Attribute.writeAttributes(getAttributes())
-                + ")";
+        return prefix + "lazy(() => " + reference + Attribute.writeAttributes(getAttributes()) + ")";
     }
 }

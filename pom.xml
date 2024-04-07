@@ -27,9 +27,9 @@
   </modules>
   <scm>
     <connection>scm:git:${project.scm.url}</connection>
-    <developerConnection>scm:git:${project.scm.url}</developerConnection>
+    <developerConnection>scm:git:git@${repository}</developerConnection>
     <tag>HEAD</tag>
-    <url>https://github.com/ivangreene/java-to-zod.git</url>
+    <url>https://${repository}</url>
   </scm>
   <distributionManagement>
     <repository>
@@ -42,7 +42,7 @@
     </snapshotRepository>
     <site>
       <id>github</id>
-      <url>${project.scm.connection}</url>
+      <url>${project.scm.developerConnection}</url>
     </site>
   </distributionManagement>
   <properties>
@@ -50,6 +50,7 @@
     <maven.compiler.release>11</maven.compiler.release>
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>11</maven.compiler.target>
+    <repository>github.com/ivangreene/java-to-zod.git</repository>
   </properties>
   <build>
     <pluginManagement>

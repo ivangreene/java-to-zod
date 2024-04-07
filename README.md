@@ -46,3 +46,31 @@ Goes well with
 [typescript-generator](https://github.com/vojtechhabarta/typescript-generator),
 and shares many of the same configuration options
 for scanning source classes.
+
+Example configuration:
+```xml
+<plugin>
+  <groupId>sh.ivan</groupId>
+  <artifactId>java-to-zod-maven-plugin</artifactId>
+  <version>VERSION</version>
+  <configuration>
+    <jsonLibrary>jackson2</jsonLibrary>
+    <outputFile>${project.basedir}/../frontend/generated-schemas.js</outputFile>
+    <classPatterns>
+      <classPattern>sh.ivan.pojo.*</classPattern>
+    </classPatterns>
+  </configuration>
+  <executions>
+    <execution>
+      <id>generate</id>
+      <goals>
+        <goal>generate</goal>
+      </goals>
+      <phase>process-classes</phase>
+    </execution>
+  </executions>
+</plugin>
+```
+
+See [typescript-generator docs](https://www.habarta.cz/typescript-generator/maven/typescript-generator-maven-plugin/generate-mojo.html)
+for other configuration properties that can be used to control class scanning.

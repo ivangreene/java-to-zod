@@ -15,11 +15,6 @@ public class NegativeAttribute implements Attribute {
     }
 
     @Override
-    public int priority() {
-        return 20;
-    }
-
-    @Override
     public String zodMethod() {
         return includeZero ? "max(0)" : "negative()";
     }

@@ -7,11 +7,6 @@ import lombok.ToString;
 @EqualsAndHashCode
 public class EmailAttribute implements Attribute {
     @Override
-    public int priority() {
-        return 15;
-    }
-
-    @Override
     public String zodMethod() {
         return "email()";
     }

@@ -7,11 +7,6 @@ import lombok.ToString;
 @EqualsAndHashCode
 public class UuidAttribute implements Attribute {
     @Override
-    public int priority() {
-        return 10;
-    }
-
-    @Override
     public String zodMethod() {
         return "uuid()";
     }

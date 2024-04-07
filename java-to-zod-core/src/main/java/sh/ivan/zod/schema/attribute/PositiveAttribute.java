@@ -15,11 +15,6 @@ public class PositiveAttribute implements Attribute {
     }
 
     @Override
-    public int priority() {
-        return 25;
-    }
-
-    @Override
     public String zodMethod() {
         return includeZero ? "min(0)" : "positive()";
     }

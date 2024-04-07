@@ -1,11 +1,32 @@
 package sh.ivan.zod.schema.attribute;
 
 import java.util.Comparator;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 public interface Attribute {
-    int priority();
+    List<Class<? extends Attribute>> ATTRIBUTES_BY_PRIORITY = List.of(
+            EqualsBooleanAttribute.class,
+            NotBlankAttribute.class,
+            IntegerAttribute.class,
+            RegexAttribute.class,
+            UuidAttribute.class,
+            EmailAttribute.class,
+            NegativeAttribute.class,
+            PositiveAttribute.class,
+            MinAttribute.class,
+            MaxAttribute.class,
+            SizeAttribute.class,
+            OptionalNullableAttribute.class);
+
+    default int priority() {
+        var priority = ATTRIBUTES_BY_PRIORITY.indexOf(getClass());
+        if (priority == -1) {
+            throw new IllegalStateException("Attribute " + getClass() + " not registered in ATTRIBUTES_BY_PRIORITY");
+        }
+        return priority * 10;
+    }
 
     String zodMethod();
 

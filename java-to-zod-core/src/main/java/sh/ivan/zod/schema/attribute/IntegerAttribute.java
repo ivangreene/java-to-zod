@@ -7,11 +7,6 @@ import lombok.ToString;
 @EqualsAndHashCode
 public class IntegerAttribute implements Attribute {
     @Override
-    public int priority() {
-        return 5;
-    }
-
-    @Override
     public String zodMethod() {
         return "int()";
     }

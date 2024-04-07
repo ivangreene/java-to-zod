@@ -20,11 +20,6 @@ public class RegexAttribute implements Attribute {
     }
 
     @Override
-    public int priority() {
-        return 9;
-    }
-
-    @Override
     public String zodMethod() {
         return "regex(/^" + escapeRegex() + "$/" + flags() + ")";
     }

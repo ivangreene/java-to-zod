@@ -63,5 +63,4 @@ jobs:
       env:
         MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
         MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
-        AUTO_RELEASE_AFTER_CLOSE: ${{ env.auto_release }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

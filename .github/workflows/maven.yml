@@ -21,6 +21,11 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: '20.x'
+    - name: Configure Git User
+      run: |
+        git config user.email "actions@github.com"
+        git config user.name "GitHub Actions"
+        echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
     - name: Build with Maven
       run: ./mvnw -B package
     - name: Deploy site

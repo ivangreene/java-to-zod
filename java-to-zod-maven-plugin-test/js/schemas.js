@@ -27,5 +27,6 @@ export const PersonSchema = zod.object({
   firstName: zod.string().regex(/\S/),
   lastName: zod.string().min(1),
   job: zod.string(),
+  homepage: zod.string().regex(/^https?:\/\/.*$/).optional().nullable(),
   child: zod.lazy(() => PersonSchema.optional().nullable()),
 });

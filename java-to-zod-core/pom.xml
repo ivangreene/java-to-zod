@@ -43,5 +43,11 @@
       <version>3.24.2</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-hibernate-validator</artifactId>
+      <version>3.9.2</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 </project>

@@ -37,6 +37,19 @@ describe('PersonSchema', () => {
         expect(isValid(job, null)).toBe(false);
     });
 
+    test('should support Pattern String', () => {
+        const homepage = PersonSchema.shape.homepage;
+        expect(isValid(homepage, 'https://example.com')).toBe(true);
+        expect(isValid(homepage, 'http://example.com')).toBe(true);
+        expect(isValid(homepage, null)).toBe(true);
+        expect(isValid(homepage, undefined)).toBe(true);
+
+        expect(isValid(homepage, 'foo-https://example.com')).toBe(false);
+        expect(isValid(homepage, 'HTTP://example.com')).toBe(false);
+        expect(isValid(homepage, '')).toBe(false);
+        expect(isValid(homepage, 'x')).toBe(false);
+    });
+
     test('should validate a valid person', () => {
         expect(isValid(PersonSchema, {
             id: '389ba84f-0c10-41f6-9df5-86faf0ccae11', firstName: 'John', lastName: 'Doe', job: 'Human'

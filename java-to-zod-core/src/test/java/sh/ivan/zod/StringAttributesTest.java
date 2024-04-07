@@ -2,6 +2,7 @@ package sh.ivan.zod;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -14,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import sh.ivan.zod.schema.ObjectSchema;
 import sh.ivan.zod.schema.Schema;
 import sh.ivan.zod.schema.StringSchema;
+import sh.ivan.zod.schema.attribute.EmailAttribute;
 import sh.ivan.zod.schema.attribute.NotBlankAttribute;
 import sh.ivan.zod.schema.attribute.OptionalNullableAttribute;
 import sh.ivan.zod.schema.attribute.RegexAttribute;
@@ -102,6 +104,14 @@ class StringAttributesTest extends JavaToZodConverterTest {
                 .isEqualTo("string().regex(/^[a-z]+$/ims)");
     }
 
+    @Test
+    void shouldSupportEmail() {
+        assertThatField("email")
+                .isEqualTo(new StringSchema(Set.of(new EmailAttribute(), new OptionalNullableAttribute())))
+                .extracting(Schema::asZodSchema)
+                .isEqualTo("string().email().optional().nullable()");
+    }
+
     static class StringHolder {
         @NotBlank
         public String notBlank;
@@ -144,6 +154,9 @@ class StringAttributesTest extends JavaToZodConverterTest {
                 })
         @NotNull
         public String allFlags;
+
+        @Email
+        public String email;
     }
 
     private ObjectAssert<Schema> assertThatField(String fieldName) {

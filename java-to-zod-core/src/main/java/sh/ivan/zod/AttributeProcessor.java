@@ -38,6 +38,7 @@ import sh.ivan.zod.schema.attribute.NegativeAttribute;
 import sh.ivan.zod.schema.attribute.NotBlankAttribute;
 import sh.ivan.zod.schema.attribute.OptionalNullableAttribute;
 import sh.ivan.zod.schema.attribute.PositiveAttribute;
+import sh.ivan.zod.schema.attribute.RegexAttribute;
 import sh.ivan.zod.schema.attribute.SizeAttribute;
 
 public class AttributeProcessor {
@@ -60,7 +61,7 @@ public class AttributeProcessor {
             Null.class, // Not yet implemented
             Past.class, // Not yet implemented
             PastOrPresent.class, // Not yet implemented
-            Pattern.class, // Not yet implemented
+            Pattern.class,
             Positive.class,
             PositiveOrZero.class,
             Size.class);
@@ -146,6 +147,11 @@ public class AttributeProcessor {
         }
         if (annotation.annotationType() == PositiveOrZero.class) {
             return new PositiveAttribute(true);
+        }
+        if (annotation.annotationType() == Pattern.class) {
+            if (type == String.class) {
+                return new RegexAttribute(((Pattern) annotation).regexp(), ((Pattern) annotation).flags());
+            }
         }
         return null;
     }

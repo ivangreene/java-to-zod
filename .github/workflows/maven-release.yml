@@ -32,8 +32,8 @@ jobs:
         node-version: '20.x'
     - name: Configure Git User
       run: |
-        git config user.email "actions@github.com"
-        git config user.name "GitHub Actions"
+        git config --global user.email "actions@github.com"
+        git config --global user.name "GitHub Actions"
         echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
     - name: Import GPG Key
       uses: crazy-max/ghaction-import-gpg@v5.0.0
@@ -63,5 +63,10 @@ jobs:
       env:
         MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
         MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
-        AUTO_RELEASE_AFTER_CLOSE: ${{ env.auto_release }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Deploy site
+      run: |
+        git checkout "v${{ github.event.inputs.releaseVersion }}" && \
+          ./mvnw -B -U -Pci-cd site site:stage scm-publish:publish-scm
+      env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

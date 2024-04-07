@@ -27,9 +27,9 @@
   </modules>
   <scm>
     <connection>scm:git:${project.scm.url}</connection>
-    <developerConnection>scm:git:${project.scm.url}</developerConnection>
+    <developerConnection>scm:git:git@${repository}</developerConnection>
     <tag>HEAD</tag>
-    <url>https://github.com/ivangreene/java-to-zod.git</url>
+    <url>https://${repository}</url>
   </scm>
   <distributionManagement>
     <repository>
@@ -40,12 +40,17 @@
       <id>ossrh</id>
       <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
     </snapshotRepository>
+    <site>
+      <id>github</id>
+      <url>scm:git:https://${env.GITHUB_ACTOR}:${env.GITHUB_TOKEN}@${repository}</url>
+    </site>
   </distributionManagement>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.release>11</maven.compiler.release>
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>11</maven.compiler.target>
+    <repository>github.com/ivangreene/java-to-zod.git</repository>
   </properties>
   <build>
     <pluginManagement>
@@ -202,6 +207,14 @@
                 </configuration>
               </execution>
             </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-scm-publish-plugin</artifactId>
+            <version>3.2.1</version>
+            <configuration>
+              <scmBranch>gh-pages</scmBranch>
+            </configuration>
           </plugin>
         </plugins>
       </build>

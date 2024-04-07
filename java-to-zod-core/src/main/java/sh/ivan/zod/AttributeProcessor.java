@@ -31,6 +31,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import sh.ivan.zod.schema.attribute.Attribute;
+import sh.ivan.zod.schema.attribute.EmailAttribute;
 import sh.ivan.zod.schema.attribute.EqualsBooleanAttribute;
 import sh.ivan.zod.schema.attribute.MaxAttribute;
 import sh.ivan.zod.schema.attribute.MinAttribute;
@@ -48,7 +49,7 @@ public class AttributeProcessor {
             DecimalMax.class, // Not yet implemented
             DecimalMin.class, // Not yet implemented
             Digits.class, // Not yet implemented
-            Email.class, // Not yet implemented
+            Email.class,
             Future.class, // Not yet implemented
             FutureOrPresent.class, // Not yet implemented
             Max.class,
@@ -148,9 +149,12 @@ public class AttributeProcessor {
         if (annotation.annotationType() == PositiveOrZero.class) {
             return new PositiveAttribute(true);
         }
-        if (annotation.annotationType() == Pattern.class) {
-            if (type == String.class) {
+        if (type == String.class) {
+            if (annotation.annotationType() == Pattern.class) {
                 return new RegexAttribute(((Pattern) annotation).regexp(), ((Pattern) annotation).flags());
+            }
+            if (annotation.annotationType() == Email.class) {
+                return new EmailAttribute();
             }
         }
         return null;

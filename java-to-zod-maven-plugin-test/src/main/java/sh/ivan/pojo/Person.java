@@ -1,5 +1,6 @@
 package sh.ivan.pojo;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -20,6 +21,9 @@ public class Person {
 
     @Pattern(regexp = "https?://.*")
     public String homepage;
+
+    @Email
+    public String email;
 
     public Person child;
 }

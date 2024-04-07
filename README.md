@@ -81,7 +81,7 @@ for all configuration properties.
 - [ ] [DecimalMax](https://javadoc.io/doc/jakarta.validation/jakarta.validation-api/latest/jakarta/validation/constraints/DecimalMax.html) - Not yet implemented
 - [ ] [DecimalMin](https://javadoc.io/doc/jakarta.validation/jakarta.validation-api/latest/jakarta/validation/constraints/DecimalMin.html) - Not yet implemented
 - [ ] [Digits](https://javadoc.io/doc/jakarta.validation/jakarta.validation-api/latest/jakarta/validation/constraints/Digits.html) - Not yet implemented
-- [ ] [Email](https://javadoc.io/doc/jakarta.validation/jakarta.validation-api/latest/jakarta/validation/constraints/Email.html) - Not yet implemented
+- [X] [Email](https://javadoc.io/doc/jakarta.validation/jakarta.validation-api/latest/jakarta/validation/constraints/Email.html)
 - [ ] [Future](https://javadoc.io/doc/jakarta.validation/jakarta.validation-api/latest/jakarta/validation/constraints/Future.html) - Not yet implemented
 - [ ] [FutureOrPresent](https://javadoc.io/doc/jakarta.validation/jakarta.validation-api/latest/jakarta/validation/constraints/FutureOrPresent.html) - Not yet implemented
 - [X] [Max](https://javadoc.io/doc/jakarta.validation/jakarta.validation-api/latest/jakarta/validation/constraints/Max.html)

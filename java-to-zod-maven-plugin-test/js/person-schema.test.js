@@ -50,6 +50,18 @@ describe('PersonSchema', () => {
         expect(isValid(homepage, 'x')).toBe(false);
     });
 
+    test('should support Email', () => {
+        const email = PersonSchema.shape.email;
+        expect(isValid(email, 'me@example.com')).toBe(true);
+        expect(isValid(email, null)).toBe(true);
+        expect(isValid(email, undefined)).toBe(true);
+
+        expect(isValid(email, 'not-an-email')).toBe(false);
+        expect(isValid(email, 'oops@')).toBe(false);
+        expect(isValid(email, '@oops.com')).toBe(false);
+        expect(isValid(email, '')).toBe(false);
+    });
+
     test('should validate a valid person', () => {
         expect(isValid(PersonSchema, {
             id: '389ba84f-0c10-41f6-9df5-86faf0ccae11', firstName: 'John', lastName: 'Doe', job: 'Human'

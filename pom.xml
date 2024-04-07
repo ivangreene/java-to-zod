@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>sh.ivan</groupId>
   <artifactId>java-to-zod</artifactId>
-  <version>0.4.0-SNAPSHOT</version>
+  <version>0.3.2</version>
   <packaging>pom</packaging>
   <name>java-to-zod</name>
   <description>Convert POJOs to Zod schemas</description>
@@ -28,7 +28,7 @@
   <scm>
     <connection>scm:git:${project.scm.url}</connection>
     <developerConnection>${project.scm.connection}</developerConnection>
-    <tag>HEAD</tag>
+    <tag>v0.3.2</tag>
     <url>https://${repository}</url>
   </scm>
   <distributionManagement>

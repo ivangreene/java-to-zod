@@ -42,7 +42,7 @@
     </snapshotRepository>
     <site>
       <id>github</id>
-      <url>https://${env.GITHUB_ACTOR}:${env.GITHUB_TOKEN}@${repository}</url>
+      <url>scm:git:https://${env.GITHUB_ACTOR}:${env.GITHUB_TOKEN}@${repository}</url>
     </site>
   </distributionManagement>
   <properties>

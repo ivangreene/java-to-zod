@@ -74,3 +74,33 @@ for scanning source classes.
 
 See [plugin configuration docs](https://java-to-zod.ivan.sh/java-to-zod-maven-plugin/generate-mojo.html)
 for all configuration properties.
+
+## Supported annotations
+- [X] [AssertFalse](https://javadoc.io/doc/jakarta.validation/jakarta.validation-api/latest/jakarta/validation/constraints/AssertFalse.html)
+- [X] [AssertTrue](https://javadoc.io/doc/jakarta.validation/jakarta.validation-api/latest/jakarta/validation/constraints/AssertTrue.html)
+- [ ] [DecimalMax](https://javadoc.io/doc/jakarta.validation/jakarta.validation-api/latest/jakarta/validation/constraints/DecimalMax.html) - Not yet implemented
+- [ ] [DecimalMin](https://javadoc.io/doc/jakarta.validation/jakarta.validation-api/latest/jakarta/validation/constraints/DecimalMin.html) - Not yet implemented
+- [ ] [Digits](https://javadoc.io/doc/jakarta.validation/jakarta.validation-api/latest/jakarta/validation/constraints/Digits.html) - Not yet implemented
+- [ ] [Email](https://javadoc.io/doc/jakarta.validation/jakarta.validation-api/latest/jakarta/validation/constraints/Email.html) - Not yet implemented
+- [ ] [Future](https://javadoc.io/doc/jakarta.validation/jakarta.validation-api/latest/jakarta/validation/constraints/Future.html) - Not yet implemented
+- [ ] [FutureOrPresent](https://javadoc.io/doc/jakarta.validation/jakarta.validation-api/latest/jakarta/validation/constraints/FutureOrPresent.html) - Not yet implemented
+- [X] [Max](https://javadoc.io/doc/jakarta.validation/jakarta.validation-api/latest/jakarta/validation/constraints/Max.html)
+- [X] [Min](https://javadoc.io/doc/jakarta.validation/jakarta.validation-api/latest/jakarta/validation/constraints/Min.html)
+- [X] [Negative](https://javadoc.io/doc/jakarta.validation/jakarta.validation-api/latest/jakarta/validation/constraints/Negative.html)
+- [X] [NegativeOrZero](https://javadoc.io/doc/jakarta.validation/jakarta.validation-api/latest/jakarta/validation/constraints/NegativeOrZero.html)
+- [X] [NotBlank](https://javadoc.io/doc/jakarta.validation/jakarta.validation-api/latest/jakarta/validation/constraints/NotBlank.html)
+- [X] [NotEmpty](https://javadoc.io/doc/jakarta.validation/jakarta.validation-api/latest/jakarta/validation/constraints/NotEmpty.html)
+- [X] [NotNull](https://javadoc.io/doc/jakarta.validation/jakarta.validation-api/latest/jakarta/validation/constraints/NotNull.html)
+- [ ] [Null](https://javadoc.io/doc/jakarta.validation/jakarta.validation-api/latest/jakarta/validation/constraints/Null.html) - Not yet implemented
+- [ ] [Past](https://javadoc.io/doc/jakarta.validation/jakarta.validation-api/latest/jakarta/validation/constraints/Past.html) - Not yet implemented
+- [ ] [PastOrPresent](https://javadoc.io/doc/jakarta.validation/jakarta.validation-api/latest/jakarta/validation/constraints/PastOrPresent.html) - Not yet implemented
+- [X] [Pattern](https://javadoc.io/doc/jakarta.validation/jakarta.validation-api/latest/jakarta/validation/constraints/Pattern.html)
+  - No transformation is made to the regex pattern string. Keep in mind that the Java and
+    JavaScript regex engines are not identical. The only flags supported are:
+    - CASE_INSENSITIVE (`/i`)
+    - MULTILINE (`/m`)
+    - DOTALL (`/s`)
+  - All other flags are ignored
+- [X] [Positive](https://javadoc.io/doc/jakarta.validation/jakarta.validation-api/latest/jakarta/validation/constraints/Positive.html)
+- [X] [PositiveOrZero](https://javadoc.io/doc/jakarta.validation/jakarta.validation-api/latest/jakarta/validation/constraints/PositiveOrZero.html)
+- [X] [Size](https://javadoc.io/doc/jakarta.validation/jakarta.validation-api/latest/jakarta/validation/constraints/Size.html)

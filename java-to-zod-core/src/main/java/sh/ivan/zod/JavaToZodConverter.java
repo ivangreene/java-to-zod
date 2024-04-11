@@ -50,7 +50,7 @@ public class JavaToZodConverter {
     private final Configuration configuration;
 
     public JavaToZodConverter(ModelParser modelParser, Configuration configuration) {
-        this.attributeProcessor = new AttributeProcessor(this);
+        this.attributeProcessor = new AttributeProcessor();
         objectSchemaBuilder = new ObjectSchemaBuilder(this, modelParser);
         arraySchemaBuilder = new ArraySchemaBuilder(this);
         this.configuration = configuration;

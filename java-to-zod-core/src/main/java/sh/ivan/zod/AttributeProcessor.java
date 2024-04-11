@@ -26,6 +26,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Type;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -70,11 +71,16 @@ public class AttributeProcessor {
     private static final Set<Class<? extends Annotation>> NOT_NULL_ANNOTATIONS =
             Set.of(NotBlank.class, NotEmpty.class, NotNull.class);
 
-    private final JavaToZodConverter converter;
-
-    public AttributeProcessor(JavaToZodConverter converter) {
-        this.converter = converter;
-    }
+    private static final Map<Class<? extends Annotation>, Attribute> CONSTANT_ATTRIBUTES = Map.of(
+            NotBlank.class, new NotBlankAttribute(),
+            AssertFalse.class, new EqualsBooleanAttribute(false),
+            AssertTrue.class, new EqualsBooleanAttribute(true),
+            Negative.class, new NegativeAttribute(),
+            Positive.class, new PositiveAttribute(),
+            NegativeOrZero.class, new NegativeAttribute(true),
+            PositiveOrZero.class, new PositiveAttribute(true),
+            Email.class, new EmailAttribute(),
+            NotEmpty.class, new SizeAttribute(1, Integer.MAX_VALUE));
 
     public Set<Attribute> getAttributes(Type type, Set<AnnotatedElement> annotatedElements) {
         return getAttributesForAnnotations(
@@ -114,22 +120,11 @@ public class AttributeProcessor {
     }
 
     private Attribute processAnnotation(Type type, Annotation annotation) {
+        if (CONSTANT_ATTRIBUTES.containsKey(annotation.annotationType())) {
+            return CONSTANT_ATTRIBUTES.get(annotation.annotationType());
+        }
         if (annotation.annotationType() == Size.class) {
             return new SizeAttribute(((Size) annotation).min(), ((Size) annotation).max());
-        }
-        if (annotation.annotationType() == NotEmpty.class) {
-            if (type == String.class || converter.isArray(type)) {
-                return new SizeAttribute(1, Integer.MAX_VALUE);
-            }
-        }
-        if (annotation.annotationType() == NotBlank.class) {
-            return new NotBlankAttribute();
-        }
-        if (annotation.annotationType() == AssertFalse.class) {
-            return new EqualsBooleanAttribute(false);
-        }
-        if (annotation.annotationType() == AssertTrue.class) {
-            return new EqualsBooleanAttribute(true);
         }
         if (annotation.annotationType() == Max.class) {
             return new MaxAttribute(((Max) annotation).value());
@@ -137,24 +132,9 @@ public class AttributeProcessor {
         if (annotation.annotationType() == Min.class) {
             return new MinAttribute(((Min) annotation).value());
         }
-        if (annotation.annotationType() == Negative.class) {
-            return new NegativeAttribute();
-        }
-        if (annotation.annotationType() == Positive.class) {
-            return new PositiveAttribute();
-        }
-        if (annotation.annotationType() == NegativeOrZero.class) {
-            return new NegativeAttribute(true);
-        }
-        if (annotation.annotationType() == PositiveOrZero.class) {
-            return new PositiveAttribute(true);
-        }
         if (type == String.class) {
             if (annotation.annotationType() == Pattern.class) {
                 return new RegexAttribute(((Pattern) annotation).regexp(), ((Pattern) annotation).flags());
-            }
-            if (annotation.annotationType() == Email.class) {
-                return new EmailAttribute();
             }
         }
         return null;

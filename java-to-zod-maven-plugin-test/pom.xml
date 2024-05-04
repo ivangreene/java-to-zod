@@ -29,7 +29,7 @@
           <outputFile>${generated-schema-file}</outputFile>
           <jsonLibrary>jackson2</jsonLibrary>
           <classPatterns>
-            <classPattern>sh.ivan.pojo.*</classPattern>
+            <classPattern>sh.ivan.pojo.**</classPattern>
           </classPatterns>
         </configuration>
         <executions>

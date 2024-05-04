@@ -1,5 +1,5 @@
 import { PersonSchema } from './schemas';
-import { isValid } from './test-utils';
+import { getErrorMessages, isValid } from './test-utils';
 
 describe('PersonSchema', () => {
     test('should support nullable UUID', () => {
@@ -81,5 +81,11 @@ describe('PersonSchema', () => {
         expect(isValid(PersonSchema, {
             firstName: 'John', job: 'Human'
         })).toBe(false);
+    });
+
+    test('should use error messages', () => {
+        expect(getErrorMessages(PersonSchema, {
+            id: '389ba84f-0c10-41f6-9df5-86faf0ccae11', firstName: '   ', lastName: '', job: 'Human', homepage: 'not-a-url'
+        })).toEqual(['cannot be blank', 'cannot be empty', `must be a valid 'URL' (" - \\)`]);
     });
 });

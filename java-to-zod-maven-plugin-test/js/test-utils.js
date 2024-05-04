@@ -7,3 +7,12 @@ export function isValid(schema, value) {
         return false;
     }
 }
+
+export function getErrorMessages(schema, value) {
+    try {
+        schema.parse(value);
+        return [];
+    } catch (e) {
+        return e.errors.map(error => error.message);
+    }
+}

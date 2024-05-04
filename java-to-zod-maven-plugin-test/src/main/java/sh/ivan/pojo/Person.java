@@ -10,16 +10,16 @@ import java.util.UUID;
 public class Person {
     public UUID id;
 
-    @NotBlank
+    @NotBlank(message = "cannot be blank")
     public String firstName;
 
-    @NotEmpty
+    @NotEmpty(message = "cannot be empty")
     public String lastName;
 
     @NotNull
     public String job;
 
-    @Pattern(regexp = "https?://.*")
+    @Pattern(regexp = "https?://.*", message = "must be a valid 'URL' (\" - \\)")
     public String homepage;
 
     @Email

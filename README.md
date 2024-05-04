@@ -6,26 +6,29 @@ to specify the constraints.
 
 ## Why?
 
-Write your schema once, and use it for both frontend
+Write your schemas once, and use them for both frontend
 and backend validation.
 
 ## Example
 ```java
 public class Person {
-    @NotEmpty
+    @NotEmpty(message = "must not be empty")
     public String givenName;
 
     @NotEmpty
     public String surname;
 
-    @Positive
+    @Positive(message = "must be positive")
     public int age;
+
+    @Email(message = "must be a valid email")
+    public String email;
 
     @NotNull
     public AccountType accountType;
 }
 
-public enum AccountType {
+enum AccountType {
     PREMIUM,
     STANDARD,
     BASIC,
@@ -35,10 +38,11 @@ public enum AccountType {
 Running the java-to-zod plugin will give you:
 ```js
 const PersonSchema = zod.object({
-    givenName: zod.string().min(1),
-    surname: zod.string().min(1),
-    age: zod.number().int().positive(),
-    accountType: zod.enum(['PREMIUM', 'STANDARD', 'BASIC']),
+  givenName: zod.string().min(1, { message: 'must not be empty' }),
+  surname: zod.string().min(1),
+  age: zod.number().int().positive({ message: 'must be positive' }),
+  email: zod.string().email({ message: 'must be a valid email' }).optional().nullable(),
+  accountType: zod.enum(['PREMIUM', 'STANDARD', 'BASIC']),
 });
 ```
 
@@ -47,7 +51,7 @@ Goes well with
 and shares many of the same configuration options
 for scanning source classes.
 
-## Example configuration
+## Example configuration for Maven plugin
 ```xml
 <plugin>
   <groupId>sh.ivan</groupId>
@@ -57,7 +61,7 @@ for scanning source classes.
     <jsonLibrary>jackson2</jsonLibrary>
     <outputFile>${project.basedir}/../frontend/generated-schemas.js</outputFile>
     <classPatterns>
-      <classPattern>sh.ivan.pojo.*</classPattern>
+      <classPattern>sh.ivan.pojo.**</classPattern>
     </classPatterns>
   </configuration>
   <executions>

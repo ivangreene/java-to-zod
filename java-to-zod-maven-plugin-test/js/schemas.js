@@ -31,3 +31,11 @@ export const PersonSchema = zod.object({
   email: zod.string().email().optional().nullable(),
   child: zod.lazy(() => PersonSchema.optional().nullable()),
 });
+
+export const PersonExampleSchema = zod.object({
+  givenName: zod.string().min(1, { message: 'must not be empty' }),
+  surname: zod.string().min(1),
+  age: zod.number().int().positive({ message: 'must be positive' }),
+  email: zod.string().email({ message: 'must be a valid email' }).optional().nullable(),
+  accountType: zod.enum(['PREMIUM', 'STANDARD', 'BASIC']),
+});

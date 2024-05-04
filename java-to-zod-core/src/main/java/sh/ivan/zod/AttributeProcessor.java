@@ -28,10 +28,12 @@ import java.lang.reflect.Type;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import sh.ivan.zod.schema.attribute.Attribute;
+import sh.ivan.zod.schema.attribute.AttributeWithMessage;
 import sh.ivan.zod.schema.attribute.EmailAttribute;
 import sh.ivan.zod.schema.attribute.EqualsBooleanAttribute;
 import sh.ivan.zod.schema.attribute.MaxAttribute;
@@ -120,6 +122,17 @@ public class AttributeProcessor {
     }
 
     private Attribute processAnnotation(Type type, Annotation annotation) {
+        var attribute = getAttribute(type, annotation);
+        if (attribute != null) {
+            var message = getMessage(annotation);
+            if (message.isPresent()) {
+                return new AttributeWithMessage(attribute, message.get());
+            }
+        }
+        return attribute;
+    }
+
+    private Attribute getAttribute(Type type, Annotation annotation) {
         if (CONSTANT_ATTRIBUTES.containsKey(annotation.annotationType())) {
             return CONSTANT_ATTRIBUTES.get(annotation.annotationType());
         }
@@ -138,5 +151,18 @@ public class AttributeProcessor {
             }
         }
         return null;
+    }
+
+    private Optional<String> getMessage(Annotation annotation) {
+        try {
+            var messageMethod = annotation.annotationType().getMethod("message");
+            var message = messageMethod.invoke(annotation);
+            if (!Objects.equals(messageMethod.getDefaultValue(), message)) {
+                return Optional.of((String) message);
+            }
+            return Optional.empty();
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException("Could not get message from annotation", e);
+        }
     }
 }

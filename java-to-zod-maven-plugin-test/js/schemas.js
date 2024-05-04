@@ -24,10 +24,10 @@ export const NumberHolderSchema = zod.object({
 
 export const PersonSchema = zod.object({
   id: zod.string().uuid().optional().nullable(),
-  firstName: zod.string().regex(/\S/),
-  lastName: zod.string().min(1),
+  firstName: zod.string().regex(/\S/, { message: 'cannot be blank' }),
+  lastName: zod.string().min(1, { message: 'cannot be empty' }),
   job: zod.string(),
-  homepage: zod.string().regex(/^https?:\/\/.*$/).optional().nullable(),
+  homepage: zod.string().regex(/^https?:\/\/.*$/, { message: 'must be a valid \'URL\' (" - \\)' }).optional().nullable(),
   email: zod.string().email().optional().nullable(),
   child: zod.lazy(() => PersonSchema.optional().nullable()),
 });

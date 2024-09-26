@@ -2,18 +2,14 @@ package sh.ivan.zod;
 
 import cz.habarta.typescript.generator.type.JGenericArrayType;
 import cz.habarta.typescript.generator.type.JParameterizedType;
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.AnnotatedParameterizedType;
-import java.lang.reflect.AnnotatedType;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
 import sh.ivan.zod.schema.ArraySchema;
 import sh.ivan.zod.schema.Schema;
 import sh.ivan.zod.schema.attribute.Attribute;
+
+import java.lang.reflect.*;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 
 public class ArraySchemaBuilder {
 
@@ -24,31 +20,31 @@ public class ArraySchemaBuilder {
     }
 
     public Schema build(TypeDescriptor typeDescriptor, Set<Attribute> attributes) {
-        var componentTypeDescriptor = getComponentTypeDescriptor(typeDescriptor);
+        TypeDescriptor componentTypeDescriptor = getComponentTypeDescriptor(typeDescriptor);
         return new ArraySchema(converter.getReferentialSchema(componentTypeDescriptor), attributes);
     }
 
     private TypeDescriptor getComponentTypeDescriptor(TypeDescriptor typeDescriptor) {
-        var componentType = getComponentType(typeDescriptor.getType());
-        var componentAnnotatedElements = getComponentAnnotatedElements(typeDescriptor);
+        Type componentType = getComponentType(typeDescriptor.getType());
+        Set<AnnotatedElement> componentAnnotatedElements = getComponentAnnotatedElements(typeDescriptor);
         return new TypeDescriptor(componentType, componentAnnotatedElements);
     }
 
     private Set<AnnotatedElement> getComponentAnnotatedElements(TypeDescriptor typeDescriptor) {
-        var annotatedElements = new HashSet<AnnotatedElement>();
-        typeDescriptor.getAnnotatedElements().forEach(annotatedElement -> {
+        HashSet<AnnotatedElement> annotatedElements = new HashSet<AnnotatedElement>();
+        for (AnnotatedElement annotatedElement : typeDescriptor.getAnnotatedElements()) {
             if (annotatedElement instanceof Method) {
                 if (((Method) annotatedElement).getParameterCount() == 0) {
-                    var annotatedType = ((Method) annotatedElement).getAnnotatedReturnType();
+                    AnnotatedType annotatedType = ((Method) annotatedElement).getAnnotatedReturnType();
                     getComponentAnnotatedElement(annotatedType).ifPresent(annotatedElements::add);
                 }
             } else if (annotatedElement instanceof Field) {
-                var annotatedType = ((Field) annotatedElement).getAnnotatedType();
+                AnnotatedType annotatedType = ((Field) annotatedElement).getAnnotatedType();
                 getComponentAnnotatedElement(annotatedType).ifPresent(annotatedElements::add);
             } else if (annotatedElement instanceof AnnotatedType) {
                 getComponentAnnotatedElement((AnnotatedType) annotatedElement).ifPresent(annotatedElements::add);
             }
-        });
+        }
         return annotatedElements;
     }
 
@@ -63,7 +59,7 @@ public class ArraySchemaBuilder {
         if (type instanceof Class<?> && ((Class<?>) type).isArray()) {
             return ((Class<?>) type).getComponentType();
         } else if (type instanceof JParameterizedType) {
-            var parameterizedType = (JParameterizedType) type;
+            JParameterizedType parameterizedType = (JParameterizedType) type;
             return parameterizedType.getActualTypeArguments()[0];
         } else if (type instanceof JGenericArrayType) {
             return ((JGenericArrayType) type).getGenericComponentType();

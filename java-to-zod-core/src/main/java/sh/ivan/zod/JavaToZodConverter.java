@@ -5,27 +5,16 @@ import cz.habarta.typescript.generator.parser.Model;
 import cz.habarta.typescript.generator.parser.ModelParser;
 import cz.habarta.typescript.generator.type.JGenericArrayType;
 import cz.habarta.typescript.generator.type.JParameterizedType;
-import java.lang.reflect.Type;
-import java.math.BigInteger;
-import java.time.Instant;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-import sh.ivan.zod.schema.BooleanSchema;
-import sh.ivan.zod.schema.DateSchema;
-import sh.ivan.zod.schema.EnumSchema;
-import sh.ivan.zod.schema.LiteralBooleanSchema;
-import sh.ivan.zod.schema.NumberSchema;
-import sh.ivan.zod.schema.ObjectSchema;
-import sh.ivan.zod.schema.ReferenceSchema;
-import sh.ivan.zod.schema.Schema;
-import sh.ivan.zod.schema.StringSchema;
+import sh.ivan.zod.schema.*;
 import sh.ivan.zod.schema.attribute.Attribute;
 import sh.ivan.zod.schema.attribute.EqualsBooleanAttribute;
 import sh.ivan.zod.schema.attribute.IntegerAttribute;
 import sh.ivan.zod.schema.attribute.UuidAttribute;
+
+import java.lang.reflect.Type;
+import java.math.BigInteger;
+import java.time.*;
+import java.util.*;
 
 public class JavaToZodConverter {
 
@@ -43,9 +32,25 @@ public class JavaToZodConverter {
             Short.class,
             BigInteger.class);
 
+    private static final Set<Class<?>> JAVA_ZONED_DATE_TIME_TYPES = Set.of(
+            ZonedDateTime.class
+    );
+    private static final Set<Class<?>> JAVA_LOCAL_DATE_TIME_TYPES = Set.of(
+            Instant.class,
+            LocalDateTime.class
+    );
+    private static final Set<Class<?>> JAVA_LOCAL_DATE = Set.of(
+            LocalDate.class
+    );
+    private static final Set<Class<?>> JAVA_LOCAL_TIME_TYPES = Set.of(
+            LocalTime.class
+    );
+    public static final String ZOD_ANY = "any()";
+
     private final AttributeProcessor attributeProcessor;
     private final ObjectSchemaBuilder objectSchemaBuilder;
     private final ArraySchemaBuilder arraySchemaBuilder;
+    private final RecordSchemaBuilder recordSchemaBuilder;
 
     private final Configuration configuration;
 
@@ -53,6 +58,7 @@ public class JavaToZodConverter {
         this.attributeProcessor = new AttributeProcessor();
         objectSchemaBuilder = new ObjectSchemaBuilder(this, modelParser);
         arraySchemaBuilder = new ArraySchemaBuilder(this);
+        recordSchemaBuilder = new RecordSchemaBuilder(this);
         this.configuration = configuration;
     }
 
@@ -78,11 +84,23 @@ public class JavaToZodConverter {
         }
         if (isEnum(type)) {
             @SuppressWarnings("unchecked")
-            var enumClass = (Class<? extends Enum<?>>) type;
+            Class<? extends Enum<? extends Enum<?>>> enumClass = (Class<? extends Enum<?>>) type;
             return new EnumSchema(enumClass, attributes);
         }
         if (isDate(type)) {
             return new DateSchema(attributes);
+        }
+        if (isJavaDateTime(type)) {
+            return new JavaDateTimeSchema(attributes);
+        }
+        if (isJavaLocalDate(type)) {
+            return new JavaLocalDateSchema(attributes);
+        }
+        if (isJavaLocalDateTime(type)) {
+            return new JavaLocalDateTimeSchema(attributes);
+        }
+        if (isJavaLocalTime(type)) {
+            return new JavaLocalTimeSchema(attributes);
         }
         if (isNumber(type)) {
             return buildNumberSchema((Class<?>) type, attributes);
@@ -93,14 +111,23 @@ public class JavaToZodConverter {
         if (isArray(type)) {
             return arraySchemaBuilder.build(typeDescriptor, attributes);
         }
+        if (isMap(type)) {
+            return recordSchemaBuilder.build(typeDescriptor, attributes);
+        }
         if (useReferenceForObject) {
+
             return new ReferenceSchema(getSchemaName(type), attributes);
         }
         return objectSchemaBuilder.build((Class<?>) type, attributes);
     }
 
+    private boolean isMap(Type type) {
+        return type instanceof JParameterizedType && ((JParameterizedType) type).getRawType() == Map.class;
+
+    }
+
     private Schema getBooleanSchema(Set<Attribute> attributes) {
-        var equalsBooleanAttribute = attributes.stream()
+        Optional<Attribute> equalsBooleanAttribute = attributes.stream()
                 .filter(attribute -> attribute instanceof EqualsBooleanAttribute)
                 .findAny();
         if (equalsBooleanAttribute.isPresent()) {
@@ -117,7 +144,36 @@ public class JavaToZodConverter {
     }
 
     private boolean isDate(Type type) {
-        return type == Date.class || type == Instant.class;
+        return type == Date.class;
+    }
+
+    private boolean isJavaDateTime(Type type) {
+        if (type instanceof Class<?>) {
+            Class<?> clazz = (Class<?>) type;
+            return JAVA_ZONED_DATE_TIME_TYPES.contains(clazz);
+        }
+        return false;
+    }
+    private boolean isJavaLocalTime(Type type) {
+        if (type instanceof Class<?>) {
+            Class<?> clazz = (Class<?>) type;
+            return JAVA_LOCAL_TIME_TYPES.contains(clazz);
+        }
+        return false;
+    }
+    private boolean isJavaLocalDateTime(Type type) {
+        if (type instanceof Class<?>) {
+            Class<?> clazz = (Class<?>) type;
+            return JAVA_LOCAL_DATE_TIME_TYPES.contains(clazz);
+        }
+        return false;
+    }
+    private boolean isJavaLocalDate(Type type) {
+        if (type instanceof Class<?>) {
+            Class<?> clazz = (Class<?>) type;
+            return JAVA_LOCAL_DATE.contains(clazz);
+        }
+        return false;
     }
 
     private boolean isEnum(Type type) {
@@ -138,7 +194,7 @@ public class JavaToZodConverter {
     }
 
     Schema getReferentialSchema(TypeDescriptor typeDescriptor) {
-        var attributes =
+        Set<Attribute> attributes =
                 attributeProcessor.getAttributes(typeDescriptor.getType(), typeDescriptor.getAnnotatedElements());
         return buildSchema(typeDescriptor.getType(), typeDescriptor, attributes, true);
     }
@@ -149,6 +205,7 @@ public class JavaToZodConverter {
                     + ((Class<?>) type).getSimpleName()
                     + configuration.getSchemaNameSuffix();
         }
-        throw new IllegalArgumentException("No name for type " + type);
+        System.out.printf("No name for %s%n", type.toString());
+        return ZOD_ANY;
     }
 }

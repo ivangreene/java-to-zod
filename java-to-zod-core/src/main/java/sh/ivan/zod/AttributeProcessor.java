@@ -1,52 +1,19 @@
 package sh.ivan.zod;
 
-import jakarta.validation.constraints.AssertFalse;
-import jakarta.validation.constraints.AssertTrue;
-import jakarta.validation.constraints.DecimalMax;
-import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.Digits;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Future;
-import jakarta.validation.constraints.FutureOrPresent;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.Negative;
-import jakarta.validation.constraints.NegativeOrZero;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Null;
-import jakarta.validation.constraints.Past;
-import jakarta.validation.constraints.PastOrPresent;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.PositiveOrZero;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
+import sh.ivan.zod.schema.attribute.*;
+
+import javax.annotation.Nullable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import sh.ivan.zod.schema.attribute.Attribute;
-import sh.ivan.zod.schema.attribute.AttributeWithMessage;
-import sh.ivan.zod.schema.attribute.EmailAttribute;
-import sh.ivan.zod.schema.attribute.EqualsBooleanAttribute;
-import sh.ivan.zod.schema.attribute.MaxAttribute;
-import sh.ivan.zod.schema.attribute.MinAttribute;
-import sh.ivan.zod.schema.attribute.NegativeAttribute;
-import sh.ivan.zod.schema.attribute.NotBlankAttribute;
-import sh.ivan.zod.schema.attribute.OptionalNullableAttribute;
-import sh.ivan.zod.schema.attribute.PositiveAttribute;
-import sh.ivan.zod.schema.attribute.RegexAttribute;
-import sh.ivan.zod.schema.attribute.SizeAttribute;
 
 public class AttributeProcessor {
-    private static final Set<Class<? extends Annotation>> JSR_380_ANNOTATIONS = Set.of(
+    private static final Set<Class<? extends Annotation>> JSR_380_ANNOTATIONS_AND_JAVAX = Set.of(
             AssertFalse.class,
             AssertTrue.class,
             DecimalMax.class, // Not yet implemented
@@ -62,6 +29,7 @@ public class AttributeProcessor {
             NotBlank.class,
             NotEmpty.class,
             NotNull.class,
+            Nullable.class,
             Null.class, // Not yet implemented
             Past.class, // Not yet implemented
             PastOrPresent.class, // Not yet implemented
@@ -93,9 +61,10 @@ public class AttributeProcessor {
     }
 
     public Set<Attribute> getAttributesForAnnotations(Type type, Set<Annotation> annotations) {
-        var attributes = new HashSet<>(processAnnotations(type, annotations));
+        HashSet<Attribute> attributes = new HashSet<>(processAnnotations(type, annotations));
         if (isNullable(type, annotations)) {
-            attributes.add(new OptionalNullableAttribute());
+            attributes.add(new NullableAttribute());
+            attributes.add(new OptionalAttribute());
         }
         if (attributes.contains(new SizeAttribute(1, Integer.MAX_VALUE))
                 && attributes.stream()
@@ -110,21 +79,21 @@ public class AttributeProcessor {
 
     private boolean isNullable(Type type, Set<Annotation> annotations) {
         return !(type instanceof Class<?> && ((Class<?>) type).isPrimitive())
-                && annotations.stream().map(Annotation::annotationType).noneMatch(NOT_NULL_ANNOTATIONS::contains);
+                && annotations.stream().map(Annotation::annotationType).anyMatch(Nullable.class::equals);
     }
 
     private Set<Attribute> processAnnotations(Type type, Set<Annotation> annotations) {
         return annotations.stream()
-                .filter(annotation -> JSR_380_ANNOTATIONS.contains(annotation.annotationType()))
+                .filter(annotation -> JSR_380_ANNOTATIONS_AND_JAVAX.contains(annotation.annotationType()))
                 .map(annotation -> processAnnotation(type, annotation))
                 .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
     }
 
     private Attribute processAnnotation(Type type, Annotation annotation) {
-        var attribute = getAttribute(type, annotation);
+        Attribute attribute = getAttribute(type, annotation);
         if (attribute != null) {
-            var message = getMessage(annotation);
+            Optional<String> message = getMessage(annotation);
             if (message.isPresent()) {
                 return new AttributeWithMessage(attribute, message.get());
             }
@@ -155,8 +124,8 @@ public class AttributeProcessor {
 
     private Optional<String> getMessage(Annotation annotation) {
         try {
-            var messageMethod = annotation.annotationType().getMethod("message");
-            var message = messageMethod.invoke(annotation);
+            Method messageMethod = annotation.annotationType().getMethod("message");
+            Object message = messageMethod.invoke(annotation);
             if (!Objects.equals(messageMethod.getDefaultValue(), message)) {
                 return Optional.of((String) message);
             }

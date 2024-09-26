@@ -22,7 +22,7 @@ public class ObjectSchema extends Schema {
     @Override
     protected String zodType(String prefix) {
         // TODO: Actually implement formatting
-        var stringBuilder = new StringBuilder(prefix).append("object({").append(prefix.isEmpty() ? " " : "");
+        StringBuilder stringBuilder = new StringBuilder(prefix).append("object({").append(prefix.isEmpty() ? " " : "");
         fields.forEach((name, schema) -> stringBuilder
                 .append(prefix.isEmpty() ? "" : "\n  ")
                 .append(name)

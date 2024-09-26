@@ -18,8 +18,8 @@ public class SchemaFileWriter {
 
     public void write() throws IOException {
         ensureDirectoryExists();
-        try (var fileWriter = new FileWriter(outputFile);
-                var printWriter = new PrintWriter(fileWriter)) {
+        try (FileWriter fileWriter = new FileWriter(outputFile);
+             PrintWriter printWriter = new PrintWriter(fileWriter)) {
             printWriter.println("import { z as zod } from 'zod';");
             schemas.forEach((name, schema) -> {
                 printWriter.println();
@@ -30,7 +30,7 @@ public class SchemaFileWriter {
     }
 
     private void ensureDirectoryExists() throws IOException {
-        var directory = outputFile.getParentFile();
+        File directory = outputFile.getParentFile();
         if (!directory.exists()) {
             if (!directory.mkdirs()) {
                 throw new IOException("Failed to create directory " + directory);

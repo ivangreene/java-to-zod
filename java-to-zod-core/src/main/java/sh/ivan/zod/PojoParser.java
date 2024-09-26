@@ -4,10 +4,11 @@ import cz.habarta.typescript.generator.*;
 import cz.habarta.typescript.generator.parser.Model;
 import lombok.Setter;
 import org.gradle.api.DefaultTask;
-import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.Input;
+import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.TaskAction;
+import org.slf4j.LoggerFactory;
 import sh.ivan.zod.schema.ObjectSchema;
 
 import java.io.File;
@@ -23,6 +24,7 @@ import java.util.Map;
 @Setter
 public class PojoParser extends DefaultTask {
 
+    private static final org.slf4j.Logger log = LoggerFactory.getLogger(PojoParser.class);
     // Path and name of generated file
     private File outputFile = null;
 
@@ -84,12 +86,11 @@ public class PojoParser extends DefaultTask {
     private boolean scanSpringApplication = false;
 
     // Specifies the level of logging output (Debug, Verbose, etc.)
-    private static Logger.Level loggingLevel = Logger.Level.Verbose;
+    private Logger.Level loggingLevel = Logger.Level.Verbose;
 
     // Skip processing
     private boolean skip = false;
-
-    private static final Logger logger = new Logger(loggingLevel);;
+    private List<String> optionalAnnotations = Collections.emptyList();
 
 
     public PojoParser() {
@@ -105,7 +106,7 @@ public class PojoParser extends DefaultTask {
     }
 
     public void init() throws IOException {
-        TypeScriptGenerator.setLogger(logger);
+        TypeScriptGenerator.setLogger(new Logger(loggingLevel));
         TypeScriptGenerator.printVersion();
         if (skip) {
             TypeScriptGenerator.getLogger().info("Skipping plugin execution");
@@ -129,7 +130,6 @@ public class PojoParser extends DefaultTask {
                 Thread.currentThread().getContextClassLoader())) {
 
             Settings settings = createSettings(classLoader);
-
 
 
             cz.habarta.typescript.generator.Input.Parameters parameters = new cz.habarta.typescript.generator.Input.Parameters();
@@ -158,7 +158,7 @@ public class PojoParser extends DefaultTask {
             schemaFileWriter.write();
 
         } catch (IOException e) {
-            logger.error(e.getMessage());
+            log.error(e.getMessage());
         }
     }
 
@@ -175,6 +175,7 @@ public class PojoParser extends DefaultTask {
         settings.classLoader = classLoader;
         settings.outputKind = TypeScriptOutputKind.global; // Unused, but required by settings validation
         settings.outputFileType = TypeScriptFileType.implementationFile;
+        settings.loadOptionalAnnotations(classLoader, optionalAnnotations);
         return settings;
     }
 
@@ -267,6 +268,12 @@ public class PojoParser extends DefaultTask {
     @Optional
     public List<String> getExcludePropertyAnnotations() {
         return excludePropertyAnnotations;
+    }
+
+    @Input
+    @Optional
+    public List<String> getOptionalAnnotations() {
+        return optionalAnnotations;
     }
 
     @Input

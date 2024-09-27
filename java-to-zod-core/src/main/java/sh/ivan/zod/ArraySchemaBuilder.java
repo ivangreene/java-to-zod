@@ -2,14 +2,13 @@ package sh.ivan.zod;
 
 import cz.habarta.typescript.generator.type.JGenericArrayType;
 import cz.habarta.typescript.generator.type.JParameterizedType;
-import sh.ivan.zod.schema.ArraySchema;
-import sh.ivan.zod.schema.Schema;
-import sh.ivan.zod.schema.attribute.Attribute;
-
 import java.lang.reflect.*;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import sh.ivan.zod.schema.ArraySchema;
+import sh.ivan.zod.schema.Schema;
+import sh.ivan.zod.schema.attribute.Attribute;
 
 public class ArraySchemaBuilder {
 

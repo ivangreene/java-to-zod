@@ -1,11 +1,10 @@
 package sh.ivan.zod.schema;
 
+import java.util.Set;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import sh.ivan.zod.schema.attribute.Attribute;
-
-import java.util.Set;
 
 @Getter
 @ToString(callSuper = true)
@@ -22,8 +21,9 @@ public class RecordSchema extends Schema {
 
     @Override
     protected String zodType(String prefix) {
-        return String.format("%srecord(%s, %s)", prefix, keyTypeDescriptor.asZodSchema(prefix), valueTypeDescriptor.asZodSchema(prefix));
-
+        return String.format(
+                "%srecord(%s, %s)",
+                prefix, keyTypeDescriptor.asZodSchema(prefix), valueTypeDescriptor.asZodSchema(prefix));
     }
 
     @Override

@@ -1,13 +1,12 @@
 package sh.ivan.zod.schema;
 
+import static sh.ivan.zod.JavaToZodConverter.ZOD_ANY;
+
+import java.util.Set;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import sh.ivan.zod.schema.attribute.Attribute;
-
-import java.util.Set;
-
-import static sh.ivan.zod.JavaToZodConverter.ZOD_ANY;
 
 @Getter
 @ToString(callSuper = true)

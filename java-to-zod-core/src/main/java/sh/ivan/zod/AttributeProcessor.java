@@ -1,9 +1,6 @@
 package sh.ivan.zod;
 
 import jakarta.validation.constraints.*;
-import sh.ivan.zod.schema.attribute.*;
-
-import javax.annotation.Nullable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
@@ -11,6 +8,8 @@ import java.lang.reflect.Type;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import javax.annotation.Nullable;
+import sh.ivan.zod.schema.attribute.*;
 
 public class AttributeProcessor {
     private static final Set<Class<? extends Annotation>> JSR_380_ANNOTATIONS_AND_JAVAX = Set.of(

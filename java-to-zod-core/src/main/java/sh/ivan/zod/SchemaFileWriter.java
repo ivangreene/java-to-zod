@@ -19,7 +19,7 @@ public class SchemaFileWriter {
     public void write() throws IOException {
         ensureDirectoryExists();
         try (FileWriter fileWriter = new FileWriter(outputFile);
-             PrintWriter printWriter = new PrintWriter(fileWriter)) {
+                PrintWriter printWriter = new PrintWriter(fileWriter)) {
             printWriter.println("import { z as zod } from 'zod';");
             schemas.forEach((name, schema) -> {
                 printWriter.println();

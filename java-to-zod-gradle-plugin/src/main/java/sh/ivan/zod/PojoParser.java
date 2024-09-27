@@ -2,15 +2,6 @@ package sh.ivan.zod;
 
 import cz.habarta.typescript.generator.*;
 import cz.habarta.typescript.generator.parser.Model;
-import lombok.Setter;
-import org.gradle.api.DefaultTask;
-import org.gradle.api.tasks.Input;
-import org.gradle.api.tasks.Optional;
-import org.gradle.api.tasks.OutputFile;
-import org.gradle.api.tasks.TaskAction;
-import org.slf4j.LoggerFactory;
-import sh.ivan.zod.schema.ObjectSchema;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -19,7 +10,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-
+import lombok.Setter;
+import org.gradle.api.DefaultTask;
+import org.gradle.api.tasks.Input;
+import org.gradle.api.tasks.Optional;
+import org.gradle.api.tasks.OutputFile;
+import org.gradle.api.tasks.TaskAction;
+import org.slf4j.LoggerFactory;
+import sh.ivan.zod.schema.ObjectSchema;
 
 @Setter
 public class PojoParser extends DefaultTask {
@@ -92,9 +90,7 @@ public class PojoParser extends DefaultTask {
     private boolean skip = false;
     private List<String> optionalAnnotations = Collections.emptyList();
 
-
-    public PojoParser() {
-    }
+    public PojoParser() {}
 
     @TaskAction
     public void runTask() {
@@ -123,16 +119,14 @@ public class PojoParser extends DefaultTask {
             urls.add(classesDir.toURI().toURL());
         }
 
-
         // Create a class loader using URLs from the classpath
         try (URLClassLoader classLoader = new URLClassLoader(
-                urls.toArray(new URL[0]),
-                Thread.currentThread().getContextClassLoader())) {
+                urls.toArray(new URL[0]), Thread.currentThread().getContextClassLoader())) {
 
             Settings settings = createSettings(classLoader);
 
-
-            cz.habarta.typescript.generator.Input.Parameters parameters = new cz.habarta.typescript.generator.Input.Parameters();
+            cz.habarta.typescript.generator.Input.Parameters parameters =
+                    new cz.habarta.typescript.generator.Input.Parameters();
             parameters.classNames = classes;
             parameters.classNamePatterns = classPatterns;
             parameters.classesWithAnnotations = classesWithAnnotations;
@@ -152,7 +146,8 @@ public class PojoParser extends DefaultTask {
                     .schemaNamePrefix(schemaNamePrefix)
                     .schemaNameSuffix(schemaNameSuffix)
                     .build();
-            JavaToZodConverter javaToZodConverter = new JavaToZodConverter(typeScriptGenerator.getModelParser(), configuration);
+            JavaToZodConverter javaToZodConverter =
+                    new JavaToZodConverter(typeScriptGenerator.getModelParser(), configuration);
             Map<String, ObjectSchema> beanSchemas = javaToZodConverter.getBeanSchemas(model);
             SchemaFileWriter schemaFileWriter = new SchemaFileWriter(beanSchemas, outputFile);
             schemaFileWriter.write();
@@ -183,7 +178,8 @@ public class PojoParser extends DefaultTask {
     public File getOutputFile() {
         if (outputFile == null) {
             // Set the default output file location based on the project directory
-            outputFile = new File(getProject().getBuildDir(), "java-to-zod/" + getProject().getName() + "-schemas.js");
+            outputFile = new File(
+                    getProject().getBuildDir(), "java-to-zod/" + getProject().getName() + "-schemas.js");
         }
         return outputFile;
     }
@@ -314,5 +310,4 @@ public class PojoParser extends DefaultTask {
     public boolean isSkip() {
         return skip;
     }
-
 }

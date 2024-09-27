@@ -1,14 +1,13 @@
 package sh.ivan.zod;
 
 import cz.habarta.typescript.generator.type.JParameterizedType;
-import sh.ivan.zod.schema.RecordSchema;
-import sh.ivan.zod.schema.Schema;
-import sh.ivan.zod.schema.attribute.Attribute;
-
 import java.lang.reflect.*;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import sh.ivan.zod.schema.RecordSchema;
+import sh.ivan.zod.schema.Schema;
+import sh.ivan.zod.schema.attribute.Attribute;
 
 public class RecordSchemaBuilder {
 
@@ -25,8 +24,7 @@ public class RecordSchemaBuilder {
         return new RecordSchema(
                 converter.getReferentialSchema(keyTypeDescriptor),
                 converter.getReferentialSchema(valueTypeDescriptor),
-                attributes
-        );
+                attributes);
     }
 
     private TypeDescriptor getKeyTypeDescriptor(TypeDescriptor typeDescriptor) {
@@ -35,12 +33,12 @@ public class RecordSchemaBuilder {
         return new TypeDescriptor(keyType, keyAnnotatedElements);
     }
 
-
     private TypeDescriptor getValueTypeDescriptor(TypeDescriptor typeDescriptor) {
         Type valueType = getValueType(typeDescriptor.getType());
         Set<AnnotatedElement> valueAnnotatedElements = getValueAnnotatedElements(typeDescriptor);
         return new TypeDescriptor(valueType, valueAnnotatedElements);
     }
+
     private Set<AnnotatedElement> getKeyAnnotatedElements(TypeDescriptor typeDescriptor) {
         HashSet<AnnotatedElement> annotatedElements = new HashSet<>();
         for (AnnotatedElement annotatedElement : typeDescriptor.getAnnotatedElements()) {
@@ -93,7 +91,7 @@ public class RecordSchemaBuilder {
 
     private Type getKeyType(Type type) {
         if (type instanceof JParameterizedType parameterizedType) {
-            return parameterizedType.getActualTypeArguments()[0];  // Key type
+            return parameterizedType.getActualTypeArguments()[0]; // Key type
         } else {
             throw new IllegalArgumentException("Unsupported type: " + type);
         }
@@ -101,7 +99,7 @@ public class RecordSchemaBuilder {
 
     private Type getValueType(Type type) {
         if (type instanceof JParameterizedType parameterizedType) {
-            return parameterizedType.getActualTypeArguments()[1];  // Value type
+            return parameterizedType.getActualTypeArguments()[1]; // Value type
         } else {
             throw new IllegalArgumentException("Unsupported type: " + type);
         }

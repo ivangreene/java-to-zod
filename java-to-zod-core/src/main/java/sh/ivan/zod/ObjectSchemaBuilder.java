@@ -4,13 +4,12 @@ import cz.habarta.typescript.generator.parser.BeanModel;
 import cz.habarta.typescript.generator.parser.Model;
 import cz.habarta.typescript.generator.parser.ModelParser;
 import cz.habarta.typescript.generator.parser.PropertyModel;
-import sh.ivan.zod.schema.ObjectSchema;
-import sh.ivan.zod.schema.Schema;
-import sh.ivan.zod.schema.attribute.Attribute;
-
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
+import sh.ivan.zod.schema.ObjectSchema;
+import sh.ivan.zod.schema.Schema;
+import sh.ivan.zod.schema.attribute.Attribute;
 
 public class ObjectSchemaBuilder {
     private final JavaToZodConverter converter;

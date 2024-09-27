@@ -5,16 +5,15 @@ import cz.habarta.typescript.generator.parser.Model;
 import cz.habarta.typescript.generator.parser.ModelParser;
 import cz.habarta.typescript.generator.type.JGenericArrayType;
 import cz.habarta.typescript.generator.type.JParameterizedType;
+import java.lang.reflect.Type;
+import java.math.BigInteger;
+import java.time.*;
+import java.util.*;
 import sh.ivan.zod.schema.*;
 import sh.ivan.zod.schema.attribute.Attribute;
 import sh.ivan.zod.schema.attribute.EqualsBooleanAttribute;
 import sh.ivan.zod.schema.attribute.IntegerAttribute;
 import sh.ivan.zod.schema.attribute.UuidAttribute;
-
-import java.lang.reflect.Type;
-import java.math.BigInteger;
-import java.time.*;
-import java.util.*;
 
 public class JavaToZodConverter {
 
@@ -32,19 +31,10 @@ public class JavaToZodConverter {
             Short.class,
             BigInteger.class);
 
-    private static final Set<Class<?>> JAVA_ZONED_DATE_TIME_TYPES = Set.of(
-            ZonedDateTime.class
-    );
-    private static final Set<Class<?>> JAVA_LOCAL_DATE_TIME_TYPES = Set.of(
-            Instant.class,
-            LocalDateTime.class
-    );
-    private static final Set<Class<?>> JAVA_LOCAL_DATE = Set.of(
-            LocalDate.class
-    );
-    private static final Set<Class<?>> JAVA_LOCAL_TIME_TYPES = Set.of(
-            LocalTime.class
-    );
+    private static final Set<Class<?>> JAVA_ZONED_DATE_TIME_TYPES = Set.of(ZonedDateTime.class);
+    private static final Set<Class<?>> JAVA_LOCAL_DATE_TIME_TYPES = Set.of(Instant.class, LocalDateTime.class);
+    private static final Set<Class<?>> JAVA_LOCAL_DATE = Set.of(LocalDate.class);
+    private static final Set<Class<?>> JAVA_LOCAL_TIME_TYPES = Set.of(LocalTime.class);
     public static final String ZOD_ANY = "any()";
 
     private final AttributeProcessor attributeProcessor;
@@ -123,7 +113,6 @@ public class JavaToZodConverter {
 
     private boolean isMap(Type type) {
         return type instanceof JParameterizedType && ((JParameterizedType) type).getRawType() == Map.class;
-
     }
 
     private Schema getBooleanSchema(Set<Attribute> attributes) {
@@ -154,6 +143,7 @@ public class JavaToZodConverter {
         }
         return false;
     }
+
     private boolean isJavaLocalTime(Type type) {
         if (type instanceof Class<?>) {
             Class<?> clazz = (Class<?>) type;
@@ -161,6 +151,7 @@ public class JavaToZodConverter {
         }
         return false;
     }
+
     private boolean isJavaLocalDateTime(Type type) {
         if (type instanceof Class<?>) {
             Class<?> clazz = (Class<?>) type;
@@ -168,6 +159,7 @@ public class JavaToZodConverter {
         }
         return false;
     }
+
     private boolean isJavaLocalDate(Type type) {
         if (type instanceof Class<?>) {
             Class<?> clazz = (Class<?>) type;

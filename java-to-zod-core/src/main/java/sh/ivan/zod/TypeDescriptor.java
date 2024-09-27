@@ -1,8 +1,6 @@
 package sh.ivan.zod;
 
 import cz.habarta.typescript.generator.parser.PropertyModel;
-import lombok.Data;
-
 import java.beans.Introspector;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
@@ -12,6 +10,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import lombok.Data;
 
 @Data
 public class TypeDescriptor {
@@ -32,7 +31,8 @@ public class TypeDescriptor {
         this.annotatedElements = Set.copyOf(annotatedElements);
     }
 
-    private static void addAnnotationsFromRecordConstructor(Class<?> container, PropertyModel propertyModel, HashSet<AnnotatedElement> annotatedElements) {
+    private static void addAnnotationsFromRecordConstructor(
+            Class<?> container, PropertyModel propertyModel, HashSet<AnnotatedElement> annotatedElements) {
         // Get the primary constructor of the record
         Constructor<?>[] constructors = container.getDeclaredConstructors();
         for (Constructor<?> constructor : constructors) {
@@ -41,7 +41,9 @@ public class TypeDescriptor {
                 Parameter[] parameters = constructor.getParameters();
                 for (int i = 0; i < parameters.length; i++) {
                     // Match the parameter with the record component
-                    if (parameters[i].getName().equals(propertyModel.getOriginalMember().getName())) {
+                    if (parameters[i]
+                            .getName()
+                            .equals(propertyModel.getOriginalMember().getName())) {
                         // Get the annotations from the constructor parameter
                         Annotation[] annotations = parameters[i].getAnnotations();
                         // Process these annotations
@@ -81,7 +83,8 @@ public class TypeDescriptor {
                                     } catch (NoSuchMethodException ignored) {
                                         return null;
                                     }
-                                }).orElse(null);
+                                })
+                                .orElse(null);
                     })
                     .filter(Objects::nonNull)
                     .collect(Collectors.toSet());
@@ -98,7 +101,8 @@ public class TypeDescriptor {
         if (container.isRecord()) {
             try {
                 // Get the accessor method for the record component
-                return Optional.of(container.getDeclaredField(propertyModel.getOriginalMember().getName()));
+                return Optional.of(container.getDeclaredField(
+                        propertyModel.getOriginalMember().getName()));
             } catch (NoSuchFieldException e) {
                 return Optional.empty();
             }

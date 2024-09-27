@@ -19,6 +19,7 @@ import org.gradle.api.tasks.TaskAction;
 import org.slf4j.LoggerFactory;
 import sh.ivan.zod.schema.ObjectSchema;
 
+
 @Setter
 public class PojoParser extends DefaultTask {
 
@@ -147,7 +148,7 @@ public class PojoParser extends DefaultTask {
                     .schemaNameSuffix(schemaNameSuffix)
                     .build();
             JavaToZodConverter javaToZodConverter =
-                    new JavaToZodConverter(typeScriptGenerator.getModelParser(), configuration);
+                    new JavaToZodConverter(typeScriptGenerator.getModelParser(), configuration, settings);
             Map<String, ObjectSchema> beanSchemas = javaToZodConverter.getBeanSchemas(model);
             SchemaFileWriter schemaFileWriter = new SchemaFileWriter(beanSchemas, outputFile);
             schemaFileWriter.write();
@@ -310,4 +311,5 @@ public class PojoParser extends DefaultTask {
     public boolean isSkip() {
         return skip;
     }
+
 }

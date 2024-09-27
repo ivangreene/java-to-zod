@@ -1,5 +1,6 @@
 package sh.ivan.zod;
 
+import cz.habarta.typescript.generator.Settings;
 import jakarta.validation.constraints.*;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
@@ -37,7 +38,7 @@ public class AttributeProcessor {
             PositiveOrZero.class,
             Size.class);
 
-    private static final Set<Class<? extends Annotation>> NOT_NULL_ANNOTATIONS =
+    private static final Set<Class<? extends Annotation>> NOT_NULL_ANNOTATIONS_DEFAULT =
             Set.of(NotBlank.class, NotEmpty.class, NotNull.class);
 
     private static final Map<Class<? extends Annotation>, Attribute> CONSTANT_ATTRIBUTES = Map.of(
@@ -50,6 +51,11 @@ public class AttributeProcessor {
             PositiveOrZero.class, new PositiveAttribute(true),
             Email.class, new EmailAttribute(),
             NotEmpty.class, new SizeAttribute(1, Integer.MAX_VALUE));
+    private final Settings settings;
+
+    public AttributeProcessor(Settings settings) {
+        this.settings = settings;
+    }
 
     public Set<Attribute> getAttributes(Type type, Set<AnnotatedElement> annotatedElements) {
         return getAttributesForAnnotations(
@@ -61,9 +67,10 @@ public class AttributeProcessor {
 
     public Set<Attribute> getAttributesForAnnotations(Type type, Set<Annotation> annotations) {
         HashSet<Attribute> attributes = new HashSet<>(processAnnotations(type, annotations));
-        if (isNullable(type, annotations)) {
+        if (isOptionalNullable(type, annotations)) {
+            attributes.add(new OptionalNullableAttribute());
+        } else if (isNullable(type, annotations)) {
             attributes.add(new NullableAttribute());
-            attributes.add(new OptionalAttribute());
         }
         if (attributes.contains(new SizeAttribute(1, Integer.MAX_VALUE))
                 && attributes.stream()
@@ -74,6 +81,15 @@ public class AttributeProcessor {
             attributes.remove(new SizeAttribute(1, Integer.MAX_VALUE));
         }
         return Set.copyOf(attributes);
+    }
+
+    private boolean isOptionalNullable(Type type, Set<Annotation> annotations) {
+        if (settings.optionalAnnotations.isEmpty()) {
+            return !(type instanceof Class<?> && ((Class<?>) type).isPrimitive())
+                    && annotations.stream()
+                            .map(Annotation::annotationType)
+                            .noneMatch(NOT_NULL_ANNOTATIONS_DEFAULT::contains);
+        } else return false; // TODO HANDLE THESE PATHWAYS WITH MORE NUANCE.
     }
 
     private boolean isNullable(Type type, Set<Annotation> annotations) {

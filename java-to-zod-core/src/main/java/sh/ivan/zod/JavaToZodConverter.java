@@ -1,6 +1,7 @@
 package sh.ivan.zod;
 
 import com.google.common.collect.Sets;
+import cz.habarta.typescript.generator.Settings;
 import cz.habarta.typescript.generator.parser.Model;
 import cz.habarta.typescript.generator.parser.ModelParser;
 import cz.habarta.typescript.generator.type.JGenericArrayType;
@@ -32,21 +33,24 @@ public class JavaToZodConverter {
             BigInteger.class);
 
     private static final Set<Class<?>> JAVA_ZONED_DATE_TIME_TYPES = Set.of(ZonedDateTime.class);
-    private static final Set<Class<?>> JAVA_LOCAL_DATE_TIME_TYPES = Set.of(Instant.class, LocalDateTime.class);
+    private static final Set<Class<?>> DATE_TYPES = Set.of(Instant.class, Date.class);
+    private static final Set<Class<?>> JAVA_LOCAL_DATE_TIME_TYPES = Set.of(LocalDateTime.class);
     private static final Set<Class<?>> JAVA_LOCAL_DATE = Set.of(LocalDate.class);
     private static final Set<Class<?>> JAVA_LOCAL_TIME_TYPES = Set.of(LocalTime.class);
     public static final String ZOD_ANY = "any()";
 
     private final AttributeProcessor attributeProcessor;
     private final ObjectSchemaBuilder objectSchemaBuilder;
+    private final Settings settings;
     private final ArraySchemaBuilder arraySchemaBuilder;
     private final RecordSchemaBuilder recordSchemaBuilder;
 
     private final Configuration configuration;
 
-    public JavaToZodConverter(ModelParser modelParser, Configuration configuration) {
-        this.attributeProcessor = new AttributeProcessor();
+    public JavaToZodConverter(ModelParser modelParser, Configuration configuration, Settings settings) {
+        this.attributeProcessor = new AttributeProcessor(settings);
         objectSchemaBuilder = new ObjectSchemaBuilder(this, modelParser);
+        this.settings = settings;
         arraySchemaBuilder = new ArraySchemaBuilder(this);
         recordSchemaBuilder = new RecordSchemaBuilder(this);
         this.configuration = configuration;
@@ -133,7 +137,11 @@ public class JavaToZodConverter {
     }
 
     private boolean isDate(Type type) {
-        return type == Date.class;
+        if (type instanceof Class<?>) {
+            Class<?> clazz = (Class<?>) type;
+            return DATE_TYPES.contains(clazz);
+        }
+        return false;
     }
 
     private boolean isJavaDateTime(Type type) {

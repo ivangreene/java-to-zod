@@ -19,7 +19,8 @@ public interface Attribute {
             MaxAttribute.class,
             SizeAttribute.class,
             OptionalAttribute.class,
-            NullableAttribute.class);
+            NullableAttribute.class,
+            OptionalNullableAttribute.class);
 
     default int priority() {
         int priority = ATTRIBUTES_BY_PRIORITY.indexOf(getClass());

@@ -31,6 +31,13 @@ public class JavaToZodConverter {
             Short.class,
             BigInteger.class);
 
+    private static final Set<Class<?>> JAVA_ZONED_DATE_TIME_TYPES = Set.of(ZonedDateTime.class);
+    private static final Set<Class<?>> DATE_TYPES = Set.of(Instant.class, Date.class);
+    private static final Set<Class<?>> JAVA_LOCAL_DATE_TIME_TYPES = Set.of(LocalDateTime.class);
+    private static final Set<Class<?>> JAVA_LOCAL_DATE = Set.of(LocalDate.class);
+    private static final Set<Class<?>> JAVA_LOCAL_TIME_TYPES = Set.of(LocalTime.class);
+    public static final String ZOD_ANY = "any()";
+
     private final AttributeProcessor attributeProcessor;
     private final ObjectSchemaBuilder objectSchemaBuilder;
     private final ArraySchemaBuilder arraySchemaBuilder;
@@ -74,6 +81,18 @@ public class JavaToZodConverter {
         if (isDate(type)) {
             return new DateSchema(attributes);
         }
+        if (isJavaDateTime(type)) {
+            return new JavaDateTimeSchema(attributes);
+        }
+        if (isJavaLocalDate(type)) {
+            return new JavaLocalDateSchema(attributes);
+        }
+        if (isJavaLocalDateTime(type)) {
+            return new JavaLocalDateTimeSchema(attributes);
+        }
+        if (isJavaLocalTime(type)) {
+            return new JavaLocalTimeSchema(attributes);
+        }
         if (isNumber(type)) {
             return buildNumberSchema((Class<?>) type, attributes);
         }
@@ -114,7 +133,38 @@ public class JavaToZodConverter {
     }
 
     private boolean isDate(Type type) {
-        return type == Date.class || type == Instant.class;
+        if (type instanceof Class<?> clazz) {
+            return DATE_TYPES.contains(clazz);
+        }
+        return false;
+    }
+
+    private boolean isJavaDateTime(Type type) {
+        if (type instanceof Class<?> clazz) {
+            return JAVA_ZONED_DATE_TIME_TYPES.contains(clazz);
+        }
+        return false;
+    }
+
+    private boolean isJavaLocalTime(Type type) {
+        if (type instanceof Class<?> clazz) {
+            return JAVA_LOCAL_TIME_TYPES.contains(clazz);
+        }
+        return false;
+    }
+
+    private boolean isJavaLocalDateTime(Type type) {
+        if (type instanceof Class<?> clazz) {
+            return JAVA_LOCAL_DATE_TIME_TYPES.contains(clazz);
+        }
+        return false;
+    }
+
+    private boolean isJavaLocalDate(Type type) {
+        if (type instanceof Class<?> clazz) {
+            return JAVA_LOCAL_DATE.contains(clazz);
+        }
+        return false;
     }
 
     private boolean isEnum(Type type) {

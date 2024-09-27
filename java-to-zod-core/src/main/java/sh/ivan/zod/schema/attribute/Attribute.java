@@ -18,6 +18,8 @@ public interface Attribute {
             MinAttribute.class,
             MaxAttribute.class,
             SizeAttribute.class,
+            OptionalAttribute.class,
+            NullableAttribute.class,
             OptionalNullableAttribute.class);
 
     default int priority() {

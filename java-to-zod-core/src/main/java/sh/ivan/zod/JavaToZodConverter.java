@@ -1,6 +1,7 @@
 package sh.ivan.zod;
 
 import com.google.common.collect.Sets;
+import cz.habarta.typescript.generator.Settings;
 import cz.habarta.typescript.generator.parser.Model;
 import cz.habarta.typescript.generator.parser.ModelParser;
 import cz.habarta.typescript.generator.type.JGenericArrayType;
@@ -40,14 +41,16 @@ public class JavaToZodConverter {
 
     private final AttributeProcessor attributeProcessor;
     private final ObjectSchemaBuilder objectSchemaBuilder;
+    private final Settings settings;
     private final ArraySchemaBuilder arraySchemaBuilder;
     private final RecordSchemaBuilder recordSchemaBuilder;
 
     private final Configuration configuration;
 
-    public JavaToZodConverter(ModelParser modelParser, Configuration configuration) {
-        this.attributeProcessor = new AttributeProcessor();
+    public JavaToZodConverter(ModelParser modelParser, Configuration configuration, Settings settings) {
+        this.attributeProcessor = new AttributeProcessor(settings);
         objectSchemaBuilder = new ObjectSchemaBuilder(this, modelParser);
+        this.settings = settings;
         arraySchemaBuilder = new ArraySchemaBuilder(this);
         recordSchemaBuilder = new RecordSchemaBuilder(this);
         this.configuration = configuration;
@@ -106,6 +109,7 @@ public class JavaToZodConverter {
             return recordSchemaBuilder.build(typeDescriptor, attributes);
         }
         if (useReferenceForObject) {
+
             return new ReferenceSchema(getSchemaName(type), attributes);
         }
         return objectSchemaBuilder.build((Class<?>) type, attributes);

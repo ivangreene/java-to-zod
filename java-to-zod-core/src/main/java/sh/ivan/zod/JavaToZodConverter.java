@@ -68,7 +68,7 @@ public class JavaToZodConverter {
         }
         if (isEnum(type)) {
             @SuppressWarnings("unchecked")
-            var enumClass = (Class<? extends Enum<?>>) type;
+            Class<? extends Enum<? extends Enum<?>>> enumClass = (Class<? extends Enum<?>>) type;
             return new EnumSchema(enumClass, attributes);
         }
         if (isDate(type)) {
@@ -97,7 +97,7 @@ public class JavaToZodConverter {
     }
 
     private Schema getBooleanSchema(Set<Attribute> attributes) {
-        var equalsBooleanAttribute = attributes.stream()
+        Optional<Attribute> equalsBooleanAttribute = attributes.stream()
                 .filter(attribute -> attribute instanceof EqualsBooleanAttribute)
                 .findAny();
         if (equalsBooleanAttribute.isPresent()) {
@@ -135,7 +135,7 @@ public class JavaToZodConverter {
     }
 
     Schema getReferentialSchema(TypeDescriptor typeDescriptor) {
-        var attributes =
+        Set<Attribute> attributes =
                 attributeProcessor.getAttributes(typeDescriptor.getType(), typeDescriptor.getAnnotatedElements());
         return buildSchema(typeDescriptor.getType(), typeDescriptor, attributes, true);
     }

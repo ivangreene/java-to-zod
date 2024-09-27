@@ -7,21 +7,9 @@ import cz.habarta.typescript.generator.type.JGenericArrayType;
 import cz.habarta.typescript.generator.type.JParameterizedType;
 import java.lang.reflect.Type;
 import java.math.BigInteger;
-import java.time.Instant;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-import sh.ivan.zod.schema.BooleanSchema;
-import sh.ivan.zod.schema.DateSchema;
-import sh.ivan.zod.schema.EnumSchema;
-import sh.ivan.zod.schema.LiteralBooleanSchema;
-import sh.ivan.zod.schema.NumberSchema;
-import sh.ivan.zod.schema.ObjectSchema;
-import sh.ivan.zod.schema.ReferenceSchema;
-import sh.ivan.zod.schema.Schema;
-import sh.ivan.zod.schema.StringSchema;
+import java.time.*;
+import java.util.*;
+import sh.ivan.zod.schema.*;
 import sh.ivan.zod.schema.attribute.Attribute;
 import sh.ivan.zod.schema.attribute.EqualsBooleanAttribute;
 import sh.ivan.zod.schema.attribute.IntegerAttribute;
@@ -46,6 +34,7 @@ public class JavaToZodConverter {
     private final AttributeProcessor attributeProcessor;
     private final ObjectSchemaBuilder objectSchemaBuilder;
     private final ArraySchemaBuilder arraySchemaBuilder;
+    private final RecordSchemaBuilder recordSchemaBuilder;
 
     private final Configuration configuration;
 
@@ -53,6 +42,7 @@ public class JavaToZodConverter {
         this.attributeProcessor = new AttributeProcessor();
         objectSchemaBuilder = new ObjectSchemaBuilder(this, modelParser);
         arraySchemaBuilder = new ArraySchemaBuilder(this);
+        recordSchemaBuilder = new RecordSchemaBuilder(this);
         this.configuration = configuration;
     }
 
@@ -93,10 +83,17 @@ public class JavaToZodConverter {
         if (isArray(type)) {
             return arraySchemaBuilder.build(typeDescriptor, attributes);
         }
+        if (isMap(type)) {
+            return recordSchemaBuilder.build(typeDescriptor, attributes);
+        }
         if (useReferenceForObject) {
             return new ReferenceSchema(getSchemaName(type), attributes);
         }
         return objectSchemaBuilder.build((Class<?>) type, attributes);
+    }
+
+    private boolean isMap(Type type) {
+        return type instanceof JParameterizedType && ((JParameterizedType) type).getRawType() == Map.class;
     }
 
     private Schema getBooleanSchema(Set<Attribute> attributes) {

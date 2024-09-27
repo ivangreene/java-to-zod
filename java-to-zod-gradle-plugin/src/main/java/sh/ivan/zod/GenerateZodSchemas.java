@@ -22,9 +22,9 @@ import sh.ivan.zod.schema.ObjectSchema;
 
 
 @Setter
-public class PojoParser extends DefaultTask {
+public class GenerateZodSchemas extends DefaultTask {
 
-    private static final org.slf4j.Logger log = LoggerFactory.getLogger(PojoParser.class);
+    private static final org.slf4j.Logger log = LoggerFactory.getLogger(GenerateZodSchemas.class);
     // Path and name of generated file
     private File outputFile = null;
 
@@ -92,7 +92,7 @@ public class PojoParser extends DefaultTask {
     private boolean skip = false;
     private List<String> optionalAnnotations = Collections.emptyList();
 
-    public PojoParser() {}
+    public GenerateZodSchemas() {}
 
     @TaskAction
     public void runTask() {

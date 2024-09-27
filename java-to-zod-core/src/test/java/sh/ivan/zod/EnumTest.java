@@ -15,6 +15,5 @@ class EnumTest extends JavaToZodConverterTest {
         PASSED,
         FAILED,
         UNKNOWN,
-
     }
 }

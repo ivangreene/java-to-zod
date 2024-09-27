@@ -7,6 +7,6 @@ public class JavaToZodPlugin implements Plugin<Project> {
     @Override
     public void apply(Project project) {
         // Register the custom task (PojoParser)
-        project.getTasks().create("parsePojo", PojoParser.class);
+        project.getTasks().create("generateZodSchemas", GenerateZodSchemas.class);
     }
 }

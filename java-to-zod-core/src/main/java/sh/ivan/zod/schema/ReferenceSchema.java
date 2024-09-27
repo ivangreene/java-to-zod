@@ -1,5 +1,7 @@
 package sh.ivan.zod.schema;
 
+import static sh.ivan.zod.JavaToZodConverter.ZOD_ANY;
+
 import java.util.Set;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -24,6 +26,10 @@ public class ReferenceSchema extends Schema {
 
     @Override
     public String asZodSchema(String prefix) {
-        return prefix + "lazy(() => " + reference + Attribute.writeAttributes(getAttributes()) + ")";
+        String writtenAttributes = Attribute.writeAttributes(getAttributes());
+        if (reference.equals(ZOD_ANY)) {
+            return prefix + reference + writtenAttributes;
+        }
+        return prefix + "lazy(() => " + reference + writtenAttributes + ")";
     }
 }

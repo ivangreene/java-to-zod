@@ -196,6 +196,7 @@ public class JavaToZodConverter {
                     + ((Class<?>) type).getSimpleName()
                     + configuration.getSchemaNameSuffix();
         }
-        throw new IllegalArgumentException("No name for type " + type);
+        System.out.printf("No name for %s%n", type.toString());
+        return ZOD_ANY;
     }
 }

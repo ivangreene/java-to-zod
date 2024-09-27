@@ -281,7 +281,9 @@ public class GenerateZodSchemasMojo extends AbstractMojo {
                     .schemaNamePrefix(schemaNamePrefix)
                     .schemaNameSuffix(schemaNameSuffix)
                     .build();
-            var javaToZodConverter = new JavaToZodConverter(typeScriptGenerator.getModelParser(), configuration);
+
+            var javaToZodConverter =
+                    new JavaToZodConverter(typeScriptGenerator.getModelParser(), configuration, settings);
             var beanSchemas = javaToZodConverter.getBeanSchemas(model);
             var schemaFileWriter = new SchemaFileWriter(beanSchemas, outputFile);
             schemaFileWriter.write();

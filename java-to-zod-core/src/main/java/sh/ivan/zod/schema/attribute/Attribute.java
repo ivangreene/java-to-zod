@@ -21,7 +21,7 @@ public interface Attribute {
             OptionalNullableAttribute.class);
 
     default int priority() {
-        var priority = ATTRIBUTES_BY_PRIORITY.indexOf(getClass());
+        int priority = ATTRIBUTES_BY_PRIORITY.indexOf(getClass());
         if (priority == -1) {
             throw new IllegalStateException("Attribute " + getClass() + " not registered in ATTRIBUTES_BY_PRIORITY");
         }

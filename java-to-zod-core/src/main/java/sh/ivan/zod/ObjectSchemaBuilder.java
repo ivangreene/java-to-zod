@@ -3,6 +3,7 @@ package sh.ivan.zod;
 import cz.habarta.typescript.generator.parser.BeanModel;
 import cz.habarta.typescript.generator.parser.Model;
 import cz.habarta.typescript.generator.parser.ModelParser;
+import cz.habarta.typescript.generator.parser.PropertyModel;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
@@ -20,9 +21,9 @@ public class ObjectSchemaBuilder {
     }
 
     public Map<String, ObjectSchema> buildBeanSchemas(Model model) {
-        var schemas = new LinkedHashMap<String, ObjectSchema>();
+        LinkedHashMap<String, ObjectSchema> schemas = new LinkedHashMap<>();
         model.getBeans().forEach(beanModel -> {
-            var typeName = converter.getSchemaName(beanModel.getOrigin());
+            String typeName = converter.getSchemaName(beanModel.getOrigin());
             if (schemas.containsKey(typeName)) {
                 throw new IllegalStateException("Encountered duplicate schema name");
             }
@@ -40,12 +41,15 @@ public class ObjectSchemaBuilder {
     }
 
     private Map<String, Schema> getFields(BeanModel beanModel) {
-        var clazz = beanModel.getOrigin();
-        var fields = new LinkedHashMap<String, Schema>();
-        beanModel.getProperties().forEach(propertyModel -> {
-            var typeDescriptor = new TypeDescriptor(clazz, propertyModel);
+        Class<?> clazz = beanModel.getOrigin();
+        LinkedHashMap<String, Schema> fields = new LinkedHashMap<>();
+        if (clazz == null) {
+            return fields;
+        }
+        for (PropertyModel propertyModel : beanModel.getProperties()) {
+            TypeDescriptor typeDescriptor = new TypeDescriptor(clazz, propertyModel);
             fields.put(propertyModel.getName(), converter.getReferentialSchema(typeDescriptor));
-        });
+        }
         return fields;
     }
 }

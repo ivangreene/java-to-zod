@@ -24,6 +24,7 @@ import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.HashSet;
 import java.util.Map;
@@ -122,9 +123,9 @@ public class AttributeProcessor {
     }
 
     private Attribute processAnnotation(Type type, Annotation annotation) {
-        var attribute = getAttribute(type, annotation);
+        Attribute attribute = getAttribute(type, annotation);
         if (attribute != null) {
-            var message = getMessage(annotation);
+            Optional<String> message = getMessage(annotation);
             if (message.isPresent()) {
                 return new AttributeWithMessage(attribute, message.get());
             }
@@ -155,8 +156,8 @@ public class AttributeProcessor {
 
     private Optional<String> getMessage(Annotation annotation) {
         try {
-            var messageMethod = annotation.annotationType().getMethod("message");
-            var message = messageMethod.invoke(annotation);
+            Method messageMethod = annotation.annotationType().getMethod("message");
+            Object message = messageMethod.invoke(annotation);
             if (!Objects.equals(messageMethod.getDefaultValue(), message)) {
                 return Optional.of((String) message);
             }

@@ -39,16 +39,16 @@ public class TypeDescriptor {
             if (constructor.getParameterCount() == container.getRecordComponents().length) {
                 // We found the primary constructor
                 Parameter[] parameters = constructor.getParameters();
-                for (int i = 0; i < parameters.length; i++) {
+                for (Parameter parameter : parameters) {
                     // Match the parameter with the record component
-                    if (parameters[i]
+                    if (parameter
                             .getName()
                             .equals(propertyModel.getOriginalMember().getName())) {
                         // Get the annotations from the constructor parameter
-                        Annotation[] annotations = parameters[i].getAnnotations();
+                        Annotation[] annotations = parameter.getAnnotations();
                         // Process these annotations
                         for (Annotation annotation : annotations) {
-                            annotatedElements.add(parameters[i]); // Or handle as needed
+                            annotatedElements.add(parameter); // Or handle as needed
                         }
                     }
                 }

@@ -137,40 +137,35 @@ public class JavaToZodConverter {
     }
 
     private boolean isDate(Type type) {
-        if (type instanceof Class<?>) {
-            Class<?> clazz = (Class<?>) type;
+        if (type instanceof Class<?> clazz) {
             return DATE_TYPES.contains(clazz);
         }
         return false;
     }
 
     private boolean isJavaDateTime(Type type) {
-        if (type instanceof Class<?>) {
-            Class<?> clazz = (Class<?>) type;
+        if (type instanceof Class<?> clazz) {
             return JAVA_ZONED_DATE_TIME_TYPES.contains(clazz);
         }
         return false;
     }
 
     private boolean isJavaLocalTime(Type type) {
-        if (type instanceof Class<?>) {
-            Class<?> clazz = (Class<?>) type;
+        if (type instanceof Class<?> clazz) {
             return JAVA_LOCAL_TIME_TYPES.contains(clazz);
         }
         return false;
     }
 
     private boolean isJavaLocalDateTime(Type type) {
-        if (type instanceof Class<?>) {
-            Class<?> clazz = (Class<?>) type;
+        if (type instanceof Class<?> clazz) {
             return JAVA_LOCAL_DATE_TIME_TYPES.contains(clazz);
         }
         return false;
     }
 
     private boolean isJavaLocalDate(Type type) {
-        if (type instanceof Class<?>) {
-            Class<?> clazz = (Class<?>) type;
+        if (type instanceof Class<?> clazz) {
             return JAVA_LOCAL_DATE.contains(clazz);
         }
         return false;

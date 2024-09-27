@@ -30,7 +30,7 @@ public class ArraySchemaBuilder {
     }
 
     private Set<AnnotatedElement> getComponentAnnotatedElements(TypeDescriptor typeDescriptor) {
-        HashSet<AnnotatedElement> annotatedElements = new HashSet<AnnotatedElement>();
+        HashSet<AnnotatedElement> annotatedElements = new HashSet<>();
         for (AnnotatedElement annotatedElement : typeDescriptor.getAnnotatedElements()) {
             if (annotatedElement instanceof Method) {
                 if (((Method) annotatedElement).getParameterCount() == 0) {
@@ -57,8 +57,7 @@ public class ArraySchemaBuilder {
     private Type getComponentType(Type type) {
         if (type instanceof Class<?> && ((Class<?>) type).isArray()) {
             return ((Class<?>) type).getComponentType();
-        } else if (type instanceof JParameterizedType) {
-            JParameterizedType parameterizedType = (JParameterizedType) type;
+        } else if (type instanceof JParameterizedType parameterizedType) {
             return parameterizedType.getActualTypeArguments()[0];
         } else if (type instanceof JGenericArrayType) {
             return ((JGenericArrayType) type).getGenericComponentType();

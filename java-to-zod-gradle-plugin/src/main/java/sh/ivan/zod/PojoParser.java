@@ -16,6 +16,7 @@ import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.TaskAction;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.LoggerFactory;
 import sh.ivan.zod.schema.ObjectSchema;
 
@@ -113,7 +114,8 @@ public class PojoParser extends DefaultTask {
         // class loader
         List<URL> urls = new ArrayList<>();
         // Add the output directory for your compiled classes (this excludes dependencies)
-        File classesDir = new File(getProject().getBuildDir(), "classes/java/main");
+        File classesDir = new File(getBuildDirectoryAsFile(), "classes/java/main");
+
 
         // Check if the directory exists before adding it
         if (classesDir.exists()) {
@@ -158,6 +160,10 @@ public class PojoParser extends DefaultTask {
         }
     }
 
+    private @NotNull File getBuildDirectoryAsFile() {
+        return getProject().getLayout().getBuildDirectory().get().getAsFile();
+    }
+
     private Settings createSettings(URLClassLoader classLoader) {
         Settings settings = new Settings();
         settings.setExcludeFilter(excludeClasses, excludeClassPatterns);
@@ -180,7 +186,7 @@ public class PojoParser extends DefaultTask {
         if (outputFile == null) {
             // Set the default output file location based on the project directory
             outputFile = new File(
-                    getProject().getBuildDir(), "java-to-zod/" + getProject().getName() + "-schemas.js");
+                    getBuildDirectoryAsFile(), "java-to-zod/" + getProject().getName() + "-schemas.js");
         }
         return outputFile;
     }

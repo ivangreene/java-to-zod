@@ -28,7 +28,7 @@ class RecordTest extends JavaObjectTest {
 
     record Book(@NotEmpty String name) {
         @Size(min = 1, max = 50)
-        public String getName() {
+        public String name() {
             return name;
         }
     }

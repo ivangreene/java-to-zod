@@ -29,10 +29,9 @@ public class TypeDescriptor {
         if (container.isRecord()) {
             addAnnotationsFromRecordConstructor(container, propertyModel, annotatedElements);
         } else {
-            // Existing field handling
             getField(container, propertyModel).ifPresent(annotatedElements::add);
-            annotatedElements.addAll(getAllMethods(propertyModel));
         }
+        annotatedElements.addAll(getAllMethods(propertyModel));
         this.annotatedElements = Set.copyOf(annotatedElements);
     }
 
@@ -69,27 +68,21 @@ public class TypeDescriptor {
     private Set<Method> getAllMethods(PropertyModel propertyModel) {
         if (propertyModel.getOriginalMember() instanceof Method method) {
 
-            // Check if this is a record and handle accessor methods for record components
             if (method.getDeclaringClass().isRecord()) {
                 return Set.of(method);
             }
 
-            // Regular class handling
             return Stream.iterate(method, Objects::nonNull, m -> {
                         if (m.getDeclaringClass().getSuperclass() == Object.class) {
                             return null;
                         }
-                        return Optional.of(m)
-                                .map(Method::getDeclaringClass)
-                                .map(Class::getSuperclass)
-                                .map(clazz -> {
-                                    try {
-                                        return clazz.getDeclaredMethod(m.getName(), m.getParameterTypes());
-                                    } catch (NoSuchMethodException ignored) {
-                                        return null;
-                                    }
-                                })
-                                .orElse(null);
+                        try {
+                            return m.getDeclaringClass()
+                                    .getSuperclass()
+                                    .getDeclaredMethod(m.getName(), m.getParameterTypes());
+                        } catch (NoSuchMethodException ignored) {
+                            return null;
+                        }
                     })
                     .filter(Objects::nonNull)
                     .collect(Collectors.toSet());
@@ -102,18 +95,6 @@ public class TypeDescriptor {
             return Optional.empty();
         }
 
-        // Check if the class is a record
-        if (container.isRecord()) {
-            try {
-                // Get the accessor method for the record component
-                return Optional.of(container.getDeclaredField(
-                        propertyModel.getOriginalMember().getName()));
-            } catch (NoSuchFieldException e) {
-                return Optional.empty();
-            }
-        }
-
-        // Handle ordinary classes.
         if (propertyModel.getOriginalMember() instanceof Field) {
             return Optional.of((Field) propertyModel.getOriginalMember());
         }

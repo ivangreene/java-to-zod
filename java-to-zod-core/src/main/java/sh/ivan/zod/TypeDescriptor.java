@@ -22,7 +22,7 @@ public class TypeDescriptor {
 
     public TypeDescriptor(Class<?> container, PropertyModel propertyModel) {
         this.type = propertyModel.getType();
-        HashSet<AnnotatedElement> annotatedElements = new HashSet<>();
+        var annotatedElements = new HashSet<AnnotatedElement>();
         if (container.isRecord()) {
             getParameterFromRecordConstructor(container, propertyModel).ifPresent(annotatedElements::add);
         } else {

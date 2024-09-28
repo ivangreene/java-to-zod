@@ -24,31 +24,31 @@ public class ArraySchemaBuilder {
     }
 
     public Schema build(TypeDescriptor typeDescriptor, Set<Attribute> attributes) {
-        TypeDescriptor componentTypeDescriptor = getComponentTypeDescriptor(typeDescriptor);
+        var componentTypeDescriptor = getComponentTypeDescriptor(typeDescriptor);
         return new ArraySchema(converter.getReferentialSchema(componentTypeDescriptor), attributes);
     }
 
     private TypeDescriptor getComponentTypeDescriptor(TypeDescriptor typeDescriptor) {
-        Type componentType = getComponentType(typeDescriptor.getType());
-        Set<AnnotatedElement> componentAnnotatedElements = getComponentAnnotatedElements(typeDescriptor);
+        var componentType = getComponentType(typeDescriptor.getType());
+        var componentAnnotatedElements = getComponentAnnotatedElements(typeDescriptor);
         return new TypeDescriptor(componentType, componentAnnotatedElements);
     }
 
     private Set<AnnotatedElement> getComponentAnnotatedElements(TypeDescriptor typeDescriptor) {
-        HashSet<AnnotatedElement> annotatedElements = new HashSet<>();
-        for (AnnotatedElement annotatedElement : typeDescriptor.getAnnotatedElements()) {
+        var annotatedElements = new HashSet<AnnotatedElement>();
+        typeDescriptor.getAnnotatedElements().forEach(annotatedElement -> {
             if (annotatedElement instanceof Method) {
                 if (((Method) annotatedElement).getParameterCount() == 0) {
-                    AnnotatedType annotatedType = ((Method) annotatedElement).getAnnotatedReturnType();
+                    var annotatedType = ((Method) annotatedElement).getAnnotatedReturnType();
                     getComponentAnnotatedElement(annotatedType).ifPresent(annotatedElements::add);
                 }
             } else if (annotatedElement instanceof Field) {
-                AnnotatedType annotatedType = ((Field) annotatedElement).getAnnotatedType();
+                var annotatedType = ((Field) annotatedElement).getAnnotatedType();
                 getComponentAnnotatedElement(annotatedType).ifPresent(annotatedElements::add);
             } else if (annotatedElement instanceof AnnotatedType) {
                 getComponentAnnotatedElement((AnnotatedType) annotatedElement).ifPresent(annotatedElements::add);
             }
-        }
+        });
         return annotatedElements;
     }
 
@@ -62,7 +62,8 @@ public class ArraySchemaBuilder {
     private Type getComponentType(Type type) {
         if (type instanceof Class<?> && ((Class<?>) type).isArray()) {
             return ((Class<?>) type).getComponentType();
-        } else if (type instanceof JParameterizedType parameterizedType) {
+        } else if (type instanceof JParameterizedType) {
+            var parameterizedType = (JParameterizedType) type;
             return parameterizedType.getActualTypeArguments()[0];
         } else if (type instanceof JGenericArrayType) {
             return ((JGenericArrayType) type).getGenericComponentType();

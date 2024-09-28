@@ -1,13 +1,13 @@
 .PHONY: *
 
 build:
-	mvn clean package
+	./mvnw clean package
 
 format:
-	mvn spotless:apply
+	./mvnw spotless:apply
 
 test:
-	mvn clean test
+	./mvnw clean test
 
 clean:
-	mvn clean
+	./mvnw clean

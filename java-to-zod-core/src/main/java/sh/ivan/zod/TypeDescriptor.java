@@ -5,6 +5,7 @@ import java.beans.Introspector;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.lang.reflect.Type;
 import java.util.HashSet;
 import java.util.Objects;
@@ -22,7 +23,11 @@ public class TypeDescriptor {
     public TypeDescriptor(Class<?> container, PropertyModel propertyModel) {
         this.type = propertyModel.getType();
         var annotatedElements = new HashSet<AnnotatedElement>();
-        getField(container, propertyModel).ifPresent(annotatedElements::add);
+        if (container.isRecord()) {
+            getParameterFromRecordConstructor(container, propertyModel).ifPresent(annotatedElements::add);
+        } else {
+            getField(container, propertyModel).ifPresent(annotatedElements::add);
+        }
         annotatedElements.addAll(getAllMethods(propertyModel));
         this.annotatedElements = Set.copyOf(annotatedElements);
     }
@@ -32,24 +37,39 @@ public class TypeDescriptor {
         this.annotatedElements = annotatedElements;
     }
 
+    private Optional<Parameter> getParameterFromRecordConstructor(Class<?> container, PropertyModel propertyModel) {
+        return Stream.of(container.getDeclaredConstructors())
+                .filter(constructor -> constructor.getParameterCount() == container.getRecordComponents().length)
+                .flatMap(constructor -> Stream.of(constructor.getParameters()))
+                .filter(parameter -> parameter
+                        .getName()
+                        .equals(propertyModel.getOriginalMember().getName()))
+                .findAny();
+    }
+
     private Set<Method> getAllMethods(PropertyModel propertyModel) {
-        if (!(propertyModel.getOriginalMember() instanceof Method)) {
-            return Set.of();
+        if (propertyModel.getOriginalMember() instanceof Method method) {
+
+            if (method.getDeclaringClass().isRecord()) {
+                return Set.of(method);
+            }
+
+            return Stream.iterate(method, Objects::nonNull, m -> {
+                        if (m.getDeclaringClass().getSuperclass() == Object.class) {
+                            return null;
+                        }
+                        try {
+                            return m.getDeclaringClass()
+                                    .getSuperclass()
+                                    .getDeclaredMethod(m.getName(), m.getParameterTypes());
+                        } catch (NoSuchMethodException ignored) {
+                            return null;
+                        }
+                    })
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toSet());
         }
-        return Stream.iterate((Method) propertyModel.getOriginalMember(), Objects::nonNull, method -> {
-                    if (method.getDeclaringClass().getSuperclass() == Object.class) {
-                        return null;
-                    }
-                    try {
-                        return method.getDeclaringClass()
-                                .getSuperclass()
-                                .getDeclaredMethod(method.getName(), method.getParameterTypes());
-                    } catch (NoSuchMethodException ignored) {
-                        return null;
-                    }
-                })
-                .filter(Objects::nonNull)
-                .collect(Collectors.toSet());
+        return Set.of();
     }
 
     private Optional<Field> getField(Class<?> container, PropertyModel propertyModel) {

@@ -2,9 +2,7 @@ package sh.ivan.zod;
 
 import cz.habarta.typescript.generator.parser.PropertyModel;
 import java.beans.Introspector;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -25,9 +23,8 @@ public class TypeDescriptor {
     public TypeDescriptor(Class<?> container, PropertyModel propertyModel) {
         this.type = propertyModel.getType();
         HashSet<AnnotatedElement> annotatedElements = new HashSet<>();
-        // Check if the class is a record
         if (container.isRecord()) {
-            addAnnotationsFromRecordConstructor(container, propertyModel, annotatedElements);
+            getParameterFromRecordConstructor(container, propertyModel).ifPresent(annotatedElements::add);
         } else {
             getField(container, propertyModel).ifPresent(annotatedElements::add);
         }
@@ -35,34 +32,19 @@ public class TypeDescriptor {
         this.annotatedElements = Set.copyOf(annotatedElements);
     }
 
-    private static void addAnnotationsFromRecordConstructor(
-            Class<?> container, PropertyModel propertyModel, HashSet<AnnotatedElement> annotatedElements) {
-        // Get the primary constructor of the record
-        Constructor<?>[] constructors = container.getDeclaredConstructors();
-        for (Constructor<?> constructor : constructors) {
-            if (constructor.getParameterCount() == container.getRecordComponents().length) {
-                // We found the primary constructor
-                Parameter[] parameters = constructor.getParameters();
-                for (Parameter parameter : parameters) {
-                    // Match the parameter with the record component
-                    if (parameter
-                            .getName()
-                            .equals(propertyModel.getOriginalMember().getName())) {
-                        // Get the annotations from the constructor parameter
-                        Annotation[] annotations = parameter.getAnnotations();
-                        // Process these annotations
-                        for (Annotation annotation : annotations) {
-                            annotatedElements.add(parameter); // Or handle as needed
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     public TypeDescriptor(Type type, Set<AnnotatedElement> annotatedElements) {
         this.type = type;
         this.annotatedElements = annotatedElements;
+    }
+
+    private Optional<Parameter> getParameterFromRecordConstructor(Class<?> container, PropertyModel propertyModel) {
+        return Stream.of(container.getDeclaredConstructors())
+                .filter(constructor -> constructor.getParameterCount() == container.getRecordComponents().length)
+                .flatMap(constructor -> Stream.of(constructor.getParameters()))
+                .filter(parameter -> parameter
+                        .getName()
+                        .equals(propertyModel.getOriginalMember().getName()))
+                .findAny();
     }
 
     private Set<Method> getAllMethods(PropertyModel propertyModel) {

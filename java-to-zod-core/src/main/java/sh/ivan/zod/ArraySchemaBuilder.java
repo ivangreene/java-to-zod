@@ -45,6 +45,8 @@ public class ArraySchemaBuilder {
             } else if (annotatedElement instanceof Field field) {
                 var annotatedType = field.getAnnotatedType();
                 getComponentAnnotatedElement(annotatedType).ifPresent(annotatedElements::add);
+            } else if (annotatedElement instanceof AnnotatedType annotatedType) {
+                getComponentAnnotatedElement(annotatedType).ifPresent(annotatedElements::add);
             }
         });
         return annotatedElements;

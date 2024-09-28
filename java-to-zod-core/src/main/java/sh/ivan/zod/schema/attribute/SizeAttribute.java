@@ -19,7 +19,7 @@ public class SizeAttribute implements Attribute {
             sb.append("min(").append(min).append(")");
         }
         if (max < Integer.MAX_VALUE) {
-            if (!sb.isEmpty()) {
+            if (sb.length() > 0) {
                 sb.append(".");
             }
             sb.append("max(").append(max).append(")");

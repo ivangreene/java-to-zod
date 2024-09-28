@@ -145,9 +145,7 @@ public class JavaToZodConverter {
 
     protected String getSchemaName(Type type) {
         if (type instanceof Class<?> clazz) {
-            return configuration.getSchemaNamePrefix()
-                    + clazz.getSimpleName()
-                    + configuration.getSchemaNameSuffix();
+            return configuration.getSchemaNamePrefix() + clazz.getSimpleName() + configuration.getSchemaNameSuffix();
         }
         throw new IllegalArgumentException("No name for type " + type);
     }

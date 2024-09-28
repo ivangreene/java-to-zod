@@ -101,8 +101,7 @@ public class AttributeProcessor {
                 && attributes.stream()
                         .anyMatch(attribute -> attribute instanceof SizeAttribute sizeAttribute
                                 && sizeAttribute.getMin() > 0
-                                && (sizeAttribute.getMin() > 1
-                                        || sizeAttribute.getMax() != Integer.MAX_VALUE))) {
+                                && (sizeAttribute.getMin() > 1 || sizeAttribute.getMax() != Integer.MAX_VALUE))) {
             attributes.remove(new SizeAttribute(1, Integer.MAX_VALUE));
         }
         return Set.copyOf(attributes);

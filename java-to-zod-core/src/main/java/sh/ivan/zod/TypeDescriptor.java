@@ -73,10 +73,9 @@ public class TypeDescriptor {
     }
 
     private Optional<Field> getField(Class<?> container, PropertyModel propertyModel) {
-        if (container == null || container == Object.class) {
+        if (container == Object.class) {
             return Optional.empty();
         }
-
         if (propertyModel.getOriginalMember() instanceof Field) {
             return Optional.of((Field) propertyModel.getOriginalMember());
         }

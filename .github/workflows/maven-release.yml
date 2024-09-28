@@ -11,7 +11,7 @@ on:
         required: true
         default: ""
       developmentVersion:
-        description: "Next snapshot version"
+        description: "Next snapshot version (without -SNAPSHOT suffix)"
         required: true
         default: ""
 
@@ -58,7 +58,7 @@ jobs:
           -s settings.xml \
           -Dgpg.passphrase='${{ secrets.MAVEN_GPG_PASSPHRASE }}' \
           -DreleaseVersion=${{ github.event.inputs.releaseVersion }} \
-          -DdevelopmentVersion=${{ github.event.inputs.developmentVersion }} \
+          -DdevelopmentVersion=${{ github.event.inputs.developmentVersion }}-SNAPSHOT \
           deploy
       env:
         MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}

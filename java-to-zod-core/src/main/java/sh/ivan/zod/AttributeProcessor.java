@@ -99,17 +99,17 @@ public class AttributeProcessor {
         }
         if (attributes.contains(new SizeAttribute(1, Integer.MAX_VALUE))
                 && attributes.stream()
-                        .anyMatch(attribute -> attribute instanceof SizeAttribute
-                                && ((SizeAttribute) attribute).getMin() > 0
-                                && (((SizeAttribute) attribute).getMin() > 1
-                                        || ((SizeAttribute) attribute).getMax() != Integer.MAX_VALUE))) {
+                        .anyMatch(attribute -> attribute instanceof SizeAttribute sizeAttribute
+                                && sizeAttribute.getMin() > 0
+                                && (sizeAttribute.getMin() > 1
+                                        || sizeAttribute.getMax() != Integer.MAX_VALUE))) {
             attributes.remove(new SizeAttribute(1, Integer.MAX_VALUE));
         }
         return Set.copyOf(attributes);
     }
 
     private boolean isNullable(Type type, Set<Annotation> annotations) {
-        return !(type instanceof Class<?> && ((Class<?>) type).isPrimitive())
+        return !(type instanceof Class<?> clazz && clazz.isPrimitive())
                 && annotations.stream().map(Annotation::annotationType).noneMatch(NOT_NULL_ANNOTATIONS::contains);
     }
 

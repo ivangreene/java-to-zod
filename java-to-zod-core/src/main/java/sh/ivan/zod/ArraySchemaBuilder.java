@@ -37,36 +37,33 @@ public class ArraySchemaBuilder {
     private Set<AnnotatedElement> getComponentAnnotatedElements(TypeDescriptor typeDescriptor) {
         var annotatedElements = new HashSet<AnnotatedElement>();
         typeDescriptor.getAnnotatedElements().forEach(annotatedElement -> {
-            if (annotatedElement instanceof Method) {
-                if (((Method) annotatedElement).getParameterCount() == 0) {
-                    var annotatedType = ((Method) annotatedElement).getAnnotatedReturnType();
+            if (annotatedElement instanceof Method method) {
+                if (method.getParameterCount() == 0) {
+                    var annotatedType = method.getAnnotatedReturnType();
                     getComponentAnnotatedElement(annotatedType).ifPresent(annotatedElements::add);
                 }
-            } else if (annotatedElement instanceof Field) {
-                var annotatedType = ((Field) annotatedElement).getAnnotatedType();
+            } else if (annotatedElement instanceof Field field) {
+                var annotatedType = field.getAnnotatedType();
                 getComponentAnnotatedElement(annotatedType).ifPresent(annotatedElements::add);
-            } else if (annotatedElement instanceof AnnotatedType) {
-                getComponentAnnotatedElement((AnnotatedType) annotatedElement).ifPresent(annotatedElements::add);
             }
         });
         return annotatedElements;
     }
 
     private Optional<AnnotatedElement> getComponentAnnotatedElement(AnnotatedType annotatedType) {
-        if (annotatedType instanceof AnnotatedParameterizedType) {
-            return Optional.of(((AnnotatedParameterizedType) annotatedType).getAnnotatedActualTypeArguments()[0]);
+        if (annotatedType instanceof AnnotatedParameterizedType annotatedParameterizedType) {
+            return Optional.of(annotatedParameterizedType.getAnnotatedActualTypeArguments()[0]);
         }
         return Optional.empty();
     }
 
     private Type getComponentType(Type type) {
-        if (type instanceof Class<?> && ((Class<?>) type).isArray()) {
-            return ((Class<?>) type).getComponentType();
-        } else if (type instanceof JParameterizedType) {
-            var parameterizedType = (JParameterizedType) type;
+        if (type instanceof Class<?> clazz && clazz.isArray()) {
+            return clazz.getComponentType();
+        } else if (type instanceof JParameterizedType parameterizedType) {
             return parameterizedType.getActualTypeArguments()[0];
-        } else if (type instanceof JGenericArrayType) {
-            return ((JGenericArrayType) type).getGenericComponentType();
+        } else if (type instanceof JGenericArrayType genericArrayType) {
+            return genericArrayType.getGenericComponentType();
         } else {
             throw new IllegalArgumentException("Unsupported type: " + type);
         }

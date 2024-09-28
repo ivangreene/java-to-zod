@@ -112,8 +112,8 @@ public class JavaToZodConverter {
     }
 
     private boolean isNumber(Type type) {
-        return type instanceof Class<?>
-                && (Number.class.isAssignableFrom((Class<?>) type) || PRIMITIVE_NUMBER_TYPES.contains(type));
+        return type instanceof Class<?> clazz
+                && (Number.class.isAssignableFrom(clazz) || PRIMITIVE_NUMBER_TYPES.contains(type));
     }
 
     private boolean isDate(Type type) {
@@ -121,7 +121,7 @@ public class JavaToZodConverter {
     }
 
     private boolean isEnum(Type type) {
-        return type instanceof Class<?> && ((Class<?>) type).isEnum();
+        return type instanceof Class<?> clazz && clazz.isEnum();
     }
 
     private NumberSchema buildNumberSchema(Class<?> clazz, Set<Attribute> attributes) {
@@ -132,8 +132,8 @@ public class JavaToZodConverter {
     }
 
     public boolean isArray(Type type) {
-        return type instanceof Class<?> && ((Class<?>) type).isArray()
-                || type instanceof JParameterizedType && ((JParameterizedType) type).getRawType() == List.class
+        return type instanceof Class<?> clazz && clazz.isArray()
+                || type instanceof JParameterizedType parameterizedType && parameterizedType.getRawType() == List.class
                 || type instanceof JGenericArrayType;
     }
 
@@ -144,9 +144,9 @@ public class JavaToZodConverter {
     }
 
     protected String getSchemaName(Type type) {
-        if (type instanceof Class<?>) {
+        if (type instanceof Class<?> clazz) {
             return configuration.getSchemaNamePrefix()
-                    + ((Class<?>) type).getSimpleName()
+                    + clazz.getSimpleName()
                     + configuration.getSchemaNameSuffix();
         }
         throw new IllegalArgumentException("No name for type " + type);

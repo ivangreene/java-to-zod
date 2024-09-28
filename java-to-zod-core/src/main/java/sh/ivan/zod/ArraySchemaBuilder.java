@@ -36,19 +36,22 @@ public class ArraySchemaBuilder {
 
     private Set<AnnotatedElement> getComponentAnnotatedElements(TypeDescriptor typeDescriptor) {
         var annotatedElements = new HashSet<AnnotatedElement>();
-        typeDescriptor.getAnnotatedElements().forEach(annotatedElement -> {
-            if (annotatedElement instanceof Method method) {
-                if (method.getParameterCount() == 0) {
-                    var annotatedType = method.getAnnotatedReturnType();
-                    getComponentAnnotatedElement(annotatedType).ifPresent(annotatedElements::add);
-                }
-            } else if (annotatedElement instanceof Field field) {
-                var annotatedType = field.getAnnotatedType();
-                getComponentAnnotatedElement(annotatedType).ifPresent(annotatedElements::add);
-            } else if (annotatedElement instanceof AnnotatedType annotatedType) {
-                getComponentAnnotatedElement(annotatedType).ifPresent(annotatedElements::add);
-            }
-        });
+        typeDescriptor.getAnnotatedElements().stream()
+                .map(annotatedElement -> {
+                    if (annotatedElement instanceof Method method) {
+                        if (method.getParameterCount() == 0) {
+                            return method.getAnnotatedReturnType();
+                        }
+                    } else if (annotatedElement instanceof Field field) {
+                        return field.getAnnotatedType();
+                    } else if (annotatedElement instanceof AnnotatedType annotatedType) {
+                        return annotatedType;
+                    }
+                    return null;
+                })
+                .map(this::getComponentAnnotatedElement)
+                .flatMap(Optional::stream)
+                .forEach(annotatedElements::add);
         return annotatedElements;
     }
 

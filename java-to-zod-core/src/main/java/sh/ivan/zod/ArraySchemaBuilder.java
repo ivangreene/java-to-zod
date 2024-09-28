@@ -2,7 +2,12 @@ package sh.ivan.zod;
 
 import cz.habarta.typescript.generator.type.JGenericArrayType;
 import cz.habarta.typescript.generator.type.JParameterizedType;
-import java.lang.reflect.*;
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.AnnotatedParameterizedType;
+import java.lang.reflect.AnnotatedType;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;

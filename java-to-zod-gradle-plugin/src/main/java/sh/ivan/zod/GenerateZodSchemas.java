@@ -1,7 +1,7 @@
 package sh.ivan.zod;
 
-import cz.habarta.typescript.generator.*;
-import cz.habarta.typescript.generator.parser.Model;
+import cz.habarta.typescript.generator.Logger;
+import cz.habarta.typescript.generator.TypeScriptGenerator;
 import lombok.Setter;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.Nested;
@@ -9,7 +9,6 @@ import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.TaskAction;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.LoggerFactory;
-import sh.ivan.zod.schema.ObjectSchema;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,7 +16,6 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 
 @Setter
@@ -70,34 +68,7 @@ public class GenerateZodSchemas extends DefaultTask {
         try (URLClassLoader classLoader = new URLClassLoader(
                 urls.toArray(new URL[0]), Thread.currentThread().getContextClassLoader())) {
 
-            Settings settings = new SettingsCreator().from(classLoader, pluginParameters);
-
-            cz.habarta.typescript.generator.Input.Parameters parameters =
-                    new cz.habarta.typescript.generator.Input.Parameters();
-            parameters.classNames = pluginParameters.getClasses();
-            parameters.classNamePatterns = pluginParameters.getClassPatterns();
-            parameters.classesWithAnnotations = pluginParameters.getClassesWithAnnotations();
-            parameters.classesImplementingInterfaces = pluginParameters.getClassesImplementingInterfaces();
-            parameters.classesExtendingClasses = pluginParameters.getClassesExtendingClasses();
-            parameters.jaxrsApplicationClassName = pluginParameters.getClassesFromJaxrsApplication();
-            parameters.automaticJaxrsApplication = pluginParameters.isClassesFromAutomaticJaxrsApplication();
-            parameters.isClassNameExcluded = settings.getExcludeFilter();
-            parameters.classLoader = classLoader;
-            parameters.scanningAcceptedPackages = pluginParameters.getScanningAcceptedPackages();
-            parameters.debug = pluginParameters.getLoggingLevel() == Logger.Level.Debug;
-
-            cz.habarta.typescript.generator.Input input = cz.habarta.typescript.generator.Input.from(parameters);
-            TypeScriptGenerator typeScriptGenerator = new TypeScriptGenerator(settings);
-            Model model = typeScriptGenerator.getModelParser().parseModel(input.getSourceTypes());
-            Configuration configuration = Configuration.builder()
-                    .schemaNamePrefix(pluginParameters.getSchemaNamePrefix())
-                    .schemaNameSuffix(pluginParameters.getSchemaNameSuffix())
-                    .build();
-            JavaToZodConverter javaToZodConverter =
-                    new JavaToZodConverter(typeScriptGenerator.getModelParser(), configuration);
-            Map<String, ObjectSchema> beanSchemas = javaToZodConverter.getBeanSchemas(model);
-            SchemaFileWriter schemaFileWriter = new SchemaFileWriter(beanSchemas, getOutputFile());
-            schemaFileWriter.write();
+            new JavaToZodConvertorWrapper(classLoader, pluginParameters, this::getOutputFile).run();
 
         } catch (IOException e) {
             log.error(e.getMessage());

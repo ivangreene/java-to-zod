@@ -28,8 +28,11 @@ dependencies {
     implementation("cz.habarta.typescript-generator:typescript-generator-core:3.2.1263")
     implementation(gradleApi())
 
-    testImplementation(platform("org.junit:junit-bom:5.10.0"))
+    testImplementation(platform("org.junit:junit-bom:5.10.2"))
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.3")
+    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.8.1")
     testImplementation("org.junit.jupiter:junit-jupiter")
+    testImplementation(gradleTestKit())
 }
 
 tasks.test {

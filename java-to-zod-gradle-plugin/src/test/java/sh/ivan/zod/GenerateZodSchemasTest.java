@@ -70,14 +70,16 @@ public class GenerateZodSchemasTest {
 
 
         // Verify that the output file has been generated
-        File outputFile = new File(testProjectDir, "build/java-to-zod/generated-schemas.ts");
+        File outputFile = new File(testProjectDir, "build/temp/generated-schemas/schemas.ts");
         assertTrue(outputFile.exists(), "Zod schema file should be generated");
 
         // Verify
         String outputContent = Files.readString(outputFile.toPath(), StandardCharsets.UTF_8);
 
-        Path snapshotFilePath = Path.of("src/test/resources/schemas_snapshot.ts");
+        Path snapshotFilePath = Path.of("src/test/ts/src/schemas_snapshot.ts");
         String snapshotContent = Files.readString(snapshotFilePath, StandardCharsets.UTF_8);
         assertEquals(outputContent, snapshotContent, "The generated Zod schemas do not match the snapshot content.");
+
+
     }
 }

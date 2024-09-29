@@ -78,8 +78,11 @@ public class GenerateZodSchemasTest {
 
         Path snapshotFilePath = Path.of("src/test/ts/src/schemas_snapshot.ts");
         String snapshotContent = Files.readString(snapshotFilePath, StandardCharsets.UTF_8);
-        assertEquals(outputContent, snapshotContent, "The generated Zod schemas do not match the snapshot content.");
+        assertEquals(normalizeLineEndings(outputContent), normalizeLineEndings(snapshotContent), "The generated Zod schemas do not match the snapshot content.");
 
 
+    }
+    public String normalizeLineEndings(String input) {
+        return input.replace("\r\n", "\n").trim();
     }
 }

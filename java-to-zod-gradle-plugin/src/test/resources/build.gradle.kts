@@ -31,8 +31,8 @@ java {
 tasks.withType<sh.ivan.zod.GenerateZodSchemas> {
     val tempOutputDir = layout.buildDirectory.dir("temp/generated-schemas")
     outputFile = tempOutputDir.map { it.file("schemas.ts") }.get().asFile
-    jsonLibrary = JsonLibrary.jackson2
-    classes = mutableListOf("sh.ivan.zod.resources.TestPersonClass", "sh.ivan.zod.resources.TestPersonRecord")
+    pluginParameters.jsonLibrary = JsonLibrary.jackson2
+    pluginParameters.classes = mutableListOf("sh.ivan.zod.resources.TestPersonClass", "sh.ivan.zod.resources.TestPersonRecord")
 }
 
 tasks.withType<JavaCompile> {

@@ -6,8 +6,14 @@ plugins {
     id("java-to-zod-gradle-plugin") version "0.7.0-SNAPSHOT"
 }
 
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
 dependencies {
     implementation("cz.habarta.typescript-generator:typescript-generator-core:3.2.1263")
+    implementation("jakarta.validation:jakarta.validation-api:3.1.0")
 }
 
 java {
@@ -16,7 +22,11 @@ java {
 }
 
 tasks.withType<sh.ivan.zod.GenerateZodSchemas> {
-    outputFile = file("${'$'}buildDir/java-to-zod/generated-schemas.ts")
+    outputFile = file("build/java-to-zod/generated-schemas.ts")
     jsonLibrary = JsonLibrary.jackson2
-    classes = mutableListOf("sh.ivan.zod.dto.TestPersonClass")
+    classes = mutableListOf("sh.ivan.zod.resources.TestPersonClass")
+}
+
+tasks.withType<JavaCompile> {
+    options.annotationProcessorPath = configurations["annotationProcessor"]
 }

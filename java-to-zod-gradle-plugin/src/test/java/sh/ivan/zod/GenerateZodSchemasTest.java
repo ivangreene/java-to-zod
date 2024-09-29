@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.Arrays;
 
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -32,12 +33,22 @@ public class GenerateZodSchemasTest {
     @Test
     public void testGenerateZodSchemasTask() throws IOException {
         // Given: Add an actual Java test class to the test project directory
-        Path srcDir = Path.of(testProjectDir.getPath(), "src/main/java/sh/ivan/zod/dto");
+        Path srcDir = Path.of(testProjectDir.getPath(), "src/main/java/sh/ivan/zod/resources");
         Files.createDirectories(srcDir);
 
         // Copy TestPersonDto.java from resources
         Path testPersonDto = Path.of("src/test/java/sh/ivan/zod/resources/TestPersonClass.java");
-        Files.copy(testPersonDto, srcDir.resolve("TestPersonDto.java"), StandardCopyOption.REPLACE_EXISTING);
+        Files.copy(testPersonDto, srcDir.resolve("TestPersonClass.java"), StandardCopyOption.REPLACE_EXISTING);
+
+        // First: Build the Java class files
+        BuildResult buildResult = GradleRunner.create()
+                .withProjectDir(testProjectDir)
+                .withArguments("build") // or use 'compileJava' if you prefer
+                .withPluginClasspath()
+                .build();
+
+        // Ensure the build was successful
+        assertEquals(SUCCESS, buildResult.task(":build").getOutcome());
 
         // When: Run the Gradle task to generate Zod schemas
         BuildResult result = GradleRunner.create()
@@ -49,8 +60,12 @@ public class GenerateZodSchemasTest {
         // Then: Verify the task outcome and schema generation
         assertEquals(SUCCESS, result.task(":generateZodSchemas").getOutcome());
 
+        File outputDir = new File(testProjectDir, "build/java-to-zod");
+        System.out.println("Output directory contents: " + Arrays.toString(outputDir.listFiles()));
+
+
         // Verify that the output file has been generated
-        File outputFile = new File(testProjectDir, "build/java-to-zod/generated-schemas.js");
+        File outputFile = new File(testProjectDir, "build/java-to-zod/generated-schemas.ts");
         assertTrue(outputFile.exists(), "Zod schema file should be generated");
     }
 }

@@ -24,7 +24,7 @@ java {
 tasks.withType<sh.ivan.zod.GenerateZodSchemas> {
     outputFile = file("build/java-to-zod/generated-schemas.ts")
     jsonLibrary = JsonLibrary.jackson2
-    classes = mutableListOf("sh.ivan.zod.resources.TestPersonClass")
+    classes = mutableListOf("sh.ivan.zod.resources.TestPersonClass", "sh.ivan.zod.resources.TestPersonRecord")
 }
 
 tasks.withType<JavaCompile> {

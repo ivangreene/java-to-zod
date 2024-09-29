@@ -8,6 +8,7 @@ import org.junit.jupiter.api.io.TempDir;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -36,9 +37,13 @@ public class GenerateZodSchemasTest {
         Path srcDir = Path.of(testProjectDir.getPath(), "src/main/java/sh/ivan/zod/resources");
         Files.createDirectories(srcDir);
 
-        // Copy TestPersonDto.java from resources
-        Path testPersonDto = Path.of("src/test/java/sh/ivan/zod/resources/TestPersonClass.java");
-        Files.copy(testPersonDto, srcDir.resolve("TestPersonClass.java"), StandardCopyOption.REPLACE_EXISTING);
+        // Copy TestPersonClass.java from resources
+        Path testPersonClass = Path.of("src/test/java/sh/ivan/zod/resources/TestPersonClass.java");
+        Files.copy(testPersonClass, srcDir.resolve("TestPersonClass.java"), StandardCopyOption.REPLACE_EXISTING);
+
+        // Copy TestPersonRecord.java from resources
+        Path testPersonRecord = Path.of("src/test/java/sh/ivan/zod/resources/TestPersonRecord.java");
+        Files.copy(testPersonRecord, srcDir.resolve("TestPersonRecord.java"), StandardCopyOption.REPLACE_EXISTING);
 
         // First: Build the Java class files
         BuildResult buildResult = GradleRunner.create()
@@ -67,5 +72,12 @@ public class GenerateZodSchemasTest {
         // Verify that the output file has been generated
         File outputFile = new File(testProjectDir, "build/java-to-zod/generated-schemas.ts");
         assertTrue(outputFile.exists(), "Zod schema file should be generated");
+
+        // Verify
+        String outputContent = Files.readString(outputFile.toPath(), StandardCharsets.UTF_8);
+
+        Path snapshotFilePath = Path.of("src/test/resources/schemas_snapshot.ts");
+        String snapshotContent = Files.readString(snapshotFilePath, StandardCharsets.UTF_8);
+        assertEquals(outputContent, snapshotContent, "The generated Zod schemas do not match the snapshot content.");
     }
 }

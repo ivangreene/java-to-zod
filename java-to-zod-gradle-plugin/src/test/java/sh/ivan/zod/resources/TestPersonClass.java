@@ -1,47 +1,83 @@
 package sh.ivan.zod.resources;
 
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-public class TestPersonClass {
-    @NotBlank(message = "Must not be blank.")
+import java.util.Date;
+import java.util.Objects;
+
+public final class TestPersonClass {
+
+    private final Long id;
+    private final Date dateOfBirth;
+    private final String fName;
+
+    @NotBlank(message = "Must not be blank")
     @Size(min = 1, message = "Please supply a name.")
-    private String fName;
+    private final String lName;
 
-    @NotBlank(message = "Must not be blank.")
-    @Size(min = 1, message = "Please supply a name.")
-    private String lName;
+    public TestPersonClass(
+            Long id,
+            Date dateOfBirth,
 
-    @Min(value = 0, message = "Must not be negative.")
-    private int age;
-
-    public TestPersonClass(String fName, int age) {
+            String fName,
+            String lName
+    ) {
+        this.id = id;
+        this.dateOfBirth = dateOfBirth;
         this.fName = fName;
-        this.age = age;
+        this.lName = lName;
+    }
+
+    public TestPersonClass unWrapDto() {
+        return this;
     }
 
     public String getlName() {
         return lName;
     }
 
-    public void setlName(String lName) {
-        this.lName = lName;
+    public Long getId() {
+        return id();
     }
 
+    public Long id() {
+        return id;
+    }
+
+    public Date getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    @NotBlank(message = "Must not be blank")
+    @Size(min = 1, message = "Please supply a name.")
     public String getfName() {
         return fName;
     }
 
-    public void setfName(String fName) {
-        this.fName = fName;
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, dateOfBirth, fName, lName);
     }
 
-    public int getAge() {
-        return age;
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) return true;
+        if (obj == null || obj.getClass() != this.getClass()) return false;
+        var that = (TestPersonClass) obj;
+        return Objects.equals(this.id, that.id) &&
+                Objects.equals(this.dateOfBirth, that.dateOfBirth) &&
+                Objects.equals(this.fName, that.fName) &&
+                Objects.equals(this.lName, that.lName);
     }
 
-    public void setAge(int age) {
-        this.age = age;
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "(" +
+                "party_id = " + id + ", " +
+                "dateOfBirth = " + dateOfBirth + ", " +
+                "fName = " + fName + ", " +
+                "lName = " + lName + ")";
     }
+
 }

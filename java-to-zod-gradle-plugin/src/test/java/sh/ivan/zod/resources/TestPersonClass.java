@@ -29,6 +29,9 @@ public final class TestPersonClass {
         this.lName = lName;
     }
 
+    /**
+     * Non-getter method shouldn't be in schema.
+     * */
     public TestPersonClass unWrapDto() {
         return this;
     }
@@ -41,6 +44,9 @@ public final class TestPersonClass {
         return id();
     }
 
+    /**
+     * Non-getter method shouldn't be in schema.
+     * */
     public Long id() {
         return id;
     }

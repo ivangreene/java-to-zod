@@ -47,56 +47,153 @@ public class PluginParameters implements Serializable {
     @Parameter
     private List<String> classPatterns = Collections.emptyList();
 
-    // Classes to process specified by annotations
+    /**
+     * Classes to process specified by annotations.
+     */
+    @Parameter
     private List<String> classesWithAnnotations = Collections.emptyList();
 
-    // Classes to process specified by implemented interface
+    /**
+     * Classes to process specified by implemented interface.
+     */
+    @Parameter
     private List<String> classesImplementingInterfaces = Collections.emptyList();
 
-    // Classes to process specified by extended superclasses
+    /**
+     * Classes to process specified by extended superclasses.
+     */
+    @Parameter
     private List<String> classesExtendingClasses = Collections.emptyList();
 
-    // Scans specified JAX-RS Application for classes to process
+    /**
+     * Scans specified JAX-RS {@link javax.ws.rs.core.Application} for classes to process.
+     * Parameter contains fully-qualified class name.
+     * It is possible to exclude particular REST resource classes using {@link #excludeClasses} parameter.
+     */
+    @Parameter
     private String classesFromJaxrsApplication;
 
-    // Scans JAX-RS resources for JSON classes to process
+    /**
+     * Scans JAX-RS resources for JSON classes to process.
+     * It is possible to exclude particular REST resource classes using {@link #excludeClasses} parameter.
+     */
+    @Parameter
     private boolean classesFromAutomaticJaxrsApplication = false;
 
-    // Allows to speed up classpath scanning by limiting scanning to specified packages
+    /**
+     * Allows to speed up classpath scanning by limiting scanning to specified packages.
+     * This optimization applies to following parameters:
+     * <ul>
+     * <li><code>classPatterns</code></li>
+     * <li><code>classesImplementingInterfaces</code></li>
+     * <li><code>classesExtendingClasses</code></li>
+     * <li><code>classesWithAnnotations</code></li>
+     * <li><code>classesFromAutomaticJaxrsApplication</code></li>
+     * </ul>
+     * This parameter is passed directly to underlying classpath scanning library (ClassGraph) without any validation or interpretation.
+     */
+    @Parameter
     private List<String> scanningAcceptedPackages = Collections.emptyList();
 
-    // List of classes excluded from processing
+    /**
+     * List of classes excluded from processing.
+     */
+    @Parameter
     private List<String> excludeClasses = Collections.emptyList();
 
-    // Excluded classes specified using glob patterns
+    /**
+     * Excluded classes specified using glob patterns.
+     * For more information and examples see <a href="https://github.com/vojtechhabarta/typescript-generator/wiki/Class-Names-Glob-Patterns">Class Names Glob Patterns</a> Wiki page.
+     */
+    @Parameter
     private List<String> excludeClassPatterns = Collections.emptyList();
 
-    // Only include properties with these annotations
+    /**
+     * If this list is not empty then only properties with any of these annotations will be included.
+     */
+    @Parameter
     private List<String> includePropertyAnnotations = Collections.emptyList();
 
-    // Exclude properties with these annotations
+    /**
+     * Properties with any of these annotations will be excluded.
+     */
+    @Parameter
     private List<String> excludePropertyAnnotations = Collections.emptyList();
 
-    // Library used in JSON classes (e.g., Jackson2, Gson)
+    /**
+     * Library used in JSON classes.
+     * Supported values are:
+     * <ul>
+     * <li><code>jackson2</code> - annotations from `com.fasterxml.jackson.annotation` package</li>
+     * <li><code>jaxb</code> - annotations from `javax.xml.bind.annotation` package<li>
+     * <li><code>gson</code> - annotations from `com.google.gson.annotations` package<li>
+     * <li><code>jsonb</code> - annotations from `javax.json.bind.annotation` package<li>
+     * </ul>
+     * Required parameter, recommended value is <code>jackson2</code>.
+     */
+    @Parameter(required = true)
     private JsonLibrary jsonLibrary;
 
-    // Jackson 2 global configuration
+    /**
+     * Specifies Jackson 2 global configuration.
+     * Description of individual parameters is in
+     * <a href="https://github.com/vojtechhabarta/typescript-generator/blob/main/typescript-generator-core/src/main/java/cz/habarta/typescript/generator/Jackson2Configuration.java">Jackson2Configuration</a>
+     * class on GitHub (latest version).
+     */
+    @Parameter
     private Jackson2Configuration jackson2Configuration;
 
-    // Gson global configuration
+    /**
+     * Specifies Gson global configuration.
+     * Description of individual parameters is in
+     * <a href="https://github.com/vojtechhabarta/typescript-generator/blob/main/typescript-generator-core/src/main/java/cz/habarta/typescript/generator/GsonConfiguration.java">GsonConfiguration</a>
+     * class on GitHub (latest version).
+     */
+    @Parameter
     private GsonConfiguration gsonConfiguration;
 
-    // JSON-B global configuration
+    /**
+     * Specifies JSON-B global configuration.
+     * Description of individual parameters is in
+     * <a href="https://github.com/vojtechhabarta/typescript-generator/blob/main/typescript-generator-core/src/main/java/cz/habarta/typescript/generator/JsonbConfiguration.java">Jackson2Configuration</a>
+     * class on GitHub (latest version).
+     */
+    @Parameter
     private JsonbConfiguration jsonbConfiguration;
 
-    // Scan Spring REST application for classes to process
+    /**
+     * If <code>true</code> Spring REST application will be loaded and scanned for classes to process.
+     * It is needed to specify application class using another parameter (for example {@link #classes}).
+     */
+    @Parameter
     private boolean scanSpringApplication = false;
 
-    // Specifies the level of logging output (Debug, Verbose, etc.)
+
+    /**
+     * Specifies level of logging output.
+     * Supported values are:
+     * <ul>
+     * <li><code>Debug</code></li>
+     * <li><code>Verbose</code></li>
+     * <li><code>Info</code></li>
+     * <li><code>Warning</code></li>
+     * <li><code>Error</code></li>
+     * </ul>
+     * Default value is <code>Verbose</code>.
+     */
+    @Parameter
     private Logger.Level loggingLevel = Logger.Level.Verbose;
 
-    // Skip processing
+    @Parameter(property = "java.to.zod.skip")
     private boolean skip = false;
+
+
+    /**
+     * The presence of any annotation in this list on a JSON property will cause
+     * the typescript-generator to treat that property as optional when generating
+     * the corresponding TypeScript interface.
+     * Example optional annotation: <code>javax.annotation.Nullable</code>.
+     */
     private List<String> optionalAnnotations = Collections.emptyList();
 
     @Input

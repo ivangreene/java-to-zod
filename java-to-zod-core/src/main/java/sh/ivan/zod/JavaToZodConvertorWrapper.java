@@ -52,7 +52,7 @@ public class JavaToZodConvertorWrapper {
         schemaFileWriter.write();
     }
 
-    public Settings from(URLClassLoader classLoader, PluginParameters pluginParameters) {
+    private Settings from(URLClassLoader classLoader, PluginParameters pluginParameters) {
         Settings settings = new Settings();
         settings.setExcludeFilter(pluginParameters.getExcludeClasses(), pluginParameters.getExcludeClassPatterns());
         settings.jsonLibrary = pluginParameters.getJsonLibrary();

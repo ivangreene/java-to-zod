@@ -4,7 +4,7 @@
   <parent>
     <groupId>sh.ivan</groupId>
     <artifactId>java-to-zod</artifactId>
-    <version>0.7.0-SNAPSHOT</version>
+    <version>0.8.0-SNAPSHOT</version>
   </parent>
   <artifactId>java-to-zod-maven-plugin-test</artifactId>
   <packaging>jar</packaging>
@@ -27,10 +27,12 @@
         <version>${project.version}</version>
         <configuration>
           <outputFile>${generated-schema-file}</outputFile>
-          <jsonLibrary>jackson2</jsonLibrary>
-          <classPatterns>
-            <classPattern>sh.ivan.pojo.**</classPattern>
-          </classPatterns>
+          <pluginParameters>
+            <jsonLibrary>jackson2</jsonLibrary>
+            <classPatterns>
+              <classPattern>sh.ivan.pojo.**</classPattern>
+            </classPatterns>
+          </pluginParameters>
         </configuration>
         <executions>
           <execution>

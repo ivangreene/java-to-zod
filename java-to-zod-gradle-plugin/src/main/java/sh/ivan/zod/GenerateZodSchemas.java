@@ -9,6 +9,7 @@ import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.TaskAction;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.LoggerFactory;
+import sh.ivan.zod.plugins.PluginParameters;
 
 import java.io.File;
 import java.io.IOException;

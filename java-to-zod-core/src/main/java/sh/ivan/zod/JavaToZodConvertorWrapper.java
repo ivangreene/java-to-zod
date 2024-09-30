@@ -2,20 +2,21 @@ package sh.ivan.zod;
 
 import cz.habarta.typescript.generator.*;
 import cz.habarta.typescript.generator.parser.Model;
-import sh.ivan.zod.schema.ObjectSchema;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URLClassLoader;
 import java.util.Map;
 import java.util.function.Supplier;
+import sh.ivan.zod.plugins.PluginParameters;
+import sh.ivan.zod.schema.ObjectSchema;
 
 public class JavaToZodConvertorWrapper {
     private final URLClassLoader classLoader;
     private final PluginParameters pluginParameters;
     private final Supplier<File> getOutputFile;
 
-    public JavaToZodConvertorWrapper(URLClassLoader classLoader, PluginParameters pluginParameters, Supplier<File> getOutputFile) {
+    public JavaToZodConvertorWrapper(
+            URLClassLoader classLoader, PluginParameters pluginParameters, Supplier<File> getOutputFile) {
         this.classLoader = classLoader;
         this.pluginParameters = pluginParameters;
         this.getOutputFile = getOutputFile;
@@ -24,8 +25,7 @@ public class JavaToZodConvertorWrapper {
     public void run() throws IOException {
         Settings settings = from(classLoader, pluginParameters);
 
-        cz.habarta.typescript.generator.Input.Parameters parameters =
-                new cz.habarta.typescript.generator.Input.Parameters();
+        Input.Parameters parameters = new Input.Parameters();
         parameters.classNames = pluginParameters.getClasses();
         parameters.classNamePatterns = pluginParameters.getClassPatterns();
         parameters.classesWithAnnotations = pluginParameters.getClassesWithAnnotations();
@@ -38,7 +38,7 @@ public class JavaToZodConvertorWrapper {
         parameters.scanningAcceptedPackages = pluginParameters.getScanningAcceptedPackages();
         parameters.debug = pluginParameters.getLoggingLevel() == Logger.Level.Debug;
 
-        cz.habarta.typescript.generator.Input input = cz.habarta.typescript.generator.Input.from(parameters);
+        Input input = Input.from(parameters);
         TypeScriptGenerator typeScriptGenerator = new TypeScriptGenerator(settings);
         Model model = typeScriptGenerator.getModelParser().parseModel(input.getSourceTypes());
         Configuration configuration = Configuration.builder()
@@ -68,5 +68,4 @@ public class JavaToZodConvertorWrapper {
         settings.loadOptionalAnnotations(classLoader, pluginParameters.getOptionalAnnotations());
         return settings;
     }
-
 }

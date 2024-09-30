@@ -65,10 +65,6 @@ public class GenerateZodSchemasTest {
         // Then: Verify the task outcome and schema generation
         assertEquals(SUCCESS, result.task(":generateZodSchemas").getOutcome());
 
-        File outputDir = new File(testProjectDir, "build/java-to-zod");
-        System.out.println("Output directory contents: " + Arrays.toString(outputDir.listFiles()));
-
-
         // Verify that the output file has been generated
         File outputFile = new File(testProjectDir, "build/temp/generated-schemas/schemas.ts");
         assertTrue(outputFile.exists(), "Zod schema file should be generated");

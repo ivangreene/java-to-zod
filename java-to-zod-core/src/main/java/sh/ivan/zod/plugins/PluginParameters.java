@@ -1,20 +1,17 @@
-package sh.ivan.zod;
-
+package sh.ivan.zod.plugins;
 
 import cz.habarta.typescript.generator.*;
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.List;
 import lombok.Setter;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.Optional;
 
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.List;
-
 @Setter
 public class PluginParameters implements Serializable {
     private static final long serialVersionUID = 1L;
-
 
     /**
      * Prefix added to generated schema names.
@@ -168,7 +165,6 @@ public class PluginParameters implements Serializable {
     @Parameter
     private boolean scanSpringApplication = false;
 
-
     /**
      * Specifies level of logging output.
      * Supported values are:
@@ -186,7 +182,6 @@ public class PluginParameters implements Serializable {
 
     @Parameter(property = "java.to.zod.skip")
     private boolean skip = false;
-
 
     /**
      * The presence of any annotation in this list on a JSON property will cause
@@ -322,8 +317,4 @@ public class PluginParameters implements Serializable {
     public boolean isSkip() {
         return skip;
     }
-
-
-
 }
-

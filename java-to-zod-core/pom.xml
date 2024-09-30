@@ -60,7 +60,7 @@
       <artifactId>gradle-api</artifactId>
       <version>8.5</version>
       <scope>system</scope>
-      <systemPath>C:\Users\thele\.gradle\caches\8.5\generated-gradle-jars\gradle-api-8.5.jar</systemPath>
+      <systemPath>${env.GRADLE_API_JAR}</systemPath>
     </dependency>
   </dependencies>
 </project>

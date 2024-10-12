@@ -49,13 +49,9 @@ jobs:
         else
           echo "auto_release=false" >> $GITHUB_ENV
         fi
-    - name: Run tests
-      run: ./mvnw -B package
     - name: Release With Maven
       run: |
         ./mvnw -B -U \
-          -DskipTests \
-          -pl '!java-to-zod-maven-plugin-test' \
           -Pci-cd \
           release:prepare \
           release:perform \

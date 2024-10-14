@@ -17,3 +17,6 @@ buildNumber.properties
 .classpath
 
 node_modules
+/java-to-zod-gradle-plugin/.gradle/
+/java-to-zod-gradle-plugin/build/
+/.idea/

@@ -4,7 +4,7 @@
   <parent>
     <groupId>sh.ivan</groupId>
     <artifactId>java-to-zod</artifactId>
-    <version>0.7.0-SNAPSHOT</version>
+    <version>0.8.0-SNAPSHOT</version>
   </parent>
   <artifactId>java-to-zod-core</artifactId>
   <packaging>jar</packaging>
@@ -49,5 +49,25 @@
       <version>3.9.2</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.apache.maven.plugin-tools</groupId>
+      <artifactId>maven-plugin-annotations</artifactId>
+      <version>3.10.2</version>
+      <scope>compile</scope>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/org.jetbrains.intellij.deps/gradle-api -->
+    <dependency>
+      <groupId>org.jetbrains.intellij.deps</groupId>
+      <artifactId>gradle-api</artifactId>
+      <version>8.5</version>
+      <scope>compile</scope>
+    </dependency>
+
   </dependencies>
+  <repositories>
+    <repository>
+      <id>jetbrains-intellij-dependencies</id>
+      <url>https://packages.jetbrains.team/maven/p/ij/intellij-dependencies/</url>
+    </repository>
+  </repositories>
 </project>

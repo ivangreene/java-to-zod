@@ -37,4 +37,8 @@ public interface Attribute {
                 .map(method -> "." + method)
                 .collect(Collectors.joining());
     }
+
+    default boolean isOfType(Class<? extends Attribute> clazz) {
+        return clazz.isAssignableFrom(this.getClass());
+    }
 }

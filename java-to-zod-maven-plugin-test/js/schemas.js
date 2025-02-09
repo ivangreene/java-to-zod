@@ -12,6 +12,13 @@ export const BooleanHolderSchema = zod.object({
   primitive: zod.boolean(),
 });
 
+export const BooleanHolderWithMessagesSchema = zod.object({
+  mustBeTrue: zod.literal(true, { message: 'Needs to be true!' }).optional().nullable(),
+  mustBeFalse: zod.literal(false, { message: 'Needs to be false!' }),
+  boxed: zod.boolean().optional().nullable(),
+  primitive: zod.boolean(),
+});
+
 export const NumberHolderSchema = zod.object({
   maxed: zod.number().int().max(300).optional().nullable(),
   minned: zod.number().int().min(100),

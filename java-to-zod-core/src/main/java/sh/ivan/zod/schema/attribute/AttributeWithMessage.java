@@ -1,8 +1,11 @@
 package sh.ivan.zod.schema.attribute;
 
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.ToString;
+import sh.ivan.zod.schema.MessageFormatter;
 
+@Getter
 @ToString
 @EqualsAndHashCode
 public class AttributeWithMessage implements Attribute {
@@ -21,13 +24,11 @@ public class AttributeWithMessage implements Attribute {
 
     @Override
     public String zodMethod() {
-        return attribute
-                .zodMethod()
-                .replaceFirst("([^(])\\)$", "$1, { message: " + quoteMessage() + " })")
-                .replaceFirst("\\(\\)$", "({ message: " + quoteMessage() + " })");
+        return MessageFormatter.addMessageToMethod(attribute.zodMethod(), message);
     }
 
-    private String quoteMessage() {
-        return "'" + message.replace("\\", "\\\\\\\\").replace("'", "\\\\'") + "'";
+    @Override
+    public boolean isOfType(Class<? extends Attribute> clazz) {
+        return attribute.isOfType(clazz);
     }
 }

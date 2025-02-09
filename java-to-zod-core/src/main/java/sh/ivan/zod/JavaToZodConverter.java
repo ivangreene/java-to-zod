@@ -101,12 +101,10 @@ public class JavaToZodConverter {
 
     private Schema getBooleanSchema(Set<Attribute> attributes) {
         var equalsBooleanAttribute = attributes.stream()
-                .filter(attribute -> attribute instanceof EqualsBooleanAttribute)
+                .filter(attribute -> attribute.isOfType(EqualsBooleanAttribute.class))
                 .findAny();
         if (equalsBooleanAttribute.isPresent()) {
-            return new LiteralBooleanSchema(
-                    ((EqualsBooleanAttribute) equalsBooleanAttribute.get()).isValue(),
-                    Sets.difference(attributes, Set.of(equalsBooleanAttribute.get())));
+            return LiteralBooleanSchema.fromAttributes(equalsBooleanAttribute.get(), attributes);
         }
         return new BooleanSchema(attributes);
     }
